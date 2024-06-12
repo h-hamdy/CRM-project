@@ -4,9 +4,19 @@ export class AuthDto {
 
 	@IsEmail()
 	@IsNotEmpty()
-	email: String;
+	email: string;
 
 	@IsString()
 	@IsNotEmpty()
-	password: String;
+	password: string;
+
+	@IsString()
+	@IsNotEmpty()
+	firstName: string;
+
+	@IsString()
+	@IsNotEmpty()
+	lastName: string;
+
+
 }
