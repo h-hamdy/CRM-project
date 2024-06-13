@@ -28,7 +28,11 @@ let AuthController = class AuthController {
     }
     async signin(dto, response) {
         const token = await this.authService.signin(dto);
-        response.cookie('jwt', token, { httpOnly: true });
+        response.cookie('jwt', token, {
+            httpOnly: true,
+            secure: false,
+        });
+        console.log(token);
         return { message: 'Login successful' };
     }
     async createUser(body) {
@@ -48,7 +52,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dto_1.AuthDto, Object]),
+    __metadata("design:paramtypes", [dto_1.AuthDtoSignin, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "signin", null);
 __decorate([

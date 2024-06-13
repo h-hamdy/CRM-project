@@ -1,6 +1,7 @@
-import React from 'react';
+// import React from 'react';
 import { Form, Input, Checkbox, Button } from 'antd';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 
 type FieldType = {
   username?: string;
@@ -9,9 +10,16 @@ type FieldType = {
 };
 
 export const Login = () => {
-  const onFinish = (values: FieldType) => {
-    console.log('Success:', values);
-  };
+	// const navigate = useNavigate();
+	const onFinish = async (values: FieldType) => {
+		try {
+		  const response = await axios.post('http://localhost:3333/auth/signin', values);
+		  console.log('Success:', response.data);
+		//   navigate('/');
+		} catch (error) {
+		  console.error('Failed:', error);
+		}
+	  };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
@@ -36,7 +44,8 @@ export const Login = () => {
 		<Form.Item
               name="email"
               label="Email"
-              rules={[{ required: true, message: 'Please input your Email!' }]}
+              rules={[{ required: true, message: "Please input your Email!" },
+				{ type: 'email', message: "Please enter a valid Email!" },]}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
             >
@@ -46,7 +55,30 @@ export const Login = () => {
             <Form.Item
               name="password"
               label="Password"
-              rules={[{ required: true, message: 'Please input your Password!' }]}
+              rules={[
+				{
+					validator: (_, value) => {
+					  if (!value) {
+						return Promise.reject(new Error('Please input the Password!'));
+					  }
+					  if (value.length < 8) {
+						return Promise.reject(new Error('Password must be at least 8 characters long!'));
+					  }
+					  if (!/[A-Z]/.test(value)) {
+						return Promise.reject(new Error('Password must contain at least one uppercase letter!'));
+					  }
+					  if (!/[a-z]/.test(value)) {
+						return Promise.reject(new Error('Password must contain at least one lowercase letter!'));
+					  }
+					  if (!/[0-9]/.test(value)) {
+						return Promise.reject(new Error('Password must contain at least one digit!'));
+					  }
+					  if (!/[!@#$%^&*]/.test(value)) {
+						return Promise.reject(new Error('Password must contain at least one special character!'));
+					  }
+					  return Promise.resolve();
+					}},
+				]}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
             >

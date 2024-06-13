@@ -1,5 +1,5 @@
 import { AuthService } from "./auth.service";
-import { AuthDto } from "./dto";
+import { AuthDto, AuthDtoSignin } from "./dto";
 import { Response } from 'express';
 export declare class AuthController {
     private authService;
@@ -9,7 +9,7 @@ export declare class AuthController {
         id: number;
         createdAt: Date;
     }>;
-    signin(dto: AuthDto, response: Response): Promise<{
+    signin(dto: AuthDtoSignin, response: Response): Promise<{
         message: string;
     }>;
     createUser(body: {

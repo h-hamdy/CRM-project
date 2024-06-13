@@ -34,7 +34,6 @@ let AuthService = class AuthService {
         }
         const adminEmail = this.configService.get('ADMIN_EMAIL');
         const adminPassword = this.configService.get('ADMIN_PASSWORD');
-        console.log(adminEmail + " " + adminPassword);
         if (dto.email !== adminEmail || dto.password !== adminPassword) {
             throw new common_1.UnauthorizedException('Invalid email or password.');
         }

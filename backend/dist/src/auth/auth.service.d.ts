@@ -1,5 +1,5 @@
 import { PrismaService } from "src/prisma/prisma.service";
-import { AuthDto } from "./dto";
+import { AuthDto, AuthDtoSignin } from "./dto";
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { EmailService } from "./email/email.service";
@@ -14,7 +14,7 @@ export declare class AuthService {
         id: number;
         createdAt: Date;
     }>;
-    signin(dto: AuthDto): Promise<string>;
+    signin(dto: AuthDtoSignin): Promise<string>;
     createUser(email: string, firstName: string, lastName: string): Promise<{
         email: string;
         password: string;

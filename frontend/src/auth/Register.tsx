@@ -1,16 +1,27 @@
-import React from "react";
-import { Form, Input, Checkbox, Button } from "antd";
-import { Link } from "react-router-dom";
+// import React from "react";
+import { Form, Input, Button } from "antd";
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
 type FieldType = {
-  username?: string;
-  password?: string;
-  remember?: boolean;
-};
+	firstName?: string;
+	lastName?: string;
+	email?: string;
+	password?: string;
+  };
 
 export const Register = () => {
-  const onFinish = (values: FieldType) => {
-    console.log("Success:", values);
-  };
+	const navigate = useNavigate();
+	const onFinish = async (values: FieldType) => {
+		try {
+			console.log(values)
+		  const response = await axios.post('http://localhost:3333/auth/signup', values);
+		  console.log('Success:', response.data);
+		  navigate('/sign-in');
+		} catch (error) {
+		  console.error('Failed:', error);
+		}
+	  };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
@@ -33,9 +44,11 @@ export const Register = () => {
           >
             <Form.Item
               label="First Name"
-			  name="first name"
+			  name="firstName"
               rules={[
-                { required: true, message: "Please input your Fisrt Name!" },
+				{ required: true, message: "Please input your First Name!" },
+				{ min: 4, message: "First Name must be at least 4 characters long" },
+				{ max: 10, message: "First Name must not exceed 7 characters" },
               ]}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
@@ -45,9 +58,11 @@ export const Register = () => {
 
             <Form.Item
               label="Last Name"
-			  name="last name"
+			  name="lastName"
               rules={[
-                { required: true, message: "Please input your last Name!" },
+                { required: true, message: "Please input your Last Name!" },
+				{ min: 4, message: "Last Name must be at least 4 characters long" },
+				{ max: 10, message: "Last Name must not exceed 7 characters" },
               ]}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
@@ -56,8 +71,9 @@ export const Register = () => {
             </Form.Item>
             <Form.Item
               label="Email"
-			  name="Email"
-              rules={[{ required: true, message: "Please input your Email!" }]}
+			  name="email"
+              rules={[{ required: true, message: "Please input your Email!" },
+				{ type: 'email', message: "Please enter a valid Email!" },]}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
             >
@@ -66,9 +82,30 @@ export const Register = () => {
 
             <Form.Item
               label="Password"
-			  name="Password"
+			  name="password"
               rules={[
-                { required: true, message: "Please input The Password!" },
+				{
+					validator: (_, value) => {
+					  if (!value) {
+						return Promise.reject(new Error('Please input the Password!'));
+					  }
+					  if (value.length < 8) {
+						return Promise.reject(new Error('Password must be at least 8 characters long!'));
+					  }
+					  if (!/[A-Z]/.test(value)) {
+						return Promise.reject(new Error('Password must contain at least one uppercase letter!'));
+					  }
+					  if (!/[a-z]/.test(value)) {
+						return Promise.reject(new Error('Password must contain at least one lowercase letter!'));
+					  }
+					  if (!/[0-9]/.test(value)) {
+						return Promise.reject(new Error('Password must contain at least one digit!'));
+					  }
+					  if (!/[!@#$%^&*]/.test(value)) {
+						return Promise.reject(new Error('Password must contain at least one special character!'));
+					  }
+					  return Promise.resolve();
+					}},
               ]}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}

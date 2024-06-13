@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Res } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { AuthDto } from "./dto";
+import { AuthDto, AuthDtoSignin } from "./dto";
 import { Response } from 'express';
 import { AdminGuard } from './guards/admin.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -16,10 +16,15 @@ export class AuthController{
 		}
 
 		@Post('signin')
-		async signin(@Body() dto: AuthDto, @Res({ passthrough: true }) response: Response) {
+		async signin(@Body() dto: AuthDtoSignin, @Res({ passthrough: true }) response: Response) {
 			const token = await this.authService.signin(dto);
     			// Set JWT token in cookies
-				(response as any).cookie('jwt', token, { httpOnly: true });
+				(response as any).cookie('jwt', token, {
+					httpOnly: true,
+					secure: false, // Set to false for local development over HTTP
+				});
+				console.log(token)
+
 				return { message: 'Login successful' };
 		}
 

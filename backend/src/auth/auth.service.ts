@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { AuthDto } from "./dto";
+import { AuthDto, AuthDtoSignin } from "./dto";
 import * as argon from 'argon2'
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -29,7 +29,6 @@ export class AuthService{
 		const adminEmail = this.configService.get<string>('ADMIN_EMAIL');
 		const adminPassword = this.configService.get<string>('ADMIN_PASSWORD');
 
-		console.log(adminEmail + " " + adminPassword)
 		if (dto.email !== adminEmail || dto.password !== adminPassword) {
 			throw new UnauthorizedException('Invalid email or password.');
 		  }
@@ -55,7 +54,7 @@ export class AuthService{
 		return user
 	}
 
-	async signin(dto: AuthDto) {
+	async signin(dto: AuthDtoSignin) {
 		// Check if the email exists in the database
 		const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
 	  
@@ -79,7 +78,7 @@ export class AuthService{
 		  secret: this.configService.get<string>('JWT_SECRET'),
 		  expiresIn: '1h', // Customize token expiration
 		});
-	  
+		
 		return token;
 	  }
 	  
@@ -90,11 +89,11 @@ export class AuthService{
 
 		const checkUser = await this.prisma.user.findUnique({ where: { email: email } });
 
-    // If user does not exist, throw UnauthorizedException
+    		// If user does not exist, throw UnauthorizedException
 		if (checkUser) {
 			throw new UnauthorizedException('Invalid email');
 		}
-		// Generate a random password
+			// Generate a random password
 		const password = crypto.randomBytes(8).toString('hex');
 	
 		// Hash the password
