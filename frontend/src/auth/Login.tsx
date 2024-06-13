@@ -13,7 +13,7 @@ export const Login = () => {
 	// const navigate = useNavigate();
 	const onFinish = async (values: FieldType) => {
 		try {
-		  const response = await axios.post('http://localhost:3333/auth/signin', values);
+		  const response = await axios.post('http://localhost:3333/auth/signin',  values, {withCredentials: true});
 		  console.log('Success:', response.data);
 		//   navigate('/');
 		} catch (error) {
