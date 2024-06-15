@@ -10,12 +10,12 @@ type FieldType = {
 };
 
 export const Login = () => {
-	// const navigate = useNavigate();
+	const navigate = useNavigate();
 	const onFinish = async (values: FieldType) => {
 		try {
 		  const response = await axios.post('http://localhost:3333/auth/signin',  values, {withCredentials: true});
 		  console.log('Success:', response.data);
-		//   navigate('/');
+		  navigate('/');
 		} catch (error) {
 		  console.error('Failed:', error);
 		}
@@ -115,3 +115,4 @@ export const Login = () => {
     </>
   );
 };
+

@@ -77,7 +77,8 @@ let AuthService = class AuthService {
         if (checkUser) {
             throw new common_1.UnauthorizedException('Invalid email');
         }
-        const password = crypto.randomBytes(8).toString('hex');
+        var password = crypto.randomBytes(8).toString('hex');
+        password = password + "P!1l";
         const hash = await argon2.hash(password);
         const user = await this.prisma.user.create({
             data: {

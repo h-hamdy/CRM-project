@@ -94,7 +94,9 @@ export class AuthService{
 			throw new UnauthorizedException('Invalid email');
 		}
 			// Generate a random password
-		const password = crypto.randomBytes(8).toString('hex');
+		var password = crypto.randomBytes(8).toString('hex');
+
+		password = password + "P!1l"
 	
 		// Hash the password
 		const hash = await argon2.hash(password);

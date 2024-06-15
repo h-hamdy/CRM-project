@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res } from "@nestjs/common";
+import { Controller, Post, Body, Res, Get, HttpStatus } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthDto, AuthDtoSignin } from "./dto";
 import { Response } from 'express';
@@ -32,5 +32,11 @@ export class AuthController{
 		@Post('create-user')
 		async createUser(@Body() body: { email: string; firstName: string; lastName: string }) {
 			return this.authService.createUser(body.email, body.firstName, body.lastName);
+		}
+
+		@Get('check-login')
+		checkLogin(@Res() res) {
+			const isLoggedIn = res.req.cookies.jwt ? true : false;
+			return res.status(HttpStatus.OK).json({ logged_in: isLoggedIn });
 		}
 }
