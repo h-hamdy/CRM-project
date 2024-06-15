@@ -64,6 +64,27 @@ export const RootLayout = () => {
     fetchLoginStatus();
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1280) {
+        setCollapsed(true);
+      } else {
+        setCollapsed(false);
+      }
+    };
+
+    // Initial check
+    handleResize();
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   const [collapsed, setCollapsed] = useState(false);
 
   const handleMenuClick = (e: any) => {
@@ -72,7 +93,7 @@ export const RootLayout = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between px-10 pl-3 text-lg font-semibold traking-wider bg-white h-[70px]">
+      <div className="flex fixed z-50 w-full items-center justify-between px-10 pl-3 text-lg font-semibold traking-wider bg-white h-[70px]">
         <div className="flex items-center justify-center">
           <button>
             <img className="w-[60px]" src="/src/assets/logo.webp"></img>
@@ -84,7 +105,7 @@ export const RootLayout = () => {
           src="/src/assets/profile.jpg"
         ></img>
       </div>
-      <Layout className="min-h-screen">
+      <Layout className="min-h-screen pt-[70px]">
         <Sider
           theme="light"
           className={`bg-red-500 ${
@@ -105,7 +126,7 @@ export const RootLayout = () => {
 			onClick={handleMenuClick}
           />
         </Sider>
-        <Layout className="p-10">
+        <Layout className=" p-10">
 		  	<Outlet/>
 		</Layout>
       </Layout>
