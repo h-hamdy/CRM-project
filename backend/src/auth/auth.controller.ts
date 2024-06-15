@@ -30,8 +30,8 @@ export class AuthController{
 
 		@UseGuards(JwtAuthGuard, AdminGuard)
 		@Post('create-user')
-		async createUser(@Body() body: { email: string; firstName: string; lastName: string }) {
-			return this.authService.createUser(body.email, body.firstName, body.lastName);
+		async createUser(@Body() body: { email: string; firstName: string; lastName: string, number: string }) {
+			return this.authService.createUser(body.email, body.firstName, body.lastName, body.number);
 		}
 
 		@Get('check-login')

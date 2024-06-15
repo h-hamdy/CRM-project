@@ -34,6 +34,11 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], AuthDto.prototype, "lastName", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], AuthDto.prototype, "_number", void 0);
 class AuthDtoSignin {
 }
 exports.AuthDtoSignin = AuthDtoSignin;

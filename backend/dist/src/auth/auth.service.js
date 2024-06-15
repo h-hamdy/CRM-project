@@ -70,9 +70,10 @@ let AuthService = class AuthService {
         });
         return token;
     }
-    async createUser(email, firstName, lastName) {
+    async createUser(email, firstName, lastName, number) {
         if (!email || !firstName || !lastName)
             throw new common_1.UnauthorizedException("Invalid Credentials!");
+        console.log(number);
         const checkUser = await this.prisma.user.findUnique({ where: { email: email } });
         if (checkUser) {
             throw new common_1.UnauthorizedException('Invalid email');
@@ -86,6 +87,7 @@ let AuthService = class AuthService {
                 hash,
                 firstName,
                 lastName,
+                number,
             },
             select: {
                 id: true,

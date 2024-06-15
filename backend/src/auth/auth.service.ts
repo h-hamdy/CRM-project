@@ -83,9 +83,11 @@ export class AuthService{
 	  }
 	  
 
-		async createUser(email: string, firstName: string, lastName: string): Promise<{ email: string; password: string }> {
+		async createUser(email: string, firstName: string, lastName: string, number: string): Promise<{ email: string; password: string }> {
 		if (!email || !firstName || !lastName )
 			throw new UnauthorizedException("Invalid Credentials!")
+
+		console.log(number)
 
 		const checkUser = await this.prisma.user.findUnique({ where: { email: email } });
 
@@ -103,18 +105,19 @@ export class AuthService{
 	
 		// Save the new user in the db
 		const user = await this.prisma.user.create({
-		  data: {
-			email,
-			hash,
-			firstName,
-			lastName,
-		  },
-		  select: {
-			id: true,
-			email: true,
-			createdAt: true,
-		  },
-		});
+			data: {
+			  email,
+			  hash,
+			  firstName,
+			  lastName,
+			  number, // Save number if provided
+			} as any, // Type assertion here
+			select: {
+			  id: true,
+			  email: true,
+			  createdAt: true,
+			},
+		  });
 
 		await this.emailService.sendMail(
 			email,

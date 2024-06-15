@@ -5,8 +5,8 @@ export declare class AuthController {
     private authService;
     constructor(authService: AuthService);
     singup(dto: AuthDto): Promise<{
-        email: string;
         id: number;
+        email: string;
         createdAt: Date;
     }>;
     signin(dto: AuthDtoSignin, response: Response): Promise<{
@@ -16,6 +16,7 @@ export declare class AuthController {
         email: string;
         firstName: string;
         lastName: string;
+        number: string;
     }): Promise<{
         email: string;
         password: string;

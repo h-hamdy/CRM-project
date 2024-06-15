@@ -36,7 +36,7 @@ let AuthController = class AuthController {
         return { message: 'Login successful' };
     }
     async createUser(body) {
-        return this.authService.createUser(body.email, body.firstName, body.lastName);
+        return this.authService.createUser(body.email, body.firstName, body.lastName, body.number);
     }
     checkLogin(res) {
         const isLoggedIn = res.req.cookies.jwt ? true : false;
