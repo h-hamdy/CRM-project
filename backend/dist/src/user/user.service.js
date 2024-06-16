@@ -27,6 +27,27 @@ let UsersService = class UsersService {
         });
         return users;
     }
+    async upsertInfo(data) {
+        const info = await this.prisma.info.upsert({
+            where: { id: 1 },
+            update: {
+                address: data.address,
+                email: data.email,
+                phone: data.phone,
+                website: data.website,
+            },
+            create: {
+                address: data.address,
+                email: data.email,
+                phone: data.phone,
+                website: data.website,
+            },
+        });
+        return info;
+    }
+    async getInfo() {
+        return this.prisma.info.findUnique({ where: { id: 1 } });
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([

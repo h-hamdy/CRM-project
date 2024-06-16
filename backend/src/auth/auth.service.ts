@@ -76,7 +76,7 @@ export class AuthService{
 		const payload = { email: dto.email, isAdmin }; // Include isAdmin in the payload
 		const token = this.jwtService.sign(payload, {
 		  secret: this.configService.get<string>('JWT_SECRET'),
-		  expiresIn: '1h', // Customize token expiration
+		//   expiresIn: '1h', // Customize token expiration
 		});
 		
 		return token;

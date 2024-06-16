@@ -66,7 +66,6 @@ let AuthService = class AuthService {
         const payload = { email: dto.email, isAdmin };
         const token = this.jwtService.sign(payload, {
             secret: this.configService.get('JWT_SECRET'),
-            expiresIn: '1h',
         });
         return token;
     }
