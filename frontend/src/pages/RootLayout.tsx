@@ -102,7 +102,7 @@ export const RootLayout = () => {
         </div>
         <img
           className="rounded-full h-[40px] w-[40px] object-cover"
-          src="/src/assets/profile.jpg"
+          src="/src/assets/profile.jpeg"
         ></img>
       </div>
       <Layout className="min-h-screen pt-[70px]">

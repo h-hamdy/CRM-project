@@ -17,7 +17,7 @@ let AppModule = class AppModule {
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule, user_module_1.UserModule, prisma_module_1.PrismaModule, config_1.ConfigModule],
+        imports: [auth_module_1.AuthModule, user_module_1.UsersModule, prisma_module_1.PrismaModule, config_1.ConfigModule],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

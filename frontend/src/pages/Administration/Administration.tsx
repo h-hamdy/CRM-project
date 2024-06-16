@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Button, Modal } from "antd";
 import { UserAddOutlined } from "@ant-design/icons";
-import profile from "/src/assets/profile.jpg";
+import profile from "/src/assets/profile.jpeg";
 import type { TableColumnsType } from "antd";
 import {
   EnvironmentOutlined,
@@ -13,47 +13,19 @@ import {
 } from "@ant-design/icons";
 import { Space } from "antd";
 import type { FormProps } from "antd";
-import { Checkbox, Form, Input } from "antd";
+import { Form, Input } from "antd";
 import axios from "axios";
 
 interface DataType {
   key: React.Key;
+  id: React.Key;
+  firstName: string;
+  lastName: string;
   FullName: string;
   Email: string;
   Phone: string;
   PictureUrl: string;
 }
-
-const data: DataType[] = [
-  {
-    key: "1",
-    FullName: "John Brown",
-    Phone: "+212 770403023",
-    Email: "john.brown@example.com",
-    PictureUrl: profile,
-  },
-  {
-    key: "2",
-    FullName: "Jim Green",
-    Phone: "+212 770403023",
-    Email: "jim.green@example.com",
-    PictureUrl: profile,
-  },
-  {
-    key: "3",
-    FullName: "Joe Black",
-    Phone: "+212 770403023",
-    Email: "joe.black@example.com",
-    PictureUrl: profile,
-  },
-  {
-    key: "4",
-    FullName: "Jack White",
-    Phone: "+212 770403023",
-    Email: "jack.white@example.com",
-    PictureUrl: profile,
-  },
-];
 
 const userColumns: TableColumnsType<DataType> = [
   {
@@ -62,7 +34,7 @@ const userColumns: TableColumnsType<DataType> = [
     render: (text: string, record: DataType) => (
       <div className="flex items-center">
         <img
-          src={record.PictureUrl}
+          src={profile}
           alt={record.FullName}
           className="w-[30px] h-[30px] rounded-full mr-2"
         />
@@ -120,7 +92,6 @@ const column = [
       </Space>
     ),
   },
-  
 ];
 
 type FieldType = {
@@ -157,9 +128,8 @@ export const Administration = () => {
   };
 
   const handleOk = async () => {
-	  try {
-		  const values = await form.validateFields();
-		  console.log(values)
+    try {
+      const values = await form.validateFields();
       await axios.post("http://localhost:3333/auth/create-user", values, {
         withCredentials: true,
       });
@@ -174,8 +144,6 @@ export const Administration = () => {
     setIsModalOpen(false);
   };
 
-  const totalUsers = 16;
-
   const tableTitle = () => (
     <div className="w-full p-2">
       <div className="flex justify-between items-center">
@@ -184,11 +152,61 @@ export const Administration = () => {
           Contacts
         </span>
         <span className="pr-4">
-          Total users: <span className="font-bold">{totalUsers}</span>
+          Total users: <span className="font-bold">{users.length}</span>
         </span>
       </div>
     </div>
   );
+  
+  const [users, setUsers] = useState<DataType[]>([]);
+
+  const userColumns: TableColumnsType<DataType> = [
+	{
+	  title: "Full Name",
+	  dataIndex: "FullName",
+	  render: (text: string, record: DataType) => (
+		<div className="flex items-center">
+		  <img
+			src={record.PictureUrl || profile} // Use record.PictureUrl if available, otherwise fallback to profile image
+			alt={record.FullName}
+			className="w-[30px] h-[30px] rounded-full mr-2"
+		  />
+		  <div>
+			{/* <div>{text}</div>  */}
+			<div className="">{`${record.firstName} ${record.lastName}`}</div> {/* Display first name and last name */}
+		  </div>
+		</div>
+	  ),
+	},
+	{
+	  title: "Email",
+	  dataIndex: "email",
+	},
+	{
+	  title: "Phone",
+	  dataIndex: "number",
+	},
+  ];
+  
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:3333/users/users", {
+        withCredentials: true,
+      });
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  useEffect(() => {}, [users]);
+
+  console.log(users);
 
   return (
     <>
@@ -274,7 +292,7 @@ export const Administration = () => {
             >
               <Input className="h-[35px]" />
             </Form.Item>
-			<Form.Item
+            <Form.Item
               name="number"
               label="Phone"
               labelCol={{ span: 24 }}
@@ -290,7 +308,10 @@ export const Administration = () => {
         <div className="lg:w-3/5 w-full">
           <Table
             columns={userColumns}
-            dataSource={data}
+            dataSource={users.map((user, index) => ({
+              ...user,
+              key: user.id || index,
+            }))}
             size="middle"
             title={tableTitle}
           />
