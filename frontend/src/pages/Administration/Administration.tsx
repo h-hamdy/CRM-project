@@ -132,12 +132,12 @@ export const Administration = () => {
   const tableTitle = () => (
     <div className="w-full p-2">
       <div className="flex justify-between items-center">
-        <span className="flex items-center pl-2 font-semibold">
+        <span className="flex text-base items-center pl-2 font-semibold">
           <TeamOutlined className="mr-2" />
           Contacts
         </span>
-        <span className="pr-4">
-          Total users: <span className="font-bold">{users.length}</span>
+        <span className="pr-4 text-gray-400">
+          Total users: <span className="text-black font-bold">{users.length}</span>
         </span>
       </div>
     </div>
@@ -452,8 +452,8 @@ const column = [
           </Form>
         </Modal>
       </div>
-      <div className="flex flex-col lg:flex-row w-full gap-5">
-        <div className="lg:w-3/5 w-full">
+      <div className="flex flex-col xl:flex-row w-full gap-5 pt-5">
+        <div className="xl:w-3/5 w-full">
           <Table
             columns={userColumns}
             dataSource={users.map((user, index) => ({
@@ -464,7 +464,7 @@ const column = [
             title={tableTitle}
           />
         </div>
-        <div className="lg:w-2/5 :w-full">
+        <div className="xl:w-2/5 w-full">
           <Table columns={column} dataSource={companyInfos} pagination={false} />
         </div>
       </div>
