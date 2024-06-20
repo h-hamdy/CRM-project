@@ -1,7 +1,8 @@
 import  { useState } from "react";
-import { Table, Button, Drawer, Input, Tag } from "antd";
-import { PlusCircleOutlined, EyeOutlined } from "@ant-design/icons";
+import { Table, Button, Drawer, Input, Tag, Col, DatePicker, Form, Row, Select, Space  } from "antd";
+import { PlusCircleOutlined, EyeOutlined, CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import profile from "/src/assets/profile.jpeg";
+import { CreateUserDrawer } from "./CreateUserDrawer";
 
 
 interface DataType {
@@ -95,6 +96,15 @@ export const Clients = () => {
   const { Search } = Input;
   const onSearch = (value: string) => console.log(value);
   const [open, setOpen] = useState(false);
+  const [showDrawerUser, setShowDrawer] = useState(false); // State to manage visibility of CreateUserDrawer
+
+  const _showDrawer = () => {
+    setShowDrawer(true);
+  };
+
+  const onCloseDrawer = () => {
+    setShowDrawer(false);
+  };
   const [selectedUser, setSelectedUser] = useState<DataType | null>(null);
 
   const showDrawer = (user: DataType) => {
@@ -106,31 +116,50 @@ export const Clients = () => {
     setOpen(false);
   };
 
+
   return (
     <>
-      <Drawer placement="right" closable={false} onClose={onClose} open={open}>
-        {selectedUser && (
-          <section className="flex items-center justify-center w-full">
-            <div className="flex flex-col items-center justify-center gap-5">
-              <img
-                className="rounded-full w-[80px]"
-                src={profile}
-                alt="Profile"
-              />
-              <div>
-                <h2 className="text-2xl font-semibold">
-                  {selectedUser.firstName} {selectedUser.lastName}
-				  </h2>
-              </div>
-            </div>
-          </section>
-        )}
-      </Drawer>
+      <Drawer
+	  title={
+        <div className="flex justify-end items-center">
+          <Button
+            type="text"
+            onClick={onClose}
+            icon={<CloseOutlined />}
+            className="text-gray-600 w-full hover:text-gray-900"
+          />
+         </div>
+      }
+  placement="right"
+  closable={false}
+  onClose={onClose}
+  visible={open} // Use `visible` instead of `open` for Ant Design's Drawer component
+  width={500}
+  style={{ backgroundColor: '#f0f2f5' }} // Set the background color using inline style
+>
+  {selectedUser && (
+    <section className="flex items-center justify-center w-full">
+      <div className="flex flex-col items-center justify-center gap-5">
+        <img
+          className="rounded-full w-[90px]"
+          src={profile}
+          alt="Profile"
+        />
+        <div>
+          <h2 className="text-2xl font-semibold">
+            {selectedUser.firstName} {selectedUser.lastName}
+          </h2>
+        </div>
+      </div>
+    </section>
+  )}
+</Drawer>
       <div className="flex justify-between">
         <Button
-          icon={<PlusCircleOutlined />}
+          icon={<PlusOutlined />}
           className="h-[40px] w-[170px] rounded-lg"
           type="primary"
+		  onClick={_showDrawer}
         >
           Add New Client
         </Button>
@@ -153,6 +182,7 @@ export const Clients = () => {
           size="middle"
         />
       </section>
+	  {showDrawerUser && <CreateUserDrawer open={showDrawerUser} onClose={onCloseDrawer} />}
     </>
   );
 };
