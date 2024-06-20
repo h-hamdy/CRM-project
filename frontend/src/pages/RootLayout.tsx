@@ -119,7 +119,7 @@ export const RootLayout = () => {
           style={{ width: collapsed ? "80px" : "300px" }}
         >
           <Menu
-            className="h-full bg-whiteBackground text-white"
+            className="h-full bg-[#F5F5F5] text-white"
             defaultSelectedKeys={["1"]}
             mode="inline"
             items={items}

@@ -135,7 +135,7 @@ export const Clients = () => {
   onClose={onClose}
   visible={open} // Use `visible` instead of `open` for Ant Design's Drawer component
   width={500}
-  style={{ backgroundColor: '#f0f2f5' }} // Set the background color using inline style
+  style={{ backgroundColor: '#FBFBFB' }} // Set the background color using inline style
 >
   {selectedUser && (
     <section className="flex items-center justify-center w-full">
