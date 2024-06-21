@@ -1,9 +1,33 @@
-import  { useState } from "react";
-import { Table, Button, Drawer, Input, Tag, Col, DatePicker, Form, Row, Select, Space  } from "antd";
-import { PlusCircleOutlined, EyeOutlined, CloseOutlined, PlusOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import {
+  Table,
+  Button,
+  Drawer,
+  Input,
+  Card,
+  Tag,
+  Col,
+  DatePicker,
+  Popconfirm,
+  Form,
+  Row,
+  Select,
+  Space,
+} from "antd";
+import {
+  DeleteOutlined,
+  MailOutlined,
+  EyeOutlined,
+  EditOutlined,
+  CloseOutlined,
+  PhoneOutlined,
+  PlusOutlined,
+  GlobalOutlined,
+  ShopOutlined,
+  AlignLeftOutlined,
+} from "@ant-design/icons";
 import profile from "/src/assets/profile.jpeg";
 import { CreateUserDrawer } from "./CreateUserDrawer";
-
 
 interface DataType {
   id: number;
@@ -26,8 +50,9 @@ const users: DataType[] = [
     email: "john.doe@example.com",
     phone: "123-456-7890",
     PictureUrl: "",
-    address: "",
-    notes: "",
+    address: "adsfasdfasdfadsfsadf",
+    notes:
+      "adsfasdfasdfadsfsadfadfasdfaadsfasdfasdfadsfsadfadfsadfadfsadfadfdfdfasdfa",
   },
   {
     id: 2,
@@ -49,7 +74,7 @@ const ClientColumns = (showDrawer: (user: DataType) => void) => [
     render: (text: string, record: DataType) => (
       <div className="flex items-center pl-4">
         <img
-          src={profile}// Use record.PictureUrl if available, otherwise fallback to default profile image
+          src={profile} // Use record.PictureUrl if available, otherwise fallback to default profile image
           className="w-[30px] h-[30px] rounded-full mr-2"
           alt="Profile"
         />
@@ -106,6 +131,7 @@ export const Clients = () => {
     setShowDrawer(false);
   };
   const [selectedUser, setSelectedUser] = useState<DataType | null>(null);
+  const [editRowKey, setEditRowKey] = useState(null);
 
   const showDrawer = (user: DataType) => {
     setSelectedUser(user);
@@ -116,50 +142,192 @@ export const Clients = () => {
     setOpen(false);
   };
 
+  const data = [
+    { key: "Email", value: selectedUser?.email, icon: <MailOutlined /> },
+    { key: "Phone", value: selectedUser?.phone, icon: <PhoneOutlined /> },
+    { key: "Address", value: selectedUser?.address, icon: <GlobalOutlined /> },
+    { key: "Type", value: selectedUser?.status, icon: <ShopOutlined /> },
+  ];
+
+  const columns = [
+    {
+      dataIndex: "value",
+      key: "value",
+      render: (text: any, record: any) => (
+        <div
+          className={`flex flex-col justify-between pl-5 ${
+            editRowKey === record.key ? "h-[60px]" : "h-[55px]"
+          }`}
+        >
+          <div className="flex flex-col">
+            <div className="flex gap-4 text-gray-600">
+              <div>{record.icon}</div>
+              <div>{record.key}</div>
+            </div>
+          </div>
+          {editRowKey === record.key ? (
+            <Space className="flex items-center justify-between pt-[5px] px-6">
+              <Form.Item
+                name={record.key}
+                rules={[
+                  { required: true, message: `Please enter ${record.key}` },
+                ]}
+                initialValue={record.value}
+              >
+                <Input
+                  className="w-[280px]"
+                  placeholder={`Please enter ${record.key}`}
+                />
+              </Form.Item>
+              <div className="flex justify-end gap-3 pb-[24px]">
+                <Button onClick={() => setEditRowKey(null)}>Cancel</Button>
+                <Button type="primary">Submit</Button>
+              </div>
+            </Space>
+          ) : (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center h-[30px]">
+                <span className="pl-7">{record.value}</span>
+              </div>
+              <button
+                onClick={() => setEditRowKey(record.key)}
+                className="flex absolute right-6 top-5 items-center justify-center bg-gray-100 hover:bg-gray-200 w-[30px] h-[30px] border-gray-400 rounded-md ml-4"
+              >
+                <EditOutlined className="cursor-pointer" />
+              </button>
+            </div>
+          )}
+        </div>
+      ),
+    },
+  ];
+
+  const [EditNote, ShowEditnote] = useState(false);
 
   return (
     <>
       <Drawer
-	  title={
-        <div className="flex justify-end items-center">
-          <Button
-            type="text"
-            onClick={onClose}
-            icon={<CloseOutlined />}
-            className="text-gray-600 w-full hover:text-gray-900"
-          />
-         </div>
-      }
-  placement="right"
-  closable={false}
-  onClose={onClose}
-  visible={open} // Use `visible` instead of `open` for Ant Design's Drawer component
-  width={500}
-  style={{ backgroundColor: '#FBFBFB' }} // Set the background color using inline style
->
-  {selectedUser && (
-    <section className="flex items-center justify-center w-full">
-      <div className="flex flex-col items-center justify-center gap-5">
-        <img
-          className="rounded-full w-[90px]"
-          src={profile}
-          alt="Profile"
-        />
-        <div>
-          <h2 className="text-2xl font-semibold">
-            {selectedUser.firstName} {selectedUser.lastName}
-          </h2>
-        </div>
-      </div>
-    </section>
-  )}
-</Drawer>
+        title={
+          <div className="flex justify-end items-cente w-full">
+            <Button
+              type="text"
+              onClick={onClose}
+              icon={<CloseOutlined />}
+              className="text-gray-600 w-full hover:text-gray-900"
+            />
+          </div>
+        }
+        placement="right"
+        closable={false}
+        onClose={onClose}
+        visible={open} // Use `visible` instead of `open` for Ant Design's Drawer component
+        width={600}
+        style={{ backgroundColor: "#F2F2F2" }} // Set the background color using inline style
+      >
+        {selectedUser && (
+          <section className="flex items-center justify-center w-full">
+            <div className="flex flex-col w-full items-center justify-center gap-5">
+              <img
+                className="rounded-full w-[90px]"
+                src={profile}
+                alt="Profile"
+              />
+              <div>
+                <h2 className="text-2xl font-semibold">
+                  {selectedUser.firstName} {selectedUser.lastName}
+                </h2>
+              </div>
+              <div className="rounded-2xl overflow-hidden w-full">
+                {" "}
+                {/* This div will ensure the table itself is rounded */}
+                <Table
+                  columns={columns}
+                  dataSource={data}
+                  showHeader={false}
+                  bordered
+                  pagination={false}
+                  style={{ marginTop: "0", borderTop: "none" }}
+                  size="small"
+                  className="rounded-2xl w-full"
+                />
+              </div>
+              {EditNote ? (
+                <div className="w-full">
+                  <Form
+                    requiredMark={false}
+                    layout="vertical"
+                    // onFinish={onFinish}
+                    // onFinishFailed={onFinishFailed}
+                  >
+                    <Form.Item name="note" label="Note">
+                      <Input.TextArea maxLength={75} />
+                    </Form.Item>
+                    <Form.Item>
+                      <div className="flex justify-end gap-3">
+                        <Button onClick={() => ShowEditnote(!EditNote)}>
+                          Cancel
+                        </Button>
+                        <Button type="primary" htmlType="submit">
+                          Submit
+                        </Button>
+                      </div>
+                    </Form.Item>
+                  </Form>
+                </div>
+              ) : (
+                <div className="w-full flex justify-center">
+                  <Card
+                    type="inner"
+                    title={
+                      <Space>
+                        <AlignLeftOutlined className="w-[12px]" />
+                        <h1 className="tracking-wide">Note</h1>
+                      </Space>
+                    }
+                    extra={
+                      <Button
+                        type="text"
+                        icon={<EditOutlined />}
+                        onClick={() => ShowEditnote(!EditNote)}
+                        className="text-gray-600"
+                      />
+                    }
+                    style={{ width: "100%" }}
+                    className="whitespace-pre-line"
+                  >
+                    {selectedUser.notes}
+                  </Card>
+                </div>
+              )}
+			  <div className="w-full flex justify-end pt-8">
+
+			  <Popconfirm
+      title="Are you sure you want to delete this contact?"
+    //   onConfirm={handleDelete}
+      okText="Yes"
+      cancelText="No"
+	  placement="topLeft"
+    >
+      <Button
+        type="primary"
+        danger
+        icon={<DeleteOutlined />}
+        className="flex items-center"
+      >
+        Delete Contact
+      </Button>
+    </Popconfirm>
+				</div>
+            </div>
+          </section>
+        )}
+      </Drawer>
       <div className="flex justify-between">
         <Button
           icon={<PlusOutlined />}
           className="h-[40px] w-[170px] rounded-lg"
           type="primary"
-		  onClick={_showDrawer}
+          onClick={_showDrawer}
         >
           Add New Client
         </Button>
@@ -182,7 +350,9 @@ export const Clients = () => {
           size="middle"
         />
       </section>
-	  {showDrawerUser && <CreateUserDrawer open={showDrawerUser} onClose={onCloseDrawer} />}
+      {showDrawerUser && (
+        <CreateUserDrawer open={showDrawerUser} onClose={onCloseDrawer} />
+      )}
     </>
   );
 };
