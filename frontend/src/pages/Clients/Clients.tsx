@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { notification } from "antd";
 import {
   Table,
   Button,
@@ -6,12 +7,8 @@ import {
   Input,
   Card,
   Tag,
-  Col,
-  DatePicker,
   Popconfirm,
   Form,
-  Row,
-  Select,
   Space,
 } from "antd";
 import {
@@ -28,44 +25,20 @@ import {
 } from "@ant-design/icons";
 import profile from "/src/assets/profile.jpeg";
 import { CreateUserDrawer } from "./CreateUserDrawer";
+import axios from "axios";
 
 interface DataType {
   id: number;
   firstName: string;
   lastName: string;
-  status: string;
+  type: string;
   email: string;
   phone: string;
-  PictureUrl: string;
   address: string;
-  notes: string;
+  note: string;
 }
 
-const users: DataType[] = [
-  {
-    id: 1,
-    firstName: "John",
-    lastName: "Doe",
-    status: "Client",
-    email: "john.doe@example.com",
-    phone: "123-456-7890",
-    PictureUrl: "",
-    address: "adsfasdfasdfadsfsadf",
-    notes:
-      "adsfasdfasdfadsfsadfadfasdfaadsfasdfasdfadsfsadfadfsadfadfsadfadfdfdfasdfa",
-  },
-  {
-    id: 2,
-    firstName: "Jane",
-    lastName: "Smith",
-    status: "Company",
-    email: "jane.smith@example.com",
-    phone: "098-765-4321",
-    PictureUrl: "",
-    address: "",
-    notes: "",
-  },
-];
+
 
 const ClientColumns = (showDrawer: (user: DataType) => void) => [
   {
@@ -94,8 +67,8 @@ const ClientColumns = (showDrawer: (user: DataType) => void) => [
   },
   {
     title: "Status",
-    dataIndex: "status",
-    key: "status",
+    dataIndex: "type",
+    key: "type",
     render: (text: string) => (
       <Tag color={text === "Client" ? "blue" : "green"}>{text}</Tag>
     ),
@@ -146,7 +119,7 @@ export const Clients = () => {
     { key: "Email", value: selectedUser?.email, icon: <MailOutlined /> },
     { key: "Phone", value: selectedUser?.phone, icon: <PhoneOutlined /> },
     { key: "Address", value: selectedUser?.address, icon: <GlobalOutlined /> },
-    { key: "Type", value: selectedUser?.status, icon: <ShopOutlined /> },
+    { key: "Type", value: selectedUser?.type, icon: <ShopOutlined /> },
   ];
 
   const columns = [
@@ -204,6 +177,43 @@ export const Clients = () => {
 
   const [EditNote, ShowEditnote] = useState(false);
 
+  const [clients, setClients] = useState<DataType[]>([]);
+
+useEffect(() => {
+    fetchClients();
+  }, []);
+
+  const fetchClients = async () => {
+    try {
+      const response = await axios.get('http://localhost:3333/clients', {withCredentials: true});
+      setClients(response.data);
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+      // Handle error state or logging as needed
+    }
+  };
+
+  const deleteClients = async () => {
+	try {
+	  await axios.delete(`http://localhost:3333/clients/deleteClient`, {
+		data: { id: selectedUser?.id },  // Pass data object with id
+		withCredentials: true,           // Optional: include other configuration options
+	  });
+	  console.log('Client deleted successfully');
+	  fetchClients();
+	  notification.success({
+        message: "Success",
+        description: "Client deleted successfully.",
+      });
+	} catch (error) {
+	  console.error('Error deleting client:', error);
+	  notification.error({
+        message: "Error",
+        description: "There was an error deleting the Client. Please try again.",
+      });
+	}
+  };
+  
   return (
     <>
       <Drawer
@@ -295,7 +305,7 @@ export const Clients = () => {
                     style={{ width: "100%" }}
                     className="whitespace-pre-line"
                   >
-                    {selectedUser.notes}
+                    {selectedUser.note}
                   </Card>
                 </div>
               )}
@@ -313,6 +323,7 @@ export const Clients = () => {
         danger
         icon={<DeleteOutlined />}
         className="flex items-center"
+		onClick={deleteClients}
       >
         Delete Contact
       </Button>
@@ -343,7 +354,7 @@ export const Clients = () => {
       <section className="pt-10">
         <Table
           columns={ClientColumns(showDrawer)}
-          dataSource={users.map((user, index) => ({
+          dataSource={clients.map((user, index) => ({
             ...user,
             key: user.id || index,
           }))}
@@ -351,7 +362,7 @@ export const Clients = () => {
         />
       </section>
       {showDrawerUser && (
-        <CreateUserDrawer open={showDrawerUser} onClose={onCloseDrawer} />
+        <CreateUserDrawer open={showDrawerUser} onClose={onCloseDrawer} fetchClients={fetchClients} />
       )}
     </>
   );
