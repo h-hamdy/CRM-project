@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Delete, Body, UseGuards, ParseIntPipe, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, UseGuards, ParseIntPipe, NotFoundException, Put } from '@nestjs/common';
 import { ClientsService } from './clients.service';
-import { ClientDto } from './dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'; // Adjust the path as needed
+import { ClientDto, UpdateEmailDto, UpdatePhoneDto, UpdateAddressDto, UpdateTypeDto } from './dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('clients')
 export class ClientsController {
@@ -21,11 +21,44 @@ export class ClientsController {
   }
 
   @Delete('/deleteClient')
+  @UseGuards(JwtAuthGuard)
   async remove(@Body('id', ParseIntPipe) id: number) {
     const deletedClient = await this.clientsService.remove(id);
     if (!deletedClient) {
       throw new NotFoundException(`Client with ID ${id} not found`);
     }
     return { message: `Client with ID ${id} has been deleted` };
+  }
+
+  @Put('/updateEmail')
+  @UseGuards(JwtAuthGuard)
+  updateEmail(@Body() updateEmailDto: UpdateEmailDto) {
+	const id = updateEmailDto.id
+	const email = updateEmailDto.email
+    return this.clientsService.updateEmail(id, email);
+  }
+
+  @Put('/updatePhone')
+  @UseGuards(JwtAuthGuard)
+  updatePhone(@Body() UpdatePhoneDto: UpdatePhoneDto) {
+	const id = UpdatePhoneDto.id
+	const phone = UpdatePhoneDto.phone
+    return this.clientsService.updatePhone(id, phone);
+  }
+
+  @Put('/updateAddress')
+  @UseGuards(JwtAuthGuard)
+  updateAddress(@Body() UpdateAddressDto: UpdateAddressDto) {
+	const id = UpdateAddressDto.id
+	const address = UpdateAddressDto.address
+    return this.clientsService.updatePhone(id, address);
+  }
+
+  @Put('/updateType')
+  @UseGuards(JwtAuthGuard)
+  updateType(@Body() updateTypeDto: UpdateTypeDto) {
+	const id = updateTypeDto.id
+	const type = updateTypeDto.type
+    return this.clientsService.updatePhone(id, type);
   }
 }

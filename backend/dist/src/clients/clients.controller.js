@@ -35,6 +35,26 @@ let ClientsController = class ClientsController {
         }
         return { message: `Client with ID ${id} has been deleted` };
     }
+    updateEmail(updateEmailDto) {
+        const id = updateEmailDto.id;
+        const email = updateEmailDto.email;
+        return this.clientsService.updateEmail(id, email);
+    }
+    updatePhone(UpdatePhoneDto) {
+        const id = UpdatePhoneDto.id;
+        const phone = UpdatePhoneDto.phone;
+        return this.clientsService.updatePhone(id, phone);
+    }
+    updateAddress(UpdateAddressDto) {
+        const id = UpdateAddressDto.id;
+        const address = UpdateAddressDto.address;
+        return this.clientsService.updatePhone(id, address);
+    }
+    updateType(updateTypeDto) {
+        const id = updateTypeDto.id;
+        const type = updateTypeDto.type;
+        return this.clientsService.updatePhone(id, type);
+    }
 };
 exports.ClientsController = ClientsController;
 __decorate([
@@ -54,11 +74,44 @@ __decorate([
 ], ClientsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Delete)('/deleteClient'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], ClientsController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Put)('/updateEmail'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.UpdateEmailDto]),
+    __metadata("design:returntype", void 0)
+], ClientsController.prototype, "updateEmail", null);
+__decorate([
+    (0, common_1.Put)('/updatePhone'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.UpdatePhoneDto]),
+    __metadata("design:returntype", void 0)
+], ClientsController.prototype, "updatePhone", null);
+__decorate([
+    (0, common_1.Put)('/updateAddress'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.UpdateAddressDto]),
+    __metadata("design:returntype", void 0)
+], ClientsController.prototype, "updateAddress", null);
+__decorate([
+    (0, common_1.Put)('/updateType'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.UpdateTypeDto]),
+    __metadata("design:returntype", void 0)
+], ClientsController.prototype, "updateType", null);
 exports.ClientsController = ClientsController = __decorate([
     (0, common_1.Controller)('clients'),
     __metadata("design:paramtypes", [clients_service_1.ClientsService])

@@ -51,6 +51,30 @@ let ClientsService = class ClientsService {
         }
         return this.prisma.client.delete({ where: { id } });
     }
+    async updateEmail(id, email) {
+        return this.prisma.client.update({
+            where: { id: Number(id) },
+            data: { email },
+        });
+    }
+    async updatePhone(id, phone) {
+        return this.prisma.client.update({
+            where: { id: Number(id) },
+            data: { phone },
+        });
+    }
+    async updateAddress(id, address) {
+        return this.prisma.client.update({
+            where: { id: Number(id) },
+            data: { address },
+        });
+    }
+    async updateType(id, type) {
+        return this.prisma.client.update({
+            where: { id: Number(id) },
+            data: { type },
+        });
+    }
 };
 exports.ClientsService = ClientsService;
 exports.ClientsService = ClientsService = __decorate([

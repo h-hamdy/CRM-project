@@ -24,4 +24,44 @@ export declare class ClientsService {
         address: string;
         note: string;
     }>;
+    updateEmail(id: any, email: any): Promise<{
+        id: number;
+        firstName: string;
+        lastName: string;
+        email: string;
+        type: string;
+        phone: string;
+        address: string;
+        note: string;
+    }>;
+    updatePhone(id: any, phone: any): Promise<{
+        id: number;
+        firstName: string;
+        lastName: string;
+        email: string;
+        type: string;
+        phone: string;
+        address: string;
+        note: string;
+    }>;
+    updateAddress(id: any, address: any): Promise<{
+        id: number;
+        firstName: string;
+        lastName: string;
+        email: string;
+        type: string;
+        phone: string;
+        address: string;
+        note: string;
+    }>;
+    updateType(id: any, type: any): Promise<{
+        id: number;
+        firstName: string;
+        lastName: string;
+        email: string;
+        type: string;
+        phone: string;
+        address: string;
+        note: string;
+    }>;
 }

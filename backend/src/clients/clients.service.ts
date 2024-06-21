@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service'; // Adjust the path as needed
-import { ClientDto } from './dto';
+import { ClientDto, UpdateEmailDto } from './dto';
 
 @Injectable()
 export class ClientsService {
@@ -40,13 +40,40 @@ export class ClientsService {
   }
 
   async remove(id: number) {
-    // Check if client exists
     const client = await this.prisma.client.findUnique({ where: { id } });
     if (!client) {
       throw new NotFoundException(`Client with ID ${id} not found`);
     }
 
-    // Delete client
     return this.prisma.client.delete({ where: { id } });
   }
+
+  async updateEmail(id, email) {
+    return this.prisma.client.update({
+	where: { id: Number(id) },
+      data: { email },
+    });
+  }
+
+  async updatePhone(id, phone) {
+    return this.prisma.client.update({
+	where: { id: Number(id) },
+      data: { phone },
+    });
+  }
+
+  async updateAddress(id, address) {
+    return this.prisma.client.update({
+	where: { id: Number(id) },
+      data: { address },
+    });
+  }
+
+  async updateType(id, type) {
+    return this.prisma.client.update({
+	where: { id: Number(id) },
+      data: { type },
+    });
+  }
+
 }
