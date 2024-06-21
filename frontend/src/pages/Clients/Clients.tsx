@@ -201,6 +201,7 @@ useEffect(() => {
 	  });
 	  console.log('Client deleted successfully');
 	  fetchClients();
+	  onClose();
 	  notification.success({
         message: "Success",
         description: "Client deleted successfully.",
@@ -317,13 +318,13 @@ useEffect(() => {
       okText="Yes"
       cancelText="No"
 	  placement="topLeft"
+	  onConfirm={deleteClients}
     >
       <Button
         type="primary"
         danger
         icon={<DeleteOutlined />}
         className="flex items-center"
-		onClick={deleteClients}
       >
         Delete Contact
       </Button>
