@@ -69,10 +69,20 @@ let ClientsService = class ClientsService {
             data: { address },
         });
     }
-    async updateType(id, type) {
+    async updateNote(id, note) {
         return this.prisma.client.update({
             where: { id: Number(id) },
-            data: { type },
+            data: { note },
+        });
+    }
+    async updateType(id, type) {
+        const lowerCaseType = type.toLowerCase();
+        if (lowerCaseType !== 'client' && lowerCaseType !== 'company') {
+            throw new common_1.UnauthorizedException('Invalid Type');
+        }
+        return this.prisma.client.update({
+            where: { id: Number(id) },
+            data: { type: lowerCaseType },
         });
     }
 };

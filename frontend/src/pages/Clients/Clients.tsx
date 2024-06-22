@@ -26,6 +26,7 @@ import {
 import profile from "/src/assets/profile.jpeg";
 import { CreateUserDrawer } from "./CreateUserDrawer";
 import axios from "axios";
+import { useForm } from "antd/es/form/Form";
 
 interface DataType {
   id: number;
@@ -37,8 +38,6 @@ interface DataType {
   address: string;
   note: string;
 }
-
-
 
 const ClientColumns = (showDrawer: (user: DataType) => void) => [
   {
@@ -116,11 +115,155 @@ export const Clients = () => {
   };
 
   const data = [
-    { key: "Email", value: selectedUser?.email, icon: <MailOutlined /> },
-    { key: "Phone", value: selectedUser?.phone, icon: <PhoneOutlined /> },
-    { key: "Address", value: selectedUser?.address, icon: <GlobalOutlined /> },
-    { key: "Type", value: selectedUser?.type, icon: <ShopOutlined /> },
+    { key: "email", value: selectedUser?.email, icon: <MailOutlined /> },
+    { key: "phone", value: selectedUser?.phone, icon: <PhoneOutlined /> },
+    { key: "address", value: selectedUser?.address, icon: <GlobalOutlined /> },
+    { key: "type", value: selectedUser?.type, icon: <ShopOutlined /> },
   ];
+
+  const [form] = useForm();
+
+  const updateEmail = async () => {
+    try {
+      const values = await form.validateFields();
+      const requestData = {
+        ...values,
+        id: String(selectedUser?.id),
+      };
+
+      await axios.put(
+        "http://localhost:3333/clients/updateEmail",
+        requestData,
+        { withCredentials: true }
+      );
+      notification.success({
+        message: "Success",
+        description: "Email Updated successfully.",
+      });
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description:
+          "There was an error Updting the Client Email. Please try again.",
+      });
+    }
+  };
+
+  const updatePhone = async () => {
+    try {
+      const values = await form.validateFields();
+      const requestData = {
+        ...values,
+        id: String(selectedUser?.id),
+      };
+      await axios.put(
+        "http://localhost:3333/clients/updatePhone",
+        requestData,
+        { withCredentials: true }
+      );
+      notification.success({
+        message: "Success",
+        description: "Phone Updated successfully.",
+      });
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description:
+          "There was an error Updting the Client Phone. Please try again.",
+      });
+    }
+  };
+
+  const updateType = async () => {
+    try {
+      const values = await form.validateFields();
+      const requestData = {
+        ...values,
+        id: String(selectedUser?.id),
+      };
+      await axios.put("http://localhost:3333/clients/updateType", requestData, {
+        withCredentials: true,
+      });
+      notification.success({
+        message: "Success",
+        description: "Type Updated successfully.",
+      });
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description:
+          "There was an error Updting the Client Type. The type should be (Client or Company)",
+      });
+    }
+  };
+
+  const updateAddress = async () => {
+    try {
+      const values = await form.validateFields();
+      const requestData = {
+        ...values,
+        id: String(selectedUser?.id),
+      };
+      await axios.put(
+        "http://localhost:3333/clients/updateAddress",
+        requestData,
+        { withCredentials: true }
+      );
+      notification.success({
+        message: "Success",
+        description: "Address Updated successfully.",
+      });
+    } catch (error) {
+      console.error("Error updating client Address:", error);
+      notification.error({
+        message: "Error",
+        description:
+          "There was an error Updating the Client Address. Please try again.",
+      });
+    }
+  };
+
+  const updateNote = async () => {
+    try {
+      const values = await form.validateFields();
+      const requestData = {
+        ...values,
+        id: String(selectedUser?.id),
+      };
+      await axios.put(
+        "http://localhost:3333/clients/updateNote",
+        requestData,
+        { withCredentials: true }
+      );
+	  ShowEditnote(!EditNote)
+	  onClose();
+      notification.success({
+        message: "Success",
+        description: "Note Updated successfully.",
+      });
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description:
+          "There was an error Updating the Client Note. Please try again.",
+      });
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (editRowKey === "email") {
+      await updateEmail();
+    } else if (editRowKey === "phone") {
+      await updatePhone();
+    } else if (editRowKey === "type") {
+      await updateType();
+    } else if (editRowKey === "address") {
+      await updateAddress();
+    }
+    fetchClients();
+	setEditRowKey(null)
+    onClose();
+  };
 
   const columns = [
     {
@@ -140,21 +283,25 @@ export const Clients = () => {
           </div>
           {editRowKey === record.key ? (
             <Space className="flex items-center justify-between pt-[5px] px-6">
-              <Form.Item
-                name={record.key}
-                rules={[
-                  { required: true, message: `Please enter ${record.key}` },
-                ]}
-                initialValue={record.value}
-              >
-                <Input
-                  className="w-[280px]"
-                  placeholder={`Please enter ${record.key}`}
-                />
-              </Form.Item>
+              <Form form={form}>
+                <Form.Item
+                  name={record.key}
+                  rules={[
+                    { required: true, message: `Please enter ${record.key}` },
+                  ]}
+                  initialValue={record.value}
+                >
+                  <Input
+                    className="w-[280px]"
+                    placeholder={`Please enter ${record.key}`}
+                  />
+                </Form.Item>
+              </Form>
               <div className="flex justify-end gap-3 pb-[24px]">
                 <Button onClick={() => setEditRowKey(null)}>Cancel</Button>
-                <Button type="primary">Submit</Button>
+                <Button onClick={handleSubmit} type="primary">
+                  Submit
+                </Button>
               </div>
             </Space>
           ) : (
@@ -179,42 +326,45 @@ export const Clients = () => {
 
   const [clients, setClients] = useState<DataType[]>([]);
 
-useEffect(() => {
+  useEffect(() => {
     fetchClients();
   }, []);
 
   const fetchClients = async () => {
     try {
-      const response = await axios.get('http://localhost:3333/clients', {withCredentials: true});
+      const response = await axios.get("http://localhost:3333/clients", {
+        withCredentials: true,
+      });
       setClients(response.data);
     } catch (error) {
-      console.error('Error fetching clients:', error);
+      console.error("Error fetching clients:", error);
       // Handle error state or logging as needed
     }
   };
 
   const deleteClients = async () => {
-	try {
-	  await axios.delete(`http://localhost:3333/clients/deleteClient`, {
-		data: { id: selectedUser?.id },  // Pass data object with id
-		withCredentials: true,           // Optional: include other configuration options
-	  });
-	  console.log('Client deleted successfully');
-	  fetchClients();
-	  onClose();
-	  notification.success({
+    try {
+      await axios.delete(`http://localhost:3333/clients/deleteClient`, {
+        data: { id: selectedUser?.id }, // Pass data object with id
+        withCredentials: true, // Optional: include other configuration options
+      });
+      console.log("Client deleted successfully");
+      fetchClients();
+      onClose();
+      notification.success({
         message: "Success",
         description: "Client deleted successfully.",
       });
-	} catch (error) {
-	  console.error('Error deleting client:', error);
-	  notification.error({
+    } catch (error) {
+      console.error("Error deleting client:", error);
+      notification.error({
         message: "Error",
-        description: "There was an error deleting the Client. Please try again.",
+        description:
+          "There was an error deleting the Client. Please try again.",
       });
-	}
+    }
   };
-  
+
   return (
     <>
       <Drawer
@@ -267,6 +417,7 @@ useEffect(() => {
                   <Form
                     requiredMark={false}
                     layout="vertical"
+					form={form}
                     // onFinish={onFinish}
                     // onFinishFailed={onFinishFailed}
                   >
@@ -278,7 +429,7 @@ useEffect(() => {
                         <Button onClick={() => ShowEditnote(!EditNote)}>
                           Cancel
                         </Button>
-                        <Button type="primary" htmlType="submit">
+                        <Button onClick={updateNote} type="primary" htmlType="submit">
                           Submit
                         </Button>
                       </div>
@@ -310,26 +461,25 @@ useEffect(() => {
                   </Card>
                 </div>
               )}
-			  <div className="w-full flex justify-end pt-8">
-
-			  <Popconfirm
-      title="Are you sure you want to delete this contact?"
-    //   onConfirm={handleDelete}
-      okText="Yes"
-      cancelText="No"
-	  placement="topLeft"
-	  onConfirm={deleteClients}
-    >
-      <Button
-        type="primary"
-        danger
-        icon={<DeleteOutlined />}
-        className="flex items-center"
-      >
-        Delete Contact
-      </Button>
-    </Popconfirm>
-				</div>
+              <div className="w-full flex justify-end pt-8">
+                <Popconfirm
+                  title="Are you sure you want to delete this contact?"
+                  //   onConfirm={handleDelete}
+                  okText="Yes"
+                  cancelText="No"
+                  placement="topLeft"
+                  onConfirm={deleteClients}
+                >
+                  <Button
+                    type="primary"
+                    danger
+                    icon={<DeleteOutlined />}
+                    className="flex items-center"
+                  >
+                    Delete Contact
+                  </Button>
+                </Popconfirm>
+              </div>
             </div>
           </section>
         )}
@@ -363,7 +513,11 @@ useEffect(() => {
         />
       </section>
       {showDrawerUser && (
-        <CreateUserDrawer open={showDrawerUser} onClose={onCloseDrawer} fetchClients={fetchClients} />
+        <CreateUserDrawer
+          open={showDrawerUser}
+          onClose={onCloseDrawer}
+          fetchClients={fetchClients}
+        />
       )}
     </>
   );

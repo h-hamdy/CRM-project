@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsOptional, MaxLength } from 'class-validator';
 
 export class ClientDto {
   @IsEmail()
@@ -65,4 +65,16 @@ export class UpdateTypeDto {
   
 	@IsNotEmpty()
 	type: string;
+  }
+
+  export class UpdateNoteDto {
+
+	@IsString()
+	@IsNotEmpty()
+	id: string;
+
+	@IsNotEmpty()
+	@IsString()
+	@MaxLength(75, { message: 'Note should not exceed 75 characters' })
+	note: string;
   }

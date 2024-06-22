@@ -54,7 +54,17 @@ export declare class ClientsService {
         address: string;
         note: string;
     }>;
-    updateType(id: any, type: any): Promise<{
+    updateNote(id: any, note: string): Promise<{
+        id: number;
+        firstName: string;
+        lastName: string;
+        email: string;
+        type: string;
+        phone: string;
+        address: string;
+        note: string;
+    }>;
+    updateType(id: string, type: string): Promise<{
         id: number;
         firstName: string;
         lastName: string;

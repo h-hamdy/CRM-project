@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Delete, Body, UseGuards, ParseIntPipe, NotFoundException, Put } from '@nestjs/common';
 import { ClientsService } from './clients.service';
-import { ClientDto, UpdateEmailDto, UpdatePhoneDto, UpdateAddressDto, UpdateTypeDto } from './dto';
+import { ClientDto, UpdateEmailDto, UpdatePhoneDto, UpdateAddressDto, UpdateTypeDto, UpdateNoteDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('clients')
@@ -51,7 +51,7 @@ export class ClientsController {
   updateAddress(@Body() UpdateAddressDto: UpdateAddressDto) {
 	const id = UpdateAddressDto.id
 	const address = UpdateAddressDto.address
-    return this.clientsService.updatePhone(id, address);
+    return this.clientsService.updateAddress(id, address);
   }
 
   @Put('/updateType')
@@ -59,6 +59,14 @@ export class ClientsController {
   updateType(@Body() updateTypeDto: UpdateTypeDto) {
 	const id = updateTypeDto.id
 	const type = updateTypeDto.type
-    return this.clientsService.updatePhone(id, type);
+    return this.clientsService.updateType(id, type);
+  }
+
+  @Put('/updateNote')
+  @UseGuards(JwtAuthGuard)
+  updateNote(@Body() updateNoteDto: UpdateNoteDto) {
+	const id = updateNoteDto.id
+	const note = updateNoteDto.note
+    return this.clientsService.updateNote(id, note);
   }
 }

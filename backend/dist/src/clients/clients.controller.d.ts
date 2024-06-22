@@ -1,5 +1,5 @@
 import { ClientsService } from './clients.service';
-import { ClientDto, UpdateEmailDto, UpdatePhoneDto, UpdateAddressDto, UpdateTypeDto } from './dto';
+import { ClientDto, UpdateEmailDto, UpdatePhoneDto, UpdateAddressDto, UpdateTypeDto, UpdateNoteDto } from './dto';
 export declare class ClientsController {
     private readonly clientsService;
     constructor(clientsService: ClientsService);
@@ -48,6 +48,16 @@ export declare class ClientsController {
         note: string;
     }>;
     updateType(updateTypeDto: UpdateTypeDto): Promise<{
+        id: number;
+        firstName: string;
+        lastName: string;
+        email: string;
+        type: string;
+        phone: string;
+        address: string;
+        note: string;
+    }>;
+    updateNote(updateNoteDto: UpdateNoteDto): Promise<{
         id: number;
         firstName: string;
         lastName: string;

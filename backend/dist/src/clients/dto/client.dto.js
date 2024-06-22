@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateTypeDto = exports.UpdateAddressDto = exports.UpdatePhoneDto = exports.UpdateEmailDto = exports.ClientDto = void 0;
+exports.UpdateNoteDto = exports.UpdateTypeDto = exports.UpdateAddressDto = exports.UpdatePhoneDto = exports.UpdateEmailDto = exports.ClientDto = void 0;
 const class_validator_1 = require("class-validator");
 class ClientDto {
 }
@@ -98,4 +98,18 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], UpdateTypeDto.prototype, "type", void 0);
+class UpdateNoteDto {
+}
+exports.UpdateNoteDto = UpdateNoteDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], UpdateNoteDto.prototype, "id", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(75, { message: 'Note should not exceed 75 characters' }),
+    __metadata("design:type", String)
+], UpdateNoteDto.prototype, "note", void 0);
 //# sourceMappingURL=client.dto.js.map

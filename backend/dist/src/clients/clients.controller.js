@@ -48,12 +48,17 @@ let ClientsController = class ClientsController {
     updateAddress(UpdateAddressDto) {
         const id = UpdateAddressDto.id;
         const address = UpdateAddressDto.address;
-        return this.clientsService.updatePhone(id, address);
+        return this.clientsService.updateAddress(id, address);
     }
     updateType(updateTypeDto) {
         const id = updateTypeDto.id;
         const type = updateTypeDto.type;
-        return this.clientsService.updatePhone(id, type);
+        return this.clientsService.updateType(id, type);
+    }
+    updateNote(updateNoteDto) {
+        const id = updateNoteDto.id;
+        const note = updateNoteDto.note;
+        return this.clientsService.updateNote(id, note);
     }
 };
 exports.ClientsController = ClientsController;
@@ -112,6 +117,14 @@ __decorate([
     __metadata("design:paramtypes", [dto_1.UpdateTypeDto]),
     __metadata("design:returntype", void 0)
 ], ClientsController.prototype, "updateType", null);
+__decorate([
+    (0, common_1.Put)('/updateNote'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.UpdateNoteDto]),
+    __metadata("design:returntype", void 0)
+], ClientsController.prototype, "updateNote", null);
 exports.ClientsController = ClientsController = __decorate([
     (0, common_1.Controller)('clients'),
     __metadata("design:paramtypes", [clients_service_1.ClientsService])

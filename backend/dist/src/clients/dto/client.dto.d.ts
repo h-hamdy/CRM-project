@@ -23,3 +23,7 @@ export declare class UpdateTypeDto {
     id: string;
     type: string;
 }
+export declare class UpdateNoteDto {
+    id: string;
+    note: string;
+}
