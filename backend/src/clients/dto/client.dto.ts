@@ -75,6 +75,6 @@ export class UpdateTypeDto {
 
 	@IsNotEmpty()
 	@IsString()
-	@MaxLength(75, { message: 'Note should not exceed 75 characters' })
+	@MaxLength(40, { message: 'Note should not exceed 75 characters' })
 	note: string;
   }

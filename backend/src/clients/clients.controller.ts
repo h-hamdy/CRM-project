@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Body, UseGuards, ParseIntPipe, NotFoundException, Put } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, UseGuards, ParseIntPipe, NotFoundException, Query, Put, BadRequestException } from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { ClientDto, UpdateEmailDto, UpdatePhoneDto, UpdateAddressDto, UpdateTypeDto, UpdateNoteDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -18,6 +18,15 @@ export class ClientsController {
   async findAll(): Promise<ClientDto[]> {
     return this.
 	clientsService.findAll();
+  }
+
+  @Post('search')
+  @UseGuards(JwtAuthGuard)
+  async searchByUsername(@Body('username') username: string) {
+    if (!username) {
+      throw new BadRequestException('Username is required');
+    }
+    return this.clientsService.searchByUsername(username);
   }
 
   @Delete('/deleteClient')

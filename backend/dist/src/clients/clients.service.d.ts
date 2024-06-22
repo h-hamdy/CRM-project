@@ -14,6 +14,16 @@ export declare class ClientsService {
         note: string;
     }>;
     findAll(): Promise<ClientDto[]>;
+    searchByUsername(username: string): Promise<{
+        id: number;
+        firstName: string;
+        lastName: string;
+        email: string;
+        type: string;
+        phone: string;
+        address: string;
+        note: string;
+    }[]>;
     remove(id: number): Promise<{
         id: number;
         firstName: string;

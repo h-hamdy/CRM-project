@@ -39,6 +39,17 @@ export class ClientsService {
     }));
   }
 
+  async searchByUsername(username: string) {
+    return this.prisma.client.findMany({
+      where: {
+        OR: [
+          { firstName: { contains: username, mode: 'insensitive' } },
+          { lastName: { contains: username, mode: 'insensitive' } },
+        ],
+      },
+    });
+  }
+
   async remove(id: number) {
     const client = await this.prisma.client.findUnique({ where: { id } });
     if (!client) {

@@ -91,9 +91,31 @@ const ClientColumns = (showDrawer: (user: DataType) => void) => [
 
 export const Clients = () => {
   const { Search } = Input;
-  const onSearch = (value: string) => console.log(value);
   const [open, setOpen] = useState(false);
   const [showDrawerUser, setShowDrawer] = useState(false); // State to manage visibility of CreateUserDrawer
+  
+  const onSearch = (value: string) => search(value);
+  const search = async (value: string) => {
+	if (!value.trim()) {
+		return;
+	  }
+	try {
+		const response = await axios.post('http://localhost:3333/clients/search', {username: value}, {withCredentials: true})
+		setClients(response.data);
+	}
+	catch(error) {
+		console.log(error)
+	}
+  }
+  const [searchValue, setSearchValue] = useState('');
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value);
+
+    if (!value.trim()) {
+		fetchClients();
+	  }
+  };
 
   const _showDrawer = () => {
     setShowDrawer(true);
@@ -230,13 +252,12 @@ export const Clients = () => {
         ...values,
         id: String(selectedUser?.id),
       };
-      await axios.put(
-        "http://localhost:3333/clients/updateNote",
-        requestData,
-        { withCredentials: true }
-      );
-	  ShowEditnote(!EditNote)
-	  onClose();
+      await axios.put("http://localhost:3333/clients/updateNote", requestData, {
+        withCredentials: true,
+      });
+      ShowEditnote(!EditNote);
+      onClose();
+      fetchClients();
       notification.success({
         message: "Success",
         description: "Note Updated successfully.",
@@ -261,7 +282,7 @@ export const Clients = () => {
       await updateAddress();
     }
     fetchClients();
-	setEditRowKey(null)
+    setEditRowKey(null);
     onClose();
   };
 
@@ -365,6 +386,12 @@ export const Clients = () => {
     }
   };
 
+  const handleCloseDrawer = () => {
+    onClose(); // Close the drawer
+    ShowEditnote(false); // Set editNote state to false
+    setEditRowKey(null); // Set editRow state to false
+  };
+
   return (
     <>
       <Drawer
@@ -380,10 +407,10 @@ export const Clients = () => {
         }
         placement="right"
         closable={false}
-        onClose={onClose}
-        visible={open} // Use `visible` instead of `open` for Ant Design's Drawer component
+        onClose={handleCloseDrawer}
+        open={open}
         width={600}
-        style={{ backgroundColor: "#F2F2F2" }} // Set the background color using inline style
+        style={{ backgroundColor: "#F2F2F2" }}
       >
         {selectedUser && (
           <section className="flex items-center justify-center w-full">
@@ -400,7 +427,6 @@ export const Clients = () => {
               </div>
               <div className="rounded-2xl overflow-hidden w-full">
                 {" "}
-                {/* This div will ensure the table itself is rounded */}
                 <Table
                   columns={columns}
                   dataSource={data}
@@ -417,19 +443,22 @@ export const Clients = () => {
                   <Form
                     requiredMark={false}
                     layout="vertical"
-					form={form}
-                    // onFinish={onFinish}
-                    // onFinishFailed={onFinishFailed}
+                    form={form}
+                    initialValues={{ note: "" }} // Ensure to provide an object with 'note' as the key
                   >
                     <Form.Item name="note" label="Note">
-                      <Input.TextArea maxLength={75} />
+                      <Input.TextArea maxLength={40} />
                     </Form.Item>
                     <Form.Item>
                       <div className="flex justify-end gap-3">
                         <Button onClick={() => ShowEditnote(!EditNote)}>
                           Cancel
                         </Button>
-                        <Button onClick={updateNote} type="primary" htmlType="submit">
+                        <Button
+                          onClick={updateNote}
+                          type="primary"
+                          htmlType="submit"
+                        >
                           Submit
                         </Button>
                       </div>
@@ -464,7 +493,6 @@ export const Clients = () => {
               <div className="w-full flex justify-end pt-8">
                 <Popconfirm
                   title="Are you sure you want to delete this contact?"
-                  //   onConfirm={handleDelete}
                   okText="Yes"
                   cancelText="No"
                   placement="topLeft"
@@ -494,13 +522,15 @@ export const Clients = () => {
           Add New Client
         </Button>
         <Search
-          placeholder="input search Client"
-          allowClear
-          enterButton="Search"
-          size="large"
-          onSearch={onSearch}
-          className="w-[340px] h-[40px]"
-        />
+      placeholder="input search Client Name"
+      allowClear
+      enterButton="Search"
+      size="large"
+      onSearch={onSearch}
+      onChange={handleChange}
+      value={searchValue}
+      className="w-[340px] h-[40px]"
+    />
       </div>
       <section className="pt-10">
         <Table

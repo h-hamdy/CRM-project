@@ -28,6 +28,12 @@ let ClientsController = class ClientsController {
         return this.
             clientsService.findAll();
     }
+    async searchByUsername(username) {
+        if (!username) {
+            throw new common_1.BadRequestException('Username is required');
+        }
+        return this.clientsService.searchByUsername(username);
+    }
     async remove(id) {
         const deletedClient = await this.clientsService.remove(id);
         if (!deletedClient) {
@@ -77,6 +83,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ClientsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Post)('search'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Body)('username')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ClientsController.prototype, "searchByUsername", null);
 __decorate([
     (0, common_1.Delete)('/deleteClient'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

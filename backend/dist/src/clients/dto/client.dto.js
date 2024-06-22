@@ -109,7 +109,7 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(75, { message: 'Note should not exceed 75 characters' }),
+    (0, class_validator_1.MaxLength)(40, { message: 'Note should not exceed 75 characters' }),
     __metadata("design:type", String)
 ], UpdateNoteDto.prototype, "note", void 0);
 //# sourceMappingURL=client.dto.js.map
