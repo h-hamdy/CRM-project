@@ -17,7 +17,6 @@ export class EmailService {
 
 
   async sendMail(to: string, subject: string, text: string) {
-	console.log(to)
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to,
@@ -27,7 +26,6 @@ export class EmailService {
 
     try {
       const info = await this.transporter.sendMail(mailOptions);
-      console.log('Email sent: ' + info.response);
     } catch (error) {
       console.error('Error sending email: ' + error);
     }

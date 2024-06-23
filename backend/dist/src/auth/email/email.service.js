@@ -23,7 +23,6 @@ let EmailService = class EmailService {
         });
     }
     async sendMail(to, subject, text) {
-        console.log(to);
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to,
@@ -32,7 +31,6 @@ let EmailService = class EmailService {
         };
         try {
             const info = await this.transporter.sendMail(mailOptions);
-            console.log('Email sent: ' + info.response);
         }
         catch (error) {
             console.error('Error sending email: ' + error);

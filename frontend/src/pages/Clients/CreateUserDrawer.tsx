@@ -10,7 +10,6 @@ export const CreateUserDrawer = ({ onClose, open, fetchClients }: any) => {
   const CreateClient = async () => {
     try {
       const values = await form.validateFields();
-      console.log(values);
       await axios.post("http://localhost:3333/clients/create", values, {
         withCredentials: true,
       });

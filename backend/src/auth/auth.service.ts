@@ -4,9 +4,6 @@ import { AuthDto, AuthDtoSignin } from "./dto";
 import * as argon from 'argon2'
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import * as argon2 from 'argon2';
-import * as crypto from 'crypto';
-import { EmailService } from "./email/email.service";
 
 
 @Injectable()
@@ -15,7 +12,6 @@ export class AuthService{
 		private readonly configService: ConfigService,
 		private prisma: PrismaService,
 		private readonly jwtService: JwtService,
-		private readonly emailService: EmailService 
 	) {}
 	async singup(dto: AuthDto) {
 		const existingUser = await this.prisma.user.findUnique({
@@ -81,52 +77,4 @@ export class AuthService{
 		
 		return token;
 	  }
-	  
-
-		async createUser(email: string, firstName: string, lastName: string, number: string): Promise<{ email: string; password: string }> {
-		if (!email || !firstName || !lastName )
-			throw new UnauthorizedException("Invalid Credentials!")
-
-		console.log(number)
-
-		const checkUser = await this.prisma.user.findUnique({ where: { email: email } });
-
-    		// If user does not exist, throw UnauthorizedException
-		if (checkUser) {
-			throw new UnauthorizedException('Invalid email');
-		}
-			// Generate a random password
-		var password = crypto.randomBytes(8).toString('hex');
-
-		password = password + "P!1l"
-	
-		// Hash the password
-		const hash = await argon2.hash(password);
-	
-		// Save the new user in the db
-		const user = await this.prisma.user.create({
-			data: {
-			  email,
-			  hash,
-			  firstName,
-			  lastName,
-			  number, // Save number if provided
-			} as any, // Type assertion here
-			select: {
-			  id: true,
-			  email: true,
-			  createdAt: true,
-			},
-		  });
-
-		await this.emailService.sendMail(
-			email,
-			'Your new account',
-			`Hello ${firstName},\n\nYour account has been created. Here are your credentials:\n\nEmail: ${email}\nPassword: ${password}\n\n`
-		  );
-	
-		// Return the generated password
-		return { email: user.email, password };
-	  }
-
 }

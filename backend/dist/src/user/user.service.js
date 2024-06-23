@@ -12,9 +12,42 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const argon2 = require("argon2");
+const crypto = require("crypto");
+const email_service_1 = require("../auth/email/email.service");
 let UsersService = class UsersService {
-    constructor(prisma) {
+    constructor(prisma, emailService) {
         this.prisma = prisma;
+        this.emailService = emailService;
+    }
+    async createUser(email, firstName, lastName, number) {
+        if (!email || !firstName || !lastName)
+            throw new common_1.UnauthorizedException('Invalid Credentials!');
+        const checkUser = await this.prisma.user.findUnique({
+            where: { email: email },
+        });
+        if (checkUser) {
+            throw new common_1.UnauthorizedException('Invalid email');
+        }
+        var password = crypto.randomBytes(8).toString('hex');
+        password = password + 'P!1l';
+        const hash = await argon2.hash(password);
+        const user = await this.prisma.user.create({
+            data: {
+                email,
+                hash,
+                firstName,
+                lastName,
+                number,
+            },
+            select: {
+                id: true,
+                email: true,
+                createdAt: true,
+            },
+        });
+        await this.emailService.sendMail(email, 'Your new account', `Hello ${firstName},\n\nYour account has been created. Here are your credentials:\n\nEmail: ${email}\nPassword: ${password}\n\n`);
+        return { email: user.email, password };
     }
     async findAll() {
         const users = await this.prisma.user.findMany({
@@ -23,6 +56,9 @@ let UsersService = class UsersService {
                 firstName: true,
                 lastName: true,
                 number: true,
+            },
+            orderBy: {
+                id: 'desc',
             },
         });
         return users;
@@ -52,6 +88,7 @@ let UsersService = class UsersService {
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        email_service_1.EmailService])
 ], UsersService);
 //# sourceMappingURL=user.service.js.map

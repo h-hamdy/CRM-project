@@ -15,15 +15,11 @@ const prisma_service_1 = require("../prisma/prisma.service");
 const argon = require("argon2");
 const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
-const argon2 = require("argon2");
-const crypto = require("crypto");
-const email_service_1 = require("./email/email.service");
 let AuthService = class AuthService {
-    constructor(configService, prisma, jwtService, emailService) {
+    constructor(configService, prisma, jwtService) {
         this.configService = configService;
         this.prisma = prisma;
         this.jwtService = jwtService;
-        this.emailService = emailService;
     }
     async singup(dto) {
         const existingUser = await this.prisma.user.findUnique({
@@ -69,41 +65,12 @@ let AuthService = class AuthService {
         });
         return token;
     }
-    async createUser(email, firstName, lastName, number) {
-        if (!email || !firstName || !lastName)
-            throw new common_1.UnauthorizedException("Invalid Credentials!");
-        console.log(number);
-        const checkUser = await this.prisma.user.findUnique({ where: { email: email } });
-        if (checkUser) {
-            throw new common_1.UnauthorizedException('Invalid email');
-        }
-        var password = crypto.randomBytes(8).toString('hex');
-        password = password + "P!1l";
-        const hash = await argon2.hash(password);
-        const user = await this.prisma.user.create({
-            data: {
-                email,
-                hash,
-                firstName,
-                lastName,
-                number,
-            },
-            select: {
-                id: true,
-                email: true,
-                createdAt: true,
-            },
-        });
-        await this.emailService.sendMail(email, 'Your new account', `Hello ${firstName},\n\nYour account has been created. Here are your credentials:\n\nEmail: ${email}\nPassword: ${password}\n\n`);
-        return { email: user.email, password };
-    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [config_1.ConfigService,
         prisma_service_1.PrismaService,
-        jwt_1.JwtService,
-        email_service_1.EmailService])
+        jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

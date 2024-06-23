@@ -16,9 +16,13 @@ exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("./user.service");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
+const admin_guard_1 = require("../auth/guards/admin.guard");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
+    }
+    async createUser(body) {
+        return this.usersService.createUser(body.email, body.firstName, body.lastName, body.number);
     }
     async findAll() {
         return this.usersService.findAll();
@@ -31,6 +35,14 @@ let UsersController = class UsersController {
     }
 };
 exports.UsersController = UsersController;
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, admin_guard_1.AdminGuard),
+    (0, common_1.Post)('create-user'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "createUser", null);
 __decorate([
     (0, common_1.Get)('/users'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

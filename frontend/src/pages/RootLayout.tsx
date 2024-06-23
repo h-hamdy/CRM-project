@@ -8,11 +8,12 @@ import {
   CalendarOutlined,
   CrownOutlined,
   ToolOutlined,
+  ProjectOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Breadcrumb, Layout, Menu } from "antd";
+import { Layout, Menu } from "antd";
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Sider } = Layout;
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -35,7 +36,7 @@ const items: MenuItem[] = [
   getItem("Calendar", "Calendar", <CalendarOutlined />),
   getItem("Product", "Product", <ToolOutlined />),
   getItem("Clients", "Clients", <TeamOutlined />),
-  getItem("Management", "sub1", <TeamOutlined />, [
+  getItem("Management", "sub1", <ProjectOutlined />, [
     getItem("Project Kanban", "Management"),
   ]),
   getItem("Administration", "sub2", <CrownOutlined />, [
@@ -52,7 +53,6 @@ export const RootLayout = () => {
           "http://localhost:3333/auth/check-login",
           { withCredentials: true }
         );
-        console.log(response.data.logged_in);
         if (response.status === 200) {
           if (!response.data.logged_in) navigate("/sign-in");
         }
@@ -73,15 +73,12 @@ export const RootLayout = () => {
       }
     };
 
-    // Initial check
     handleResize();
 
-    // Add event listener
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
-    // Cleanup event listener
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -115,7 +112,7 @@ export const RootLayout = () => {
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
           width={280}
-          collapsedWidth={80} 
+          collapsedWidth={80}
           style={{ width: collapsed ? "80px" : "300px" }}
         >
           <Menu
@@ -123,12 +120,12 @@ export const RootLayout = () => {
             defaultSelectedKeys={["1"]}
             mode="inline"
             items={items}
-			onClick={handleMenuClick}
+            onClick={handleMenuClick}
           />
         </Sider>
         <Layout className=" p-10">
-		  	<Outlet/>
-		</Layout>
+          <Outlet />
+        </Layout>
       </Layout>
     </>
   );

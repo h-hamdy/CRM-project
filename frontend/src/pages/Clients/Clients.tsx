@@ -69,7 +69,7 @@ const ClientColumns = (showDrawer: (user: DataType) => void) => [
     dataIndex: "type",
     key: "type",
     render: (text: string) => (
-      <Tag color={text === "Client" ? "blue" : "green"}>{text}</Tag>
+      <Tag color={text.toLocaleLowerCase() ===  "client" ? "blue" : "green"}>{text}</Tag>
     ),
   },
   {
@@ -104,7 +104,6 @@ export const Clients = () => {
 		setClients(response.data);
 	}
 	catch(error) {
-		console.log(error)
 	}
   }
   const [searchValue, setSearchValue] = useState('');
@@ -359,17 +358,15 @@ export const Clients = () => {
       setClients(response.data);
     } catch (error) {
       console.error("Error fetching clients:", error);
-      // Handle error state or logging as needed
     }
   };
 
   const deleteClients = async () => {
     try {
       await axios.delete(`http://localhost:3333/clients/deleteClient`, {
-        data: { id: selectedUser?.id }, // Pass data object with id
-        withCredentials: true, // Optional: include other configuration options
+        data: { id: selectedUser?.id },
+        withCredentials: true,
       });
-      console.log("Client deleted successfully");
       fetchClients();
       onClose();
       notification.success({

@@ -16,9 +16,6 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const dto_1 = require("./dto");
-const admin_guard_1 = require("./guards/admin.guard");
-const jwt_auth_guard_1 = require("./guards/jwt-auth.guard");
-const common_2 = require("@nestjs/common");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -32,11 +29,7 @@ let AuthController = class AuthController {
             httpOnly: true,
             secure: false,
         });
-        console.log(token);
         return { message: 'Login successful' };
-    }
-    async createUser(body) {
-        return this.authService.createUser(body.email, body.firstName, body.lastName, body.number);
     }
     checkLogin(res) {
         const isLoggedIn = res.req.cookies.jwt ? true : false;
@@ -59,14 +52,6 @@ __decorate([
     __metadata("design:paramtypes", [dto_1.AuthDtoSignin, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "signin", null);
-__decorate([
-    (0, common_2.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, admin_guard_1.AdminGuard),
-    (0, common_1.Post)('create-user'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "createUser", null);
 __decorate([
     (0, common_1.Get)('check-login'),
     __param(0, (0, common_1.Res)()),

@@ -14,7 +14,6 @@ export const Login = () => {
 	const onFinish = async (values: FieldType) => {
 		try {
 		  const response = await axios.post('http://localhost:3333/auth/signin',  values, {withCredentials: true});
-		  console.log('Success:', response.data);
 		  navigate('/');
 		} catch (error) {
 		  console.error('Failed:', error);
@@ -22,7 +21,6 @@ export const Login = () => {
 	  };
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
   };
 
   return (

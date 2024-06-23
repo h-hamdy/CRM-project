@@ -14,18 +14,14 @@ export const Register = () => {
 	const navigate = useNavigate();
 	const onFinish = async (values: FieldType) => {
 		try {
-			console.log(values)
-		  const response = await axios.post('http://localhost:3333/auth/signup', values);
-		  console.log('Success:', response.data);
+		  await axios.post('http://localhost:3333/auth/signup', values);
 		  navigate('/sign-in');
 		} catch (error) {
 		  console.error('Failed:', error);
 		}
 	  };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+
 
   return (
     <>
@@ -38,7 +34,6 @@ export const Register = () => {
             name="basic"
             initialValues={{ remember: true }}
             onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
             className="w-full"
 			requiredMark={false}
           >

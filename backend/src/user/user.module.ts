@@ -4,6 +4,7 @@ import { UsersService } from './user.service';
 import { UsersController } from './user.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { EmailService } from 'src/auth/email/email.service';
 
 @Module({
 	imports: [
@@ -17,7 +18,7 @@ import { JwtModule } from '@nestjs/jwt';
 		  inject: [ConfigService],
 		}),
 	  ],
-  providers: [UsersService, PrismaClient],
+  providers: [UsersService, PrismaClient, EmailService],
   controllers: [UsersController],
 })
 export class UsersModule {}

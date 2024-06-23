@@ -23,15 +23,8 @@ export class AuthController{
 					httpOnly: true,
 					secure: false, // Set to false for local development over HTTP
 				});
-				console.log(token)
 
 				return { message: 'Login successful' };
-		}
-
-		@UseGuards(JwtAuthGuard, AdminGuard)
-		@Post('create-user')
-		async createUser(@Body() body: { email: string; firstName: string; lastName: string, number: string }) {
-			return this.authService.createUser(body.email, body.firstName, body.lastName, body.number);
 		}
 
 		@Get('check-login')
