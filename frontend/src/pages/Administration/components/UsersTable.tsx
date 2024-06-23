@@ -56,32 +56,31 @@ export const UsersTable = () => {
     </div>
   );
 
-  
-const userColumns: TableColumnsType<DataType> = [
-	{
-	  title: <span className="pl-5">Full Name</span>,
-	  dataIndex: "FullName",
-	  render: (_text: string, record: DataType) => (
-		<div className="flex items-center pl-4">
-		  <img
-			src={record.PictureUrl || profile}
-			className="w-[30px] h-[30px] rounded-full mr-2"
-			alt="profile"
-		  />
-		  <div>
-			<div className="">{`${record.firstName} ${record.lastName}`}</div>
-		  </div>
-		</div>
-	  ),
-	},
-	{
-	  title: "Email",
-	  dataIndex: "email",
-	},
-	{
-	  title: "Phone",
-	  dataIndex: "number",
-	},
+  const userColumns: TableColumnsType<DataType> = [
+    {
+      title: <span className="pl-5">Full Name</span>,
+      dataIndex: "FullName",
+      render: (_text: string, record: DataType) => (
+        <div className="flex items-center pl-4">
+          <img
+            src={record.PictureUrl || profile}
+            className="w-[30px] h-[30px] rounded-full mr-2"
+            alt="profile"
+          />
+          <div>
+            <div className="">{`${record.firstName} ${record.lastName}`}</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+    },
+    {
+      title: "Phone",
+      dataIndex: "number",
+    },
   ];
   return (
     <>

@@ -7,8 +7,8 @@ export const EditCompanyInfo = ({
   setIsModalVisible,
   isModalVisible,
   handleModalClose,
-//   setCompanyInfo,
-  fetchCompanyInfo
+  //   setCompanyInfo,
+  fetchCompanyInfo,
 }: any) => {
   const [form] = Form.useForm();
 

@@ -1,7 +1,6 @@
-// import React from 'react';
-import { Form, Input, Checkbox, Button } from 'antd';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { Form, Input, Checkbox, Button } from "antd";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 type FieldType = {
   username?: string;
@@ -10,17 +9,16 @@ type FieldType = {
 };
 
 export const Login = () => {
-	const navigate = useNavigate();
-	const onFinish = async (values: FieldType) => {
-		try {
-		  const response = await axios.post('http://localhost:3333/auth/signin',  values, {withCredentials: true});
-		  navigate('/');
-		} catch (error) {
-		  console.error('Failed:', error);
-		}
-	  };
-
-  const onFinishFailed = (errorInfo: any) => {
+  const navigate = useNavigate();
+  const onFinish = async (values: FieldType) => {
+    try {
+      await axios.post("http://localhost:3333/auth/signin", values, {
+        withCredentials: true,
+      });
+      navigate("/");
+    } catch (error) {
+      console.error("Failed:", error);
+    }
   };
 
   return (
@@ -34,16 +32,16 @@ export const Login = () => {
             name="basic"
             initialValues={{ remember: true }}
             onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
             className="w-full"
-			requiredMark={false}
+            requiredMark={false}
           >
-        
-		<Form.Item
+            <Form.Item
               name="email"
               label="Email"
-              rules={[{ required: true, message: "Please input your Email!" },
-				{ type: 'email', message: "Please enter a valid Email!" },]}
+              rules={[
+                { required: true, message: "Please input your Email!" },
+                { type: "email", message: "Please enter a valid Email!" },
+              ]}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
             >
@@ -54,29 +52,50 @@ export const Login = () => {
               name="password"
               label="Password"
               rules={[
-				{
-					validator: (_, value) => {
-					  if (!value) {
-						return Promise.reject(new Error('Please input the Password!'));
-					  }
-					  if (value.length < 8) {
-						return Promise.reject(new Error('Password must be at least 8 characters long!'));
-					  }
-					  if (!/[A-Z]/.test(value)) {
-						return Promise.reject(new Error('Password must contain at least one uppercase letter!'));
-					  }
-					  if (!/[a-z]/.test(value)) {
-						return Promise.reject(new Error('Password must contain at least one lowercase letter!'));
-					  }
-					  if (!/[0-9]/.test(value)) {
-						return Promise.reject(new Error('Password must contain at least one digit!'));
-					  }
-					  if (!/[!@#$%^&*]/.test(value)) {
-						return Promise.reject(new Error('Password must contain at least one special character!'));
-					  }
-					  return Promise.resolve();
-					}},
-				]}
+                {
+                  validator: (_, value) => {
+                    if (!value) {
+                      return Promise.reject(
+                        new Error("Please input the Password!")
+                      );
+                    }
+                    if (value.length < 8) {
+                      return Promise.reject(
+                        new Error(
+                          "Password must be at least 8 characters long!"
+                        )
+                      );
+                    }
+                    if (!/[A-Z]/.test(value)) {
+                      return Promise.reject(
+                        new Error(
+                          "Password must contain at least one uppercase letter!"
+                        )
+                      );
+                    }
+                    if (!/[a-z]/.test(value)) {
+                      return Promise.reject(
+                        new Error(
+                          "Password must contain at least one lowercase letter!"
+                        )
+                      );
+                    }
+                    if (!/[0-9]/.test(value)) {
+                      return Promise.reject(
+                        new Error("Password must contain at least one digit!")
+                      );
+                    }
+                    if (!/[!@#$%^&*]/.test(value)) {
+                      return Promise.reject(
+                        new Error(
+                          "Password must contain at least one special character!"
+                        )
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                },
+              ]}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
             >
@@ -97,15 +116,19 @@ export const Login = () => {
             </div>
 
             <Form.Item>
-				<Button className='w-full h-[38px]' type="primary" htmlType="submit">
-					Submit
-				</Button>
-				</Form.Item>
-				<div className="flex justify-center w-full text-[13px] font-light">
+              <Button
+                className="w-full h-[38px]"
+                type="primary"
+                htmlType="submit"
+              >
+                Submit
+              </Button>
+            </Form.Item>
+            <div className="flex justify-center w-full text-[13px] font-light">
               You don't have an account
-			  	<Link to="/sign-up">
-					<button className="text-primary ml-2">Sign Up</button>
-				</Link>
+              <Link to="/sign-up">
+                <button className="text-primary ml-2">Sign Up</button>
+              </Link>
             </div>
           </Form>
         </div>
@@ -113,4 +136,3 @@ export const Login = () => {
     </>
   );
 };
-
