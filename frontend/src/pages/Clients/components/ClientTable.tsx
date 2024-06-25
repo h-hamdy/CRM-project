@@ -1,7 +1,7 @@
 import { Table, Tag } from 'antd'
 import profile from "/src/assets/profile.jpeg";
 import { EyeOutlined } from "@ant-design/icons";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ClientsInfoDrawer } from './ClientsInfoDrawer';
 import { CreateUserDrawer } from './CreateUserDrawer';
 import { useClients } from '../../../context/ClientsContext';
@@ -22,6 +22,10 @@ export const ClientTable = ( {showDrawerUser, onCloseDrawer } : any ) => {
 	const [selectedUser, setSelectedUser] = useState<DataType | null>(null);
 	const [open, setOpen] = useState(false);
 	const { clients, fetchClients } = useClients();
+
+	useEffect(() => {
+		fetchClients();
+	  }, []);
 
 	  const showDrawer = (user: DataType) => {
 		setSelectedUser(user);

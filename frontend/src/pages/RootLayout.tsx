@@ -33,12 +33,12 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem("Dashboard", "Dashboard", <PieChartOutlined />),
-  getItem("Calendar", "Calendar", <CalendarOutlined />),
+//   getItem("Calendar", "Calendar", <CalendarOutlined />),
   getItem("Product", "Product", <ToolOutlined />),
   getItem("Clients", "Clients", <TeamOutlined />),
-  getItem("Management", "sub1", <ProjectOutlined />, [
-    getItem("Project Kanban", "Management"),
-  ]),
+//   getItem("Management", "sub1", <ProjectOutlined />, [
+//     getItem("Project Kanban", "Management"),
+//   ]),
   getItem("Administration", "sub2", <CrownOutlined />, [
     getItem("Settings", "Administration"),
   ]),

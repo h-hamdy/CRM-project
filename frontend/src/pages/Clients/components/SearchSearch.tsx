@@ -42,12 +42,12 @@ export const SearchClient: React.FC = () => {
       <Search
         placeholder="input search Client Name"
         allowClear
-        enterButton="Search"
+        // enterButton="Search"
         size="large"
         onSearch={onSearch}
         onChange={handleChange}
         value={searchValue}
-        className="w-[340px] h-[40px]"
+        className="w-[300px] h-[40px]"
       />
     </div>
   );
