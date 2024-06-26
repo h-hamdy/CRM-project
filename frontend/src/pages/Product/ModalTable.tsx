@@ -1,91 +1,129 @@
-import { Button, Modal } from "antd";
-import { Form, Input } from "antd";
-import { notification } from "antd";
-import axios from "axios";
+import { Button, Modal, Form, Input, Select, AutoComplete } from "antd";
+import { useState } from "react";
+import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 
-export const ModalTable = ( {setIsModalOpen,isModalOpen,handleCancel } : any) => {
+import type { SearchProps } from "antd/es/input/Search";
+import { CreateUserDrawer } from "../Clients/components/CreateUserDrawer";
+
+interface ModalTableProps {
+  _isModalOpen: boolean;
+  _handleCancel: () => void;
+  _handleOk: () => void;
+  columns: { title: string; dataIndex: string; key: string }[];
+}
+
+const { Option } = Select;
+const { Search } = Input;
+
+const onSearch = (value: string) => {
+  // Simulated data for demonstration
+  const searchData = [
+    "Client A",
+    "Client B",
+    "Client C",
+    "Client A",
+    "Client B",
+    "Client C",
+    "Client A",
+    "Client B",
+    "Client C",
+    "Client A",
+    "Client hg",
+    "Client C",
+    "Client A",
+    "Client B",
+    "Client C",
+  ]; // Replace with your actual search logic
+
+  // Implement your search logic here and update searchData with actual matched results
+
+  // For demonstration, set the matched data to state or context
+  // setMatchedData(searchData);
+};
+
+export const ModalTable = ({
+  _isModalOpen,
+  _handleCancel,
+  _handleOk,
+  columns,
+}: ModalTableProps) => {
+  const [options, setOptions] = useState<string[]>([]);
+
+  const [showDrawerUser, setShowDrawer] = useState(false);
+
+  const _showDrawer = () => {
+    setShowDrawer(true);
+  };
+
+  const onCloseDrawer = () => {
+    setShowDrawer(false);
+  };
+
   return (
-    <Modal
-      title="Create New User"
-      open={isModalOpen}
-      onOk={setIsModalOpen}
-      onCancel={handleCancel}
-      footer={[
-        <Button key="back" onClick={handleCancel}>
-          Cancel
-        </Button>,
-        <Button key="submit" type="primary">
-          Create
-        </Button>,
-      ]}
-    >
-      <Form
-        //   form={form}
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
-        initialValues={{ remember: true }}
-        autoComplete="off"
-        requiredMark={false}
+    <>
+      {showDrawerUser && (
+        <CreateUserDrawer open={showDrawerUser} onClose={onCloseDrawer} />
+      )}
+      <Modal
+        title="Create Table Title Column"
+        open={_isModalOpen}
+        onOk={_handleOk}
+        onCancel={_handleCancel}
+        footer={[
+          <Button key="back" onClick={_handleCancel}>
+            Cancel
+          </Button>,
+          <Button key="submit" type="primary" onClick={_handleOk}>
+            Create
+          </Button>,
+        ]}
       >
-        <Form.Item
-          label="First Name"
-          name="firstName"
-          rules={[
-            { required: true, message: "Please input your First Name!" },
-            {
-              min: 4,
-              message: "First Name must be at least 4 characters long",
-            },
-            { max: 10, message: "First Name must not exceed 7 characters" },
-          ]}
-          labelCol={{ span: 24 }}
-          wrapperCol={{ span: 24 }}
-          className="pt-5"
+        <Form
+          className="p-5"
+          layout="vertical"
+          initialValues={{ remember: true }}
+          autoComplete="off"
+          requiredMark={false}
         >
-          <Input className="h-[35px]" />
-        </Form.Item>
+          {columns.map((column) => (
+            <Form.Item
+              key={column.key}
+              label={column.title}
+              name={column.dataIndex}
+              rules={[
+                { required: true, message: `${column.title} is required` },
+              ]}
+            >
+              {column.title === "Client" ? (
+                <div className="flex gap-3">
+                  <AutoComplete
+                    className="w-full h-[35px]"
+                    options={[
+                      { value: "Client A" },
+                      { value: "Client B" },
+                      { value: "Client C" },
+                      { value: "Client C" },
+                      { value: "Client C" },
+                      { value: "Client C" },
+                    ]} // Replace with your matched data
+                    placeholder="Search Client Name"
+                    onSearch={onSearch}
+                  />
 
-        <Form.Item
-          label="Last Name"
-          name="lastName"
-          rules={[
-            { required: true, message: "Please input your Last Name!" },
-            {
-              min: 4,
-              message: "Last Name must be at least 4 characters long",
-            },
-            { max: 10, message: "Last Name must not exceed 7 characters" },
-          ]}
-          labelCol={{ span: 24 }}
-          wrapperCol={{ span: 24 }}
-        >
-          <Input className="h-[35px]" />
-        </Form.Item>
-
-        <Form.Item
-          name="email"
-          label="Email"
-          rules={[
-            { required: true, message: "Please input your Email!" },
-            { type: "email", message: "Please enter a valid Email!" },
-          ]}
-          labelCol={{ span: 24 }}
-          wrapperCol={{ span: 24 }}
-        >
-          <Input className="h-[35px]" />
-        </Form.Item>
-        <Form.Item
-          name="number"
-          label="Phone"
-          labelCol={{ span: 24 }}
-          wrapperCol={{ span: 24 }}
-          className="pb-5"
-        >
-          <Input className="h-[35px]" />
-        </Form.Item>
-      </Form>
-    </Modal>
+                  <button onClick={_showDrawer} className=" flex w-[35px] h-[35px] rounded-md bg-gray-100 items-center justify-center hover:border hover:text-blue-500 hover:border-blue-500">
+                    <PlusCircleOutlined />
+                  </button>
+                </div>
+              ) : (
+                <Input
+                  placeholder={`Enter ${column.title}`}
+                  className="h-[35px]"
+                />
+              )}
+            </Form.Item>
+          ))}
+        </Form>
+      </Modal>
+    </>
   );
 };
