@@ -1,58 +1,116 @@
-import { Button, notification, Modal, Form, Input } from 'antd'
-import { PlusOutlined, MinusCircleOutlined  } from "@ant-design/icons";
+import { Button, notification, Modal, Form, Input, Table, Empty } from 'antd';
+import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { useState } from 'react';
+import { useForm } from 'antd/lib/form/Form';
+import type { TableColumnsType } from 'antd';
+import { ModalTable } from './ModalTable';
 
-  
+
 const formItemLayoutWithOutLabel = {
-    wrapperCol: {
-      xs: { span: 32, offset: 0 },
-      sm: { span: 24, offset: 0 },
-    },
-  };
-  const onFinish = (values: any) => {
-    console.log('Received values of form:', values);
+  wrapperCol: {
+    xs: { span: 32, offset: 0 },
+    sm: { span: 24, offset: 0 },
+  },
+};
+
+const locale = {
+	emptyText: <Empty description="No Data" />,
   };
 
 export const Product = () => {
-	const [api, contextHolder] = notification.useNotification();
-	const [isModalOpen, setIsModalOpen] = useState(false);
+  const [api, contextHolder] = notification.useNotification();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [createTable, SetcreateTable] = useState(false);
+  const [form] = useForm();
+  const [columns, setColumns] = useState([]);
+  const [tableData, setTableData] = useState<any[]>([]);
 
 
-	const handleOk = () => {
-		setIsModalOpen(false);
-	  };
-	
-	  const handleCancel = () => {
-		setIsModalOpen(false);
-	  };
-	
 
-	const openNotification = (pauseOnHover: boolean) => () => {
-		api.info({
-		  message: 'Notification Title',
-		  description:
-			'Please create a product table column to proceed. Using the following Modal',
-		  showProgress: true,
-		  pauseOnHover,
-		  onClose: () => {
-			setIsModalOpen(true);
-		  },
-		});
-	  };
+  const handleOk = async () => {
+	try {
+	  const values = await form.validateFields();
+	  console.log('Form values:', values);
+	  const data = [
+		{
+		  key: '1',
+		//   ...values.names.reduce((acc: any, name: string) => {
+		// 	acc[name] = '';
+		// 	return acc;
+		//   }, {}),
+		},
+	  ];
+
+
+	  setTableData(data);
+  
+	  // Construct table columns from form values (use names array for titles)
+	  const newColumns = values.names.map((title: string, index: number) => ({
+		title, // Use the value as the title
+		dataIndex: `column${index}`, // Example for dataIndex, adjust as per your data structure
+		key: `column${index}`, // Example for key, adjust as per your data structure
+	  }));
+
+  
+	  setColumns(newColumns);
+	  setIsModalOpen(false);
+	} catch (error) {
+	  console.error('Validation failed:', error);
+	}
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const openNotification = (pauseOnHover: boolean) => () => {
+    api.info({
+      message: 'Notification Title',
+      description:
+        'Please create a product table column to proceed. Using the following Modal',
+      showProgress: true,
+      pauseOnHover,
+      onClose: () => {
+        setIsModalOpen(true);
+      },
+    });
+  };
+
+  const [_isModalOpen, _setIsModalOpen] = useState(false);
+  const showModal = () => {
+    _setIsModalOpen(true);
+  };
+
+  const _handleOk = () => {
+    _setIsModalOpen(false);
+  };
+  const _handleCancel = () => {
+    _setIsModalOpen(false);
+  };
+
+  const handCreateTalble  = () => {
+	if (columns.length === 0)
+		openNotification(true)();
+	  else
+	  	showModal();   	
+  }
+
   return (
-	<>
-	{contextHolder}
-		<div className='flex'>
-		<Button
+    <>
+      {contextHolder}
+      <div className='flex'>
+        <Button
           icon={<PlusOutlined />}
-          className="h-[40px] w-[190px] rounded-lg"
-          type="primary"
-          onClick={openNotification(true)}
+          className='h-[40px] w-[190px] rounded-lg'
+          type='primary'
+          onClick={handCreateTalble}
         >
-          Add New Product
+			{
+				columns.length === 0 ? <div> Create Table Columns</div>  : <div> Add New Product</div> 
+			}
         </Button>
-		</div>
-		<Modal
+      </div>
+      <Modal
         title='Create Table Title Column'
         open={isModalOpen}
         onOk={handleOk}
@@ -67,8 +125,9 @@ export const Product = () => {
         ]}
       >
         <Form
+          form={form}
           {...formItemLayoutWithOutLabel}
-          onFinish={onFinish}
+          onFinish={() => {}}
           className='w-full p-5 pt-5'
         >
           <Form.List name='names'>
@@ -92,10 +151,10 @@ export const Product = () => {
                           className='w-full h-[40px]'
                         />
                       </Form.Item>
-                        <MinusCircleOutlined
-                          className='absolute right-5 pt-5 h-[20px]'
-                          onClick={() => remove(field.name)}
-                        />
+                      <MinusCircleOutlined
+                        className=' absolute right-5 pt-3'
+                        onClick={() => remove(field.name)}
+                      />
                     </div>
                   </Form.Item>
                 ))}
@@ -115,6 +174,17 @@ export const Product = () => {
           </Form.List>
         </Form>
       </Modal>
-	</>
-  )
-}
+
+
+
+	  <Modal title="Basic Modal" open={_isModalOpen} onOk={_handleOk} onCancel={_handleCancel}>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
+
+	  <Table className='pt-10' dataSource={tableData} columns={columns} locale={tableData.length === 0 ? locale : undefined} />;
+
+    </>
+  );
+};
