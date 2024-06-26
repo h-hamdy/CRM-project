@@ -18,7 +18,6 @@ const locale = {
 export const Product = () => {
   const [api, contextHolder] = notification.useNotification();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [createTable, SetcreateTable] = useState(false);
   const [form] = useForm();
   const [columns, setColumns] = useState([]);
   const [tableData, setTableData] = useState<any[]>([]);
@@ -129,7 +128,6 @@ export const Product = () => {
         {fields.map((field, index) => {
           const { key, ...restField } = field;
 
-          // Determine if the current field is Client or Bill
           const isClientOrBill = index <= 1;
 
           return (
@@ -184,7 +182,6 @@ export const Product = () => {
         columns={columns}
         locale={tableData.length === 0 ? locale : undefined}
       />
-      ;
     </>
   );
 };

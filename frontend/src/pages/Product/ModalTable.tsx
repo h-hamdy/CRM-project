@@ -1,9 +1,11 @@
-import { Button, Modal, Form, Input, Select, AutoComplete } from "antd";
+import { Button, Modal, Form, Input, AutoComplete } from "antd";
 import { useState } from "react";
 import { PlusCircleOutlined } from "@ant-design/icons";
 
-import type { DefaultOptionType } from 'antd/es/select';
+import type { DefaultOptionType } from "antd/es/select";
 import { CreateUserDrawer } from "../Clients/components/CreateUserDrawer";
+import { useClients } from "../../context/ClientsContext";
+
 
 interface ModalTableProps {
   _isModalOpen: boolean;
@@ -18,7 +20,9 @@ export const ModalTable = ({
   _handleOk,
   columns,
 }: ModalTableProps) => {
-	const [options, setOptions] = useState<DefaultOptionType[]>([]);
+	const [options, setOptions] = useState<{ value: string }[]>([]);
+	const { clients } = useClients();
+
 
   const [showDrawerUser, setShowDrawer] = useState(false);
 
@@ -31,16 +35,15 @@ export const ModalTable = ({
   };
 
   const handleSearch = (value: string) => {
-    setOptions(() => {
-      if (!value || value.includes('@')) {
-        return [];
-      }
-      return ['gmail.com', '163.com', 'qq.com'].map<DefaultOptionType>((domain) => ({
-        label: `${value}@${domain}`,
-        value: `${value}@${domain}`,
-      }));
-    });
+	const filteredOptions = clients
+	  .filter((client) => {
+		const fullName = `${client.firstName.toLowerCase()} ${client.lastName.toLowerCase()}`;
+		return fullName.includes(value.toLowerCase());
+	  })
+	  .map((client) => ({ value: `${client.firstName} ${client.lastName}` }));
+	setOptions(filteredOptions);
   };
+	  
 
   return (
     <>
@@ -68,24 +71,27 @@ export const ModalTable = ({
           autoComplete="off"
           requiredMark={false}
         >
-          {columns.map((column) => (
+{columns.map((column) => (
+          // Conditionally render based on column.title
+          column.title === 'Bill' ? null : (
             <Form.Item
               key={column.key}
               label={column.title}
               name={column.dataIndex}
-              rules={[
-                { required: true, message: `${column.title} is required` },
-              ]}
+            //   rules={[{ required: true, message: `${column.title} is required` }]}
             >
-              {column.title === "Client" ? (
+              {column.title === 'Client' ? (
                 <div className="flex gap-3">
                   <AutoComplete
-      onSearch={handleSearch}
-      placeholder="input Search Name"
-      options={options}
-    />
-
-                  <button onClick={_showDrawer} className=" flex w-[35px] h-[35px] rounded-md bg-gray-100 items-center justify-center hover:border hover:text-blue-500 hover:border-blue-500">
+				  className="h-[35px]"
+                    onSearch={handleSearch}
+                    placeholder="Search Name"
+                    options={options} // Replace with your actual options
+                  />
+                  <button
+                    onClick={_showDrawer}
+                    className="flex w-[35px] h-[35px] rounded-md bg-gray-100 items-center justify-center hover:border hover:text-blue-500 hover:border-blue-500"
+                  >
                     <PlusCircleOutlined />
                   </button>
                 </div>
@@ -96,7 +102,8 @@ export const ModalTable = ({
                 />
               )}
             </Form.Item>
-          ))}
+          )
+        ))}
         </Form>
       </Modal>
     </>
