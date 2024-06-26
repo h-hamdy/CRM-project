@@ -53,15 +53,15 @@ export const Product = () => {
         </Button>
 		</div>
 		<Modal
-        title="Create Table Title Column"
+        title='Create Table Title Column'
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[
-          <Button key="back" onClick={handleCancel}>
+          <Button key='back' onClick={handleCancel}>
             Cancel
           </Button>,
-          <Button key="submit" type="primary" onClick={handleOk}>
+          <Button key='submit' type='primary' onClick={handleOk}>
             Create
           </Button>,
         ]}
@@ -71,7 +71,7 @@ export const Product = () => {
           onFinish={onFinish}
           className='w-full p-5 pt-5'
         >
-          <Form.List name="names">
+          <Form.List name='names'>
             {(fields, { add, remove }, { errors }) => (
               <>
                 {fields.map((field, index) => (
@@ -79,20 +79,30 @@ export const Product = () => {
                     {...(index === 0 && formItemLayoutWithOutLabel)}
                     required={false}
                     key={field.key}
-                    className="mb-3"
+                    className='mb-3'
                   >
-                    <Form.Item
-                      {...field}
-                      validateTrigger={['onChange', 'onBlur']}
-                    >
-                      <Input placeholder="Table Title" className='w-full h-[40px]' />
-                    </Form.Item>
+                    <div className='flex'>
+                      <Form.Item
+                        {...field}
+                        validateTrigger={['onChange', 'onBlur']}
+                        className='w-full'
+                      >
+                        <Input
+                          placeholder='Table Title'
+                          className='w-full h-[40px]'
+                        />
+                      </Form.Item>
+                        <MinusCircleOutlined
+                          className='absolute right-5 pt-5 h-[20px]'
+                          onClick={() => remove(field.name)}
+                        />
+                    </div>
                   </Form.Item>
                 ))}
                 <Form.Item>
                   <Button
                     className='flex items-center w-full justify-center h-[40px]'
-                    type="dashed"
+                    type='dashed'
                     onClick={() => add()}
                     icon={<PlusOutlined />}
                   >
