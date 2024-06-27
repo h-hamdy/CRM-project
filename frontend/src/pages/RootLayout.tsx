@@ -123,7 +123,7 @@ export const RootLayout = () => {
             onClick={handleMenuClick}
           />
         </Sider>
-        <Layout className=" p-10">
+        <Layout className="p-10">
           <Outlet />
         </Layout>
       </Layout>

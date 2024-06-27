@@ -8,25 +8,27 @@ import { Product } from './pages/Product/Product';
 import { Clients } from './pages/Clients/Clients';
 import { Management } from './pages/Management/Management';
 import { Administration } from './pages/Administration/Administration';
+import { ForOFor } from './pages/ForOFor';
 
 function App() {
-  return (
-      <Router>
-        <Routes>
-          <Route path='/sign-in' element={<Login />} />
-          <Route path='/sign-up' element={<Register />} />
-			<Route path='/' element={<RootLayout />} >
-				<Route path='Dashboard' element={<Dashboard/>}></Route>
-				<Route path='Calendar' element={<Calendar/>}></Route>
-				<Route path='Product' element={<Product/>}></Route>
-				<Route path='Clients' element={<Clients/>}></Route>
-				<Route path='Management' element={<Management/>}></Route>
-				<Route path='Administration' element={<Administration/>}></Route>
-			</Route>
-        </Routes>
-      </Router>
-  );
-}
+	return (
+	  <Router>
+		<Routes>
+		  <Route path='/sign-in' element={<Login />} />
+		  <Route path='/sign-up' element={<Register />} />
+		  <Route path='/' element={<RootLayout />}>
+			<Route path='Dashboard' element={<Dashboard />} />
+			<Route path='Calendar' element={<Calendar />} />
+			<Route path='Product' element={<Product />} />
+			<Route path='Clients' element={<Clients />} />
+			<Route path='Management' element={<Management />} />
+			<Route path='Administration' element={<Administration />} />
+		  </Route>
+		  <Route path='*' element={<ForOFor />} /> {/* Catch-all route for 404 outside the RootLayout */}
+		</Routes>
+	  </Router>
+	);
+  }
 
 export default App;
 
