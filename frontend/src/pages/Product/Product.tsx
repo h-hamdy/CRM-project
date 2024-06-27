@@ -7,6 +7,7 @@ import {
 import { useState } from "react";
 import { useForm } from "antd/lib/form/Form";
 import ModalTable from "./ModalTable";
+import { Link } from "react-router-dom";
 const formItemLayoutWithOutLabel = {
   wrapperCol: {
     xs: { span: 32, offset: 0 },
@@ -26,6 +27,17 @@ export const Product = () => {
   const [tableData, setTableData] = useState<any[]>([]);
   const [data, _setData] = useState<any[]>([]);
 
+  const IconButton = ({ onClick }: any) => (
+	<Link to="/Product/Billing">
+
+	<div
+	  className="inline-block w-6 h-6 border border-gray-300 rounded text-center leading-6 cursor-pointer transition-colors duration-300 hover:bg-gray-200"
+	  onClick={onClick}
+	  >
+	  <DiffOutlined />
+	</div>
+		</Link>
+  );
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
@@ -37,7 +49,7 @@ export const Product = () => {
         dataIndex: title, // Example for dataIndex, adjust as per your data structure
         key: title, // Example for key, adjust as per your data structure
         ...(title === "Bill" && {
-          render: () => <DiffOutlined />,
+          render: () => <IconButton />,
           width: 50,
         }),
       }));
