@@ -2,8 +2,7 @@ import { Button, notification, Modal, Form, Input, Table, Empty } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useForm } from "antd/lib/form/Form";
-import { ModalTable } from "./ModalTable";
-
+import ModalTable from "./ModalTable";
 const formItemLayoutWithOutLabel = {
   wrapperCol: {
     xs: { span: 32, offset: 0 },
@@ -21,27 +20,18 @@ export const Product = () => {
   const [form] = useForm();
   const [columns, setColumns] = useState([]);
   const [tableData, setTableData] = useState<any[]>([]);
+  const [data, setData] = useState<any[]>([]);
 
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      console.log("Form values:", values);
-      const data = [
-        {
-          key: "1",
-          //   ...values.names.reduce((acc: any, name: string) => {
-          // 	acc[name] = '';
-          // 	return acc;
-          //   }, {}),
-        },
-      ];
+      _setIsModalOpen(false);
 
       setTableData(data);
-
       const newColumns = values.names.map((title: string, index: number) => ({
         title,
-        dataIndex: `column${index}`, // Example for dataIndex, adjust as per your data structure
-        key: `column${index}`, // Example for key, adjust as per your data structure
+        dataIndex: title, // Example for dataIndex, adjust as per your data structure
+        key: title, // Example for key, adjust as per your data structure
       }));
 
       setColumns(newColumns);
@@ -49,6 +39,27 @@ export const Product = () => {
     } catch (error) {
       console.error("Validation failed:", error);
     }
+  };
+
+  const setTableDataFromValues = (values: any) => {
+	console.log("from set table", values)
+	const newData = {
+		key: (tableData.length + 1).toString(), // Generate a unique key
+		...columns.reduce((acc : any, column: any) => {
+		  if (column.dataIndex === 'Client') {
+			if (values.Client) {
+			  acc['Client'] = `${values.Client.firstName} ${values.Client.lastName}`;
+			}
+		  } else {
+			if (column.dataIndex in values) {
+			  acc[column.dataIndex] = values[column.dataIndex];
+			}
+		  }
+		  return acc;
+		}, {}),
+	  };
+  
+	  setTableData([...tableData, newData]);
   };
 
   const handleCancel = () => {
@@ -73,9 +84,6 @@ export const Product = () => {
     _setIsModalOpen(true);
   };
 
-  const _handleOk = () => {
-    _setIsModalOpen(false);
-  };
   const _handleCancel = () => {
     _setIsModalOpen(false);
   };
@@ -83,6 +91,17 @@ export const Product = () => {
   const handCreateTalble = () => {
     if (columns.length === 0) openNotification(true)();
     else showModal();
+  };
+  const handleSubmit = async (values: any) => {
+    try {
+      if (values) {
+		setTableDataFromValues(values)
+		_setIsModalOpen(false);
+      }
+      form.resetFields();
+    } catch (error) {
+      console.error("Validation failed:", error);
+    }
   };
 
   return (
@@ -116,66 +135,75 @@ export const Product = () => {
           </Button>,
         ]}
       >
-<Form
-  form={form}
-  {...formItemLayoutWithOutLabel}
-  onFinish={() => {}}
-  className="w-full p-5 pt-5"
->
-  <Form.List name="names" initialValue={['Client', 'Bill']}>
-    {(fields, { add, remove }, { errors }) => (
-      <>
-        {fields.map((field, index) => {
-          const { key, ...restField } = field;
+        <Form
+          form={form}
+          {...formItemLayoutWithOutLabel}
+          onFinish={() => {}}
+          className="w-full p-5 pt-5"
+        >
+          <Form.List name="names" initialValue={["Bill", "Client"]}>
+            {(fields, { add, remove }, { errors }) => (
+              <>
+                {fields.map((field, index) => {
+                  const { key, ...restField } = field;
 
-          const isClientOrBill = index <= 1;
+                  const isClientOrBill = index <= 1;
 
-          return (
-            <Form.Item
-              {...(index === 0 && formItemLayoutWithOutLabel)}
-              required={false}
-              key={key}
-              className="mb-3"
-            >
-              <div className="flex">
-                <Form.Item
-                  {...restField}
-                  validateTrigger={["onChange", "onBlur"]}
-                  className="w-full"
-                >
-                  <Input
-                    placeholder={isClientOrBill ? String(field.name) : "Table Title"}
-                    className="w-full h-[40px]"
-                    disabled={isClientOrBill}
-                  />
+                  return (
+                    <Form.Item
+                      {...(index === 0 && formItemLayoutWithOutLabel)}
+                      required={false}
+                      key={key}
+                      className="mb-3"
+                    >
+                      <div className="flex">
+                        <Form.Item
+                          {...restField}
+                          validateTrigger={["onChange", "onBlur"]}
+                          className="w-full"
+                        >
+                          <Input
+                            placeholder={
+                              isClientOrBill
+                                ? String(field.name)
+                                : "Table Title"
+                            }
+                            className="w-full h-[40px]"
+                            disabled={isClientOrBill}
+                          />
+                        </Form.Item>
+                        {isClientOrBill ? null : (
+                          <MinusCircleOutlined
+                            className="absolute right-5 pt-3"
+                            onClick={() => remove(field.name)}
+                          />
+                        )}
+                      </div>
+                    </Form.Item>
+                  );
+                })}
+                <Form.Item>
+                  <Button
+                    className="flex items-center w-full justify-center h-[40px]"
+                    type="dashed"
+                    onClick={() => add()}
+                    icon={<PlusOutlined />}
+                  >
+                    Add Table Column
+                  </Button>
+                  <Form.ErrorList errors={errors} />
                 </Form.Item>
-                {isClientOrBill ? null : (
-                  <MinusCircleOutlined
-                    className="absolute right-5 pt-3"
-                    onClick={() => remove(field.name)}
-                  />
-                )}
-              </div>
-            </Form.Item>
-          );
-        })}
-        <Form.Item>
-          <Button
-            className="flex items-center w-full justify-center h-[40px]"
-            type="dashed"
-            onClick={() => add()}
-            icon={<PlusOutlined />}
-          >
-            Add Table Column
-          </Button>
-          <Form.ErrorList errors={errors} />
-        </Form.Item>
-      </>
-    )}
-  </Form.List>
-</Form>
+              </>
+            )}
+          </Form.List>
+        </Form>
       </Modal>
-      <ModalTable _isModalOpen={_isModalOpen} _handleCancel={_handleCancel} _handleOk={_handleOk} columns={columns}/>
+      <ModalTable
+        _isModalOpen={_isModalOpen}
+        _handleCancel={_handleCancel}
+        _handleOk={handleSubmit}
+        columns={columns}
+      />
       <Table
         className="pt-10"
         dataSource={tableData}
