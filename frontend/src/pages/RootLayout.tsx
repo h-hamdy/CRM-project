@@ -5,10 +5,10 @@ import { Outlet, useNavigate } from "react-router";
 import {
   PieChartOutlined,
   TeamOutlined,
-  CalendarOutlined,
+  //   CalendarOutlined,
   CrownOutlined,
   ToolOutlined,
-  ProjectOutlined,
+  //   ProjectOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Layout, Menu } from "antd";
@@ -33,12 +33,12 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem("Dashboard", "Dashboard", <PieChartOutlined />),
-//   getItem("Calendar", "Calendar", <CalendarOutlined />),
+  //   getItem("Calendar", "Calendar", <CalendarOutlined />),
   getItem("Product", "Product", <ToolOutlined />),
   getItem("Clients", "Clients", <TeamOutlined />),
-//   getItem("Management", "sub1", <ProjectOutlined />, [
-//     getItem("Project Kanban", "Management"),
-//   ]),
+  //   getItem("Management", "sub1", <ProjectOutlined />, [
+  //     getItem("Project Kanban", "Management"),
+  //   ]),
   getItem("Administration", "sub2", <CrownOutlined />, [
     getItem("Settings", "Administration"),
   ]),
