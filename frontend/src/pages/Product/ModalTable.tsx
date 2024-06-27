@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Modal, Form, Input, AutoComplete, Button } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { useClients } from '../../context/ClientsContext';
+import { CreateUserDrawer } from '../Clients/components/CreateUserDrawer';
 
 
 const ModalTable = ({ _isModalOpen, _handleCancel, _handleOk, columns } : any) => {
@@ -9,6 +10,7 @@ const ModalTable = ({ _isModalOpen, _handleCancel, _handleOk, columns } : any) =
   const { clients } = useClients();
   const [options, setOptions] = useState<{ value: string, id: number }[]>([]);
   const [selectedClient, setSelectedClient] = useState<any | null>(null);
+  const [showdrawer, setShowDrawer] = useState(false);
 
   const handleSearch = (value: string) => {
     const filteredOptions = clients
@@ -28,8 +30,9 @@ const ModalTable = ({ _isModalOpen, _handleCancel, _handleOk, columns } : any) =
     }
   };
 
-  const _showDrawer = () => {
-    console.log('Showing drawer');
+  const _showDrawer = (event: any) => {
+	event.preventDefault();
+	setShowDrawer(true);
   };
 
   const handleSubmit = async () => {
@@ -47,7 +50,13 @@ const ModalTable = ({ _isModalOpen, _handleCancel, _handleOk, columns } : any) =
     }
   };
 
+  console.log(showdrawer)
+
   return (
+	<>
+	{
+		showdrawer && <CreateUserDrawer/>
+	}
     <Modal
       title="Create Table Title Column"
       open={_isModalOpen}
@@ -105,6 +114,7 @@ const ModalTable = ({ _isModalOpen, _handleCancel, _handleOk, columns } : any) =
                   >
                     <PlusCircleOutlined />
                   </button>
+				  {showdrawer && <CreateUserDrawer onClose={() => setShowDrawer(false)} open={() => setShowDrawer(true)} />}
                 </div>
               ) : (
                 <Input
@@ -117,6 +127,7 @@ const ModalTable = ({ _isModalOpen, _handleCancel, _handleOk, columns } : any) =
         ))}
       </Form>
     </Modal>
+	  </>
   );
 };
 

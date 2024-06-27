@@ -1,11 +1,12 @@
 import { Button, Col, Drawer, Form, Input, Row, Select, Space } from "antd";
 import axios from "axios";
 import { notification } from "antd";
-
+import { useClients } from "../../../context/ClientsContext";
 
 const { Option } = Select;
-export const CreateUserDrawer = ({ onClose, open, fetchClients }: any) => {
+export const CreateUserDrawer = ({ onClose, open }: any) => {
   const [form] = Form.useForm();
+  const { fetchClients } = useClients();
 
   const CreateClient = async () => {
     try {
