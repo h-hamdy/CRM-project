@@ -28,15 +28,14 @@ export const Product = () => {
   const [data, _setData] = useState<any[]>([]);
 
   const IconButton = ({ onClick }: any) => (
-	<Link to="/Product/Billing">
-
-	<div
-	  className="inline-block w-6 h-6 border border-gray-300 rounded text-center leading-6 cursor-pointer transition-colors duration-300 hover:bg-gray-200"
-	  onClick={onClick}
-	  >
-	  <DiffOutlined />
-	</div>
-		</Link>
+    <Link to="/Product/Billing">
+      <div
+        className="inline-block w-6 h-6 border border-gray-300 rounded text-center leading-6 cursor-pointer transition-colors duration-300 hover:bg-gray-200"
+        onClick={onClick}
+      >
+        <DiffOutlined />
+      </div>
+    </Link>
   );
   const handleOk = async () => {
     try {

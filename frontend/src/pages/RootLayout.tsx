@@ -32,7 +32,7 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem("Dashboard", "Dashboard", <PieChartOutlined />),
+  getItem("Dashboard", "", <PieChartOutlined />),
   //   getItem("Calendar", "Calendar", <CalendarOutlined />),
   getItem("Product", "Product", <ToolOutlined />),
   getItem("Clients", "Clients", <TeamOutlined />),
