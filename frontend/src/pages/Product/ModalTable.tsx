@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {  useState } from 'react';
 import { Modal, Form, Input, AutoComplete, Button } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { useClients } from '../../context/ClientsContext';
@@ -33,7 +33,12 @@ const ModalTable = ({ _isModalOpen, _handleCancel, _handleOk, columns } : any) =
   const _showDrawer = (event: any) => {
 	event.preventDefault();
 	setShowDrawer(true);
-  };
+	};
+	
+	const _closeDrawer = () => {
+	setShowDrawer(false);
+  }
+
 
   const handleSubmit = async () => {
     try {
@@ -41,22 +46,16 @@ const ModalTable = ({ _isModalOpen, _handleCancel, _handleOk, columns } : any) =
       if (selectedClient) {
         values.Client = selectedClient;
       }
-    //   console.log('Form values:', values);
-      _handleOk(values); // Pass form values to _handleOk
+      _handleOk(values);
       form.resetFields();
-      setSelectedClient(null); // Reset the selected client after form submission
+      setSelectedClient(null);
     } catch (error) {
       console.error('Validation failed:', error);
     }
   };
 
-  console.log(showdrawer)
-
   return (
 	<>
-	{
-		showdrawer && <CreateUserDrawer/>
-	}
     <Modal
       title="Create Table Title Column"
       open={_isModalOpen}
@@ -114,7 +113,7 @@ const ModalTable = ({ _isModalOpen, _handleCancel, _handleOk, columns } : any) =
                   >
                     <PlusCircleOutlined />
                   </button>
-				  {showdrawer && <CreateUserDrawer onClose={() => setShowDrawer(false)} open={() => setShowDrawer(true)} />}
+				  {showdrawer && <CreateUserDrawer onClose={_closeDrawer} open={() => setShowDrawer(true)}  />}
                 </div>
               ) : (
                 <Input

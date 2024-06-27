@@ -1,5 +1,6 @@
 import { Table, Tag } from 'antd'
 import profile from "/src/assets/profile.jpeg";
+import company from "/src/assets/company.png";
 import { EyeOutlined } from "@ant-design/icons";
 import { useEffect, useState } from 'react';
 import { ClientsInfoDrawer } from './ClientsInfoDrawer';
@@ -39,7 +40,7 @@ export const ClientTable = ( {showDrawerUser, onCloseDrawer } : any ) => {
 		  render: (_text: string, record: DataType) => (
 			<div className="flex items-center pl-4">
 			  <img
-				src={profile} // Use record.PictureUrl if available, otherwise fallback to default profile image
+				src={record.type.toLocaleLowerCase() === "client" ? profile : company} // Use record.PictureUrl if available, otherwise fallback to default profile image
 				className="w-[30px] h-[30px] rounded-full mr-2"
 				alt="Profile"
 			  />

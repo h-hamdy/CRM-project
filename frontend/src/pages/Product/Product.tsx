@@ -1,5 +1,5 @@
 import { Button, notification, Modal, Form, Input, Table, Empty } from "antd";
-import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
+import { PlusOutlined, MinusCircleOutlined, DiffOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useForm } from "antd/lib/form/Form";
 import ModalTable from "./ModalTable";
@@ -20,7 +20,7 @@ export const Product = () => {
   const [form] = useForm();
   const [columns, setColumns] = useState([]);
   const [tableData, setTableData] = useState<any[]>([]);
-  const [data, setData] = useState<any[]>([]);
+  const [data, _setData] = useState<any[]>([]);
 
   const handleOk = async () => {
     try {
@@ -28,11 +28,16 @@ export const Product = () => {
       _setIsModalOpen(false);
 
       setTableData(data);
-      const newColumns = values.names.map((title: string, index: number) => ({
-        title,
-        dataIndex: title, // Example for dataIndex, adjust as per your data structure
-        key: title, // Example for key, adjust as per your data structure
-      }));
+      const newColumns = values.names.map((title: string) => ({
+		title,
+		dataIndex: title, // Example for dataIndex, adjust as per your data structure
+		key: title, // Example for key, adjust as per your data structure
+		...(title === 'Bill' && {
+		  render: () => <DiffOutlined />,
+		  width: 50
+		})
+	  }));
+	  
 
       setColumns(newColumns);
       setIsModalOpen(false);
@@ -42,7 +47,6 @@ export const Product = () => {
   };
 
   const setTableDataFromValues = (values: any) => {
-	console.log("from set table", values)
 	const newData = {
 		key: (tableData.length + 1).toString(), // Generate a unique key
 		...columns.reduce((acc : any, column: any) => {
@@ -155,12 +159,14 @@ export const Product = () => {
                       required={false}
                       key={key}
                       className="mb-3"
+					  rules={[{ required: true, message: "Field is required" }]}
                     >
                       <div className="flex">
                         <Form.Item
                           {...restField}
                           validateTrigger={["onChange", "onBlur"]}
                           className="w-full"
+						  rules={[{ required: true, message: "Field is required" }]}
                         >
                           <Input
                             placeholder={
@@ -204,12 +210,16 @@ export const Product = () => {
         _handleOk={handleSubmit}
         columns={columns}
       />
+	  <div className="w-full overflow-x-auto">
+
       <Table
         className="pt-10"
         dataSource={tableData}
         columns={columns}
         locale={tableData.length === 0 ? locale : undefined}
-      />
+		scroll={{ x: 100 }}
+		/>
+		</div>
     </>
   );
 };
