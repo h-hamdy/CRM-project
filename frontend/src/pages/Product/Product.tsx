@@ -4,10 +4,12 @@ import {
   MinusCircleOutlined,
   DiffOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "antd/lib/form/Form";
-import ModalTable from "./ModalTable";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import ModalTable from "./ModalTable";
+
 const formItemLayoutWithOutLabel = {
   wrapperCol: {
     xs: { span: 32, offset: 0 },
@@ -22,10 +24,35 @@ const locale = {
 export const Product = () => {
   const [api, contextHolder] = notification.useNotification();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form] = useForm();
-  const [columns, setColumns] = useState([]);
+  const [form] = Form.useForm();
+  const [columns, setColumns] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any[]>([]);
   const [data, _setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3333/product', { withCredentials: true });
+        
+        if (Array.isArray(response.data)) {
+          const formattedColumns = response.data.map((col, index) => ({
+            title: col,
+			...(col === "Bill" && {
+				render: () => <IconButton />,
+				width: 50,
+			  }),
+            dataIndex: col.toLowerCase(), // Assuming dataIndex is the lowercase version of title
+            key: col.toLowerCase(),
+          }));
+          setColumns(formattedColumns);
+        }
+      } catch (error) {
+        console.error('Error fetching columns:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const IconButton = ({ onClick }: any) => (
     <Link to="/Product/Billing">
@@ -40,21 +67,30 @@ export const Product = () => {
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      _setIsModalOpen(false);
-
+	  
       setTableData(data);
       const newColumns = values.names.map((title: string) => ({
         title,
-        dataIndex: title, // Example for dataIndex, adjust as per your data structure
-        key: title, // Example for key, adjust as per your data structure
+        dataIndex: title,
+        key: title,
         ...(title === "Bill" && {
           render: () => <IconButton />,
           width: 50,
         }),
       }));
 
-      setColumns(newColumns);
+	  const colums = newColumns.map((column : any) => column.title);
+
+	  setColumns(newColumns)
+	  axios.patch("http://localhost:3333/product/columns", { newColumns: colums }, { withCredentials: true })
+  .then(response => {
+    console.log("Success:", response.data);
       setIsModalOpen(false);
+  })
+  .catch(error => {
+    console.error("Error:", error);
+  });
+  _setIsModalOpen(false);
     } catch (error) {
       console.error("Validation failed:", error);
     }

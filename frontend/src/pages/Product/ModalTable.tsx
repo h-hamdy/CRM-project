@@ -30,10 +30,11 @@ const ModalTable = ({
   };
 
   const onSelect = (value: string, option: { value: string; id: number }) => {
+	console.log(value)
     const client = clients.find((client) => client.id === option.id);
     if (client) {
       setSelectedClient(client);
-      form.setFieldsValue({ Client: value }); // Update the form field with the selected client name
+      form.setFieldsValue({ client: value }); // Update the form field with the selected client name
     }
   };
 
@@ -49,6 +50,7 @@ const ModalTable = ({
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
+	  console.log(values)
       if (selectedClient) {
         values.Client = selectedClient;
       }
