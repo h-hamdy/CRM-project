@@ -47,7 +47,23 @@ model Client {
   note String?
 }
 
-model DynamicColumnTable {
-  id      Int      @id @default(autoincrement())
-  columns String     @default("[]")
+model Table {
+  id        Int       @id
+  name      String
+  columns   Column[]
+  rows      RowData[]
+}
+
+model Column {
+  id        Int       @id @default(autoincrement())
+  name      String
+  tableId   Int
+  table     Table     @relation(fields: [tableId], references: [id])
+}
+
+model RowData {
+  id        Int       @id @default(autoincrement())
+  tableId   Int
+  data      Json
+  table     Table     @relation(fields: [tableId], references: [id])
 }

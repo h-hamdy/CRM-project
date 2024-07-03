@@ -17,10 +17,13 @@ let PrismaService = class PrismaService extends client_1.PrismaClient {
         super({
             datasources: {
                 db: {
-                    url: 'postgresql://postgres:123@localhost:5434/mydb?schema=public'
-                }
-            }
+                    url: 'postgresql://postgres:123@localhost:5434/mydb?schema=public',
+                },
+            },
         });
+    }
+    async onModuleInit() {
+        await this.$connect();
     }
 };
 exports.PrismaService = PrismaService;

@@ -14,14 +14,15 @@ export class AppModule implements OnModuleInit {
   constructor(private readonly prisma: PrismaService) {}
 
   async onModuleInit() {
-    const defaultTable = await this.prisma.dynamicColumnTable.findUnique({
-      where: { id: 1 },
-    });
+    // const defaultTable = await this.prisma.dynamicColumnTable.findUnique({
+    //   where: { id: 1 },
+    // });
 
-    if (!defaultTable) {
-      await this.prisma.dynamicColumnTable.create({
-        data: { id: 1, columns: '[]' },
-      });
-    }
+    // if (!defaultTable) {
+    //   await this.prisma.dynamicColumnTable.create({
+    //     data: { id: 1, columns: '[]' },
+    //   });
+    // }
   }
+
 }

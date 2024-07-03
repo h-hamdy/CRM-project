@@ -27,32 +27,35 @@ export const Product = () => {
   const [form] = Form.useForm();
   const [columns, setColumns] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any[]>([]);
-  const [data, _setData] = useState<any[]>([]);
+//   const [data, _setData] = useState<any[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:3333/product', { withCredentials: true });
-        
-        if (Array.isArray(response.data)) {
-          const formattedColumns = response.data.map((col, index) => ({
-            title: col,
-			...(col === "Bill" && {
-				render: () => <IconButton />,
-				width: 50,
-			  }),
-            dataIndex: col.toLowerCase(), // Assuming dataIndex is the lowercase version of title
-            key: col.toLowerCase(),
-          }));
-          setColumns(formattedColumns);
-        }
-      } catch (error) {
-        console.error('Error fetching columns:', error);
+  const fetchColumnsData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3333/product', { withCredentials: true });
+      console.log(response.data);
+      
+      if (Array.isArray(response.data)) {
+        const formattedColumns = response.data.map((col, index) => ({
+          title: col,
+          ...(col === "Bill" && {
+            render: () => <IconButton />,
+            width: 50,
+          }),
+          dataIndex: col,
+          key: col.toLowerCase(),
+        }));
+        setColumns(formattedColumns);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching columns:', error);
+    }
+  };
 
-    fetchData();
+  // useEffect to fetch columns data on component mount
+  useEffect(() => {
+    fetchColumnsData();
   }, []);
+
 
   const IconButton = ({ onClick }: any) => (
     <Link to="/Product/Billing">
@@ -65,57 +68,37 @@ export const Product = () => {
     </Link>
   );
   const handleOk = async () => {
-    try {
-      const values = await form.validateFields();
-	  
-      setTableData(data);
-      const newColumns = values.names.map((title: string) => ({
-        title,
-        dataIndex: title,
-        key: title,
-        ...(title === "Bill" && {
-          render: () => <IconButton />,
-          width: 50,
-        }),
-      }));
-
-	  const colums = newColumns.map((column : any) => column.title);
-
-	  setColumns(newColumns)
-	  axios.patch("http://localhost:3333/product/columns", { newColumns: colums }, { withCredentials: true })
-  .then(response => {
-    console.log("Success:", response.data);
-      setIsModalOpen(false);
-  })
-  .catch(error => {
-    console.error("Error:", error);
-  });
-  _setIsModalOpen(false);
-    } catch (error) {
-      console.error("Validation failed:", error);
-    }
-  };
-
-  const setTableDataFromValues = (values: any) => {
-    const newData = {
-      key: (tableData.length + 1).toString(), // Generate a unique key
-      ...columns.reduce((acc: any, column: any) => {
-        if (column.dataIndex === "Client") {
-          if (values.Client) {
-            acc[
-              "Client"
-            ] = `${values.Client.firstName} ${values.Client.lastName}`;
-          }
-        } else {
-          if (column.dataIndex in values) {
-            acc[column.dataIndex] = values[column.dataIndex];
-          }
-        }
-        return acc;
-      }, {}),
-    };
-
-    setTableData([...tableData, newData]);
+	try {
+	  const tableName = 'MyTable'; // Example table name or dynamically obtained
+	  const values = await form.validateFields(); // Assuming form is defined
+  
+	  // Assuming values.names is an array of strings representing column names
+	  const newColumns = values.names.map((title: string) => ({
+		name: title, // Ensure the structure matches { name: string }
+		...(title === 'Bill' && {
+		  render: () => <IconButton />,
+		  width: 50,
+		}),
+	  }));
+  
+	  console.log('Table Name:', tableName);
+	  console.log('Columns:', newColumns);
+  
+	  const response = await axios.post(
+		'http://localhost:3333/product/columns',
+		{ tableName, columns: newColumns },
+		{ withCredentials: true }
+	  );
+  
+	  console.log('Success:', response.data);
+	  fetchColumnsData();
+	  setIsModalOpen(false);
+  
+	} catch (error) {
+	  console.error('Error:', error);
+	} finally {
+	  _setIsModalOpen(false);
+	}
   };
 
   const handleCancel = () => {
@@ -148,16 +131,57 @@ export const Product = () => {
     if (columns.length === 0) openNotification(true)();
     else showModal();
   };
+
+
+  const fetchDataRows = async () => {
+	try {
+	  const response = await axios.get('http://localhost:3333/product/data-rows', {
+		withCredentials: true,
+	  });
+
+	  console.log("daaaata", response.data)
+
+	  const formattedData = response.data.map((item : any, index: any) => ({
+		  ...item.data,
+		  Client: item.data.Client.toLowerCase(),
+		  key: `${index}`, // Use a unique identifier here based on your data structure
+		}));
+
+		setTableData(formattedData);
+
+		
+		} catch (error) {
+	  console.error('Error fetching data rows:', error);
+	}
+  };
+
+  useEffect(() => {
+    fetchDataRows();
+  }, []); 
+
+  console.log("tableData", tableData)
   const handleSubmit = async (values: any) => {
-    try {
-      if (values) {
-        setTableDataFromValues(values);
-        _setIsModalOpen(false);
-      }
-      form.resetFields();
-    } catch (error) {
-      console.error("Validation failed:", error);
-    }
+	  try {
+	  if (values) {
+		console.log("values", values)
+		_setIsModalOpen(false);
+
+		const payload = {
+			tableId: 1,
+			data: values,
+		  };
+  
+		form.resetFields();
+  
+		await axios.post('http://localhost:3333/product/data', payload, {
+		  withCredentials: true,
+		}).then(() => fetchDataRows())
+  
+		console.log('Data posted successfully.');
+	  }
+	} catch (error) {
+	  console.error('Failed to post data:', error);
+	}
   };
 
   return (

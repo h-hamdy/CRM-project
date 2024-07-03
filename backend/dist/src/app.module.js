@@ -23,14 +23,6 @@ let AppModule = class AppModule {
         this.prisma = prisma;
     }
     async onModuleInit() {
-        const defaultTable = await this.prisma.dynamicColumnTable.findUnique({
-            where: { id: 1 },
-        });
-        if (!defaultTable) {
-            await this.prisma.dynamicColumnTable.create({
-                data: { id: 1, columns: '[]' },
-            });
-        }
     }
 };
 exports.AppModule = AppModule;

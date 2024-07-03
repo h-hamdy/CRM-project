@@ -1,50 +1,65 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateColumnsDto, InsertDataDto } from './dto/create-columns.dto';
+
 
 @Injectable()
 export class ProductService {
-	constructor(private prisma: PrismaService) {}
-	async appendColumns(newColumns: string[] | any[]) {
-		if (!Array.isArray(newColumns)) {
-		  throw new UnauthorizedException('Invalid request: newColumns must be an array');
-		}
-	
-		const table = await this.prisma.dynamicColumnTable.findUnique({
-		  where: { id: 1 },
-		});
-	
-		let updatedColumns: string[] = [];
-	
-		if (table.columns) {
-		  try {
-			updatedColumns = JSON.parse(table.columns);
-		  } catch (error) {
-			throw new UnauthorizedException('Invalid JSON in columns field');
-		  }
-		}
-	
-		for (const newColumn of newColumns) {
-		  if (updatedColumns.includes(newColumn)) {
-			throw new UnauthorizedException(`Column '${newColumn}' already exists`);
-		  }
-		  updatedColumns.push(newColumn);
-		}
-	
-		return this.prisma.dynamicColumnTable.update({
-		  where: { id: 1 },
-		  data: { columns: JSON.stringify(updatedColumns) },
-		});
-	  }
 
-	  async getColumns() {
-		const table = await this.prisma.dynamicColumnTable.findUnique({
-			where: { id: 1 }, // Assuming ID 1 is your default table
-		  });
-	  
-		  try {
-			return table.columns;
-		  } catch (error) {
-			throw new Error('Invalid JSON in columns field'); // Handle JSON parsing error
-		  }
-	  }
+  constructor(private prisma: PrismaService) {}
+
+  async getColumnsByTableId(tableId: number) {
+	return this.prisma.column.findMany({
+	  where: {
+		tableId: 1,
+	  },
+	});
+  }
+
+  async createTableWithColumns(createColumnsDto: CreateColumnsDto) {
+    const { tableName, columns } = createColumnsDto;
+
+    // Check if a Table with id = 1 already exists
+    let table = await this.prisma.table.findUnique({
+      where: { id: 1 },
+    });
+
+    if (!table) {
+      // Create the Table with id = 1 if it doesn't exist
+      table = await this.prisma.table.create({
+        data: {
+          id: 1,
+          name: tableName,
+        },
+      });
+    } else {
+      throw new ConflictException('Table with id = 1 already exists');
+    }
+
+    // Create columns for the new Table
+    const columnData = columns.map(column => ({
+      name: column.name,
+      tableId: table.id,
+    }));
+
+    await this.prisma.column.createMany({
+      data: columnData,
+    });
+
+    return table;
+  }
+
+  async getAllDataRows() {
+    return this.prisma.rowData.findMany();
+  }
+
+  async insertData(insertDataDto: InsertDataDto) {
+    const { data } = insertDataDto;
+
+    return this.prisma.rowData.create({
+      data: {
+        data,
+      },
+    });
+  }
 }

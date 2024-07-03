@@ -18,15 +18,16 @@ const ModalTable = ({
 
   const handleSearch = (value: string) => {
     const filteredOptions = clients
-      .filter((client) => {
-        const fullName = `${client.firstName.toLowerCase()} ${client.lastName.toLowerCase()}`;
+
+	.filter((client) => {
+		const fullName = `${client.firstName.toLowerCase()} ${client.lastName.toLowerCase()}`;
         return fullName.includes(value.toLowerCase());
       })
       .map((client) => ({
         value: `${client.firstName} ${client.lastName}`,
         id: client.id,
       }));
-    setOptions(filteredOptions);
+	  setOptions(filteredOptions);
   };
 
   const onSelect = (value: string, option: { value: string; id: number }) => {
@@ -34,7 +35,7 @@ const ModalTable = ({
     const client = clients.find((client) => client.id === option.id);
     if (client) {
       setSelectedClient(client);
-      form.setFieldsValue({ client: value }); // Update the form field with the selected client name
+      form.setFieldsValue({ Client: value }); // Update the form field with the selected client name
     }
   };
 
@@ -50,10 +51,15 @@ const ModalTable = ({
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-	  console.log(values)
-      if (selectedClient) {
-        values.Client = selectedClient;
-      }
+	  const Bill = selectedClient.id;
+
+	  values.Bill = Bill;
+
+      if (values.client) {
+      values.Client = values.client;
+      delete values.client;
+    }
+
       _handleOk(values);
       form.resetFields();
       setSelectedClient(null);

@@ -82,7 +82,7 @@ export const RootLayout = () => {
     };
   }, []);
 
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const handleMenuClick = (e: any) => {
     navigate(`/${e.key}`);

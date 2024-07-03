@@ -16,43 +16,48 @@ let ProductService = class ProductService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async appendColumns(newColumns) {
-        if (!Array.isArray(newColumns)) {
-            throw new common_1.UnauthorizedException('Invalid request: newColumns must be an array');
-        }
-        const table = await this.prisma.dynamicColumnTable.findUnique({
-            where: { id: 1 },
-        });
-        let updatedColumns = [];
-        if (table.columns) {
-            try {
-                updatedColumns = JSON.parse(table.columns);
-            }
-            catch (error) {
-                throw new common_1.UnauthorizedException('Invalid JSON in columns field');
-            }
-        }
-        for (const newColumn of newColumns) {
-            if (updatedColumns.includes(newColumn)) {
-                throw new common_1.UnauthorizedException(`Column '${newColumn}' already exists`);
-            }
-            updatedColumns.push(newColumn);
-        }
-        return this.prisma.dynamicColumnTable.update({
-            where: { id: 1 },
-            data: { columns: JSON.stringify(updatedColumns) },
+    async getColumnsByTableId(tableId) {
+        return this.prisma.column.findMany({
+            where: {
+                tableId: 1,
+            },
         });
     }
-    async getColumns() {
-        const table = await this.prisma.dynamicColumnTable.findUnique({
+    async createTableWithColumns(createColumnsDto) {
+        const { tableName, columns } = createColumnsDto;
+        let table = await this.prisma.table.findUnique({
             where: { id: 1 },
         });
-        try {
-            return table.columns;
+        if (!table) {
+            table = await this.prisma.table.create({
+                data: {
+                    id: 1,
+                    name: tableName,
+                },
+            });
         }
-        catch (error) {
-            throw new Error('Invalid JSON in columns field');
+        else {
+            throw new common_1.ConflictException('Table with id = 1 already exists');
         }
+        const columnData = columns.map(column => ({
+            name: column.name,
+            tableId: table.id,
+        }));
+        await this.prisma.column.createMany({
+            data: columnData,
+        });
+        return table;
+    }
+    async getAllDataRows() {
+        return this.prisma.rowData.findMany();
+    }
+    async insertData(insertDataDto) {
+        const { data } = insertDataDto;
+        return this.prisma.rowData.create({
+            data: {
+                data,
+            },
+        });
     }
 };
 exports.ProductService = ProductService;
