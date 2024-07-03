@@ -19,6 +19,6 @@ export class InsertDataDto {
 	@IsObject()
 	@IsNotEmpty()
 	data: {
-	  data: { [key: string]: any };    // Adjust the type based on your actual schema
+	  data: { [key: string]: any };
 	};
   }

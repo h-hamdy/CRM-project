@@ -57,7 +57,7 @@ let ProductService = class ProductService {
             const rowData = await this.prisma.rowData.create({
                 data: {
                     table: { connect: { id: 1 } },
-                    ...data,
+                    data: data,
                 },
             });
             return rowData;

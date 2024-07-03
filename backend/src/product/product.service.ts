@@ -5,6 +5,8 @@ import { CreateColumnsDto, InsertDataDto } from './dto/create-columns.dto';
 
 @Injectable()
 export class ProductService {
+	// private readonly logger = new Logger(ProductService.name);
+
 
   constructor(private prisma: PrismaService) {}
 
@@ -57,17 +59,23 @@ export class ProductService {
     const { data } = insertDataDto;
 
     try {
+    //   this.logger.debug('Inserting data:', data);
+
       const rowData = await this.prisma.rowData.create({
         data: {
-          table: { connect: { id: 1 } }, // Assuming 'table' is a required field and should connect to table with ID 1
-          ...data, // Spread the data fields here assuming it matches the schema
+          table: { connect: { id: 1 } },
+          data: data,
         },
       });
+
       return rowData;
     } catch (error) {
+    //   this.logger.error('Failed to insert data:', error);
+
       if (error.code === 'P2002') {
         throw new ConflictException('Data insertion failed due to a conflict.');
       }
+
       throw new Error('Failed to insert data.');
     }
   }

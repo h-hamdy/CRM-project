@@ -5,7 +5,7 @@ import {
   DiffOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { useForm } from "antd/lib/form/Form";
+// import { useForm } from "antd/lib/form/Form";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import ModalTable from "./ModalTable";
@@ -22,9 +22,9 @@ const locale = {
 };
 
 export const Product = () => {
+	const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form] = Form.useForm();
   const [columns, setColumns] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any[]>([]);
 //   const [data, _setData] = useState<any[]>([]);
@@ -171,7 +171,7 @@ export const Product = () => {
 			data: values,
 		  };
   
-		form.resetFields();
+		// form.resetFields();
   
 		await axios.post('http://localhost:3333/product/data', payload, {
 		  withCredentials: true,
