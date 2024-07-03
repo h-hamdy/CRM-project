@@ -3,7 +3,7 @@ import { CreateColumnsDto, InsertDataDto } from './dto/create-columns.dto';
 export declare class ProductController {
     private readonly productService;
     constructor(productService: ProductService);
-    getColumnsByTableId(tableId: number): Promise<string[] | {
+    getColumnsByTableId(tableId: number): Promise<any[] | {
         message: string;
     }>;
     createTableWithColumns(createColumnsDto: CreateColumnsDto): Promise<{

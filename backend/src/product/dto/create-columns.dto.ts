@@ -13,10 +13,12 @@ export class CreateColumnsDto {
 }
 
 
-import { IsInt, IsObject } from 'class-validator';
+import { IsObject } from 'class-validator';
 
 export class InsertDataDto {
-  @IsObject()
-  @IsNotEmpty()
-  data: object;
-}
+	@IsObject()
+	@IsNotEmpty()
+	data: {
+	  data: { [key: string]: any };    // Adjust the type based on your actual schema
+	};
+  }

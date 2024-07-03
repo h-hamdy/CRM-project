@@ -23,7 +23,7 @@ let ProductController = class ProductController {
     async getColumnsByTableId(tableId) {
         try {
             const columns = await this.productService.getColumnsByTableId(tableId);
-            const columnNames = columns.map(column => column.name);
+            const columnNames = columns.map((column) => column.name);
             return columnNames;
         }
         catch (error) {

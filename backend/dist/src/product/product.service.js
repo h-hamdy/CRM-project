@@ -53,11 +53,21 @@ let ProductService = class ProductService {
     }
     async insertData(insertDataDto) {
         const { data } = insertDataDto;
-        return this.prisma.rowData.create({
-            data: {
-                data,
-            },
-        });
+        try {
+            const rowData = await this.prisma.rowData.create({
+                data: {
+                    table: { connect: { id: 1 } },
+                    ...data,
+                },
+            });
+            return rowData;
+        }
+        catch (error) {
+            if (error.code === 'P2002') {
+                throw new common_1.ConflictException('Data insertion failed due to a conflict.');
+            }
+            throw new Error('Failed to insert data.');
+        }
     }
 };
 exports.ProductService = ProductService;

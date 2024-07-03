@@ -8,8 +8,8 @@ export declare class AuthService {
     private readonly jwtService;
     constructor(configService: ConfigService, prisma: PrismaService, jwtService: JwtService);
     singup(dto: AuthDto): Promise<{
-        id: number;
         email: string;
+        id: number;
         createdAt: Date;
     }>;
     signin(dto: AuthDtoSignin): Promise<string>;

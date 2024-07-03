@@ -12,7 +12,7 @@ export class ProductController {
 	  async getColumnsByTableId(@Param('tableId') tableId: number) {
 		try {
 			const columns = await this.productService.getColumnsByTableId(tableId);
-			const columnNames = columns.map(column => column.name);
+			const columnNames = columns.map((column : any) => column.name);
 			return columnNames;
 		  } catch (error) {
 			// Handle the error, for example:

@@ -5,5 +5,9 @@ export declare class CreateColumnsDto {
     }>;
 }
 export declare class InsertDataDto {
-    data: object;
+    data: {
+        data: {
+            [key: string]: any;
+        };
+    };
 }

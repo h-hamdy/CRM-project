@@ -56,10 +56,19 @@ export class ProductService {
   async insertData(insertDataDto: InsertDataDto) {
     const { data } = insertDataDto;
 
-    return this.prisma.rowData.create({
-      data: {
-        data,
-      },
-    });
+    try {
+      const rowData = await this.prisma.rowData.create({
+        data: {
+          table: { connect: { id: 1 } }, // Assuming 'table' is a required field and should connect to table with ID 1
+          ...data, // Spread the data fields here assuming it matches the schema
+        },
+      });
+      return rowData;
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new ConflictException('Data insertion failed due to a conflict.');
+      }
+      throw new Error('Failed to insert data.');
+    }
   }
 }
