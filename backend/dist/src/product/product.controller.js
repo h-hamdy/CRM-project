@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductController = void 0;
 const common_1 = require("@nestjs/common");
 const product_service_1 = require("./product.service");
+const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const create_columns_dto_1 = require("./dto/create-columns.dto");
 let ProductController = class ProductController {
     constructor(productService) {
@@ -48,6 +49,7 @@ let ProductController = class ProductController {
 exports.ProductController = ProductController;
 __decorate([
     (0, common_1.Get)(''),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('tableId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -55,6 +57,7 @@ __decorate([
 ], ProductController.prototype, "getColumnsByTableId", null);
 __decorate([
     (0, common_1.Post)('columns'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_columns_dto_1.CreateColumnsDto]),
@@ -62,6 +65,7 @@ __decorate([
 ], ProductController.prototype, "createTableWithColumns", null);
 __decorate([
     (0, common_1.Post)('data'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_columns_dto_1.InsertDataDto]),
@@ -69,6 +73,7 @@ __decorate([
 ], ProductController.prototype, "insertData", null);
 __decorate([
     (0, common_1.Get)('data-rows'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

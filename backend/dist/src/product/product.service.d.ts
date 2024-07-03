@@ -1,5 +1,6 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateColumnsDto, InsertDataDto } from './dto/create-columns.dto';
+import { Prisma } from '@prisma/client';
 export declare class ProductService {
     private prisma;
     constructor(prisma: PrismaService);
@@ -15,11 +16,11 @@ export declare class ProductService {
     getAllDataRows(): Promise<{
         id: number;
         tableId: number;
-        data: import(".prisma/client").Prisma.JsonValue;
+        data: Prisma.JsonValue;
     }[]>;
     insertData(insertDataDto: InsertDataDto): Promise<{
         id: number;
         tableId: number;
-        data: import(".prisma/client").Prisma.JsonValue;
+        data: Prisma.JsonValue;
     }>;
 }

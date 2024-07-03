@@ -9,28 +9,31 @@ export class ProductController {
 
 
 	  @Get('')
+  @UseGuards(JwtAuthGuard)
 	  async getColumnsByTableId(@Param('tableId') tableId: number) {
 		try {
 			const columns = await this.productService.getColumnsByTableId(tableId);
 			const columnNames = columns.map((column : any) => column.name);
 			return columnNames;
 		  } catch (error) {
-			// Handle the error, for example:
 			return { message: 'Failed to fetch columns' };
 		  }
 	  }
 
 	@Post('columns')
+	@UseGuards(JwtAuthGuard)
 	async createTableWithColumns(@Body() createColumnsDto: CreateColumnsDto) {
 	  return this.productService.createTableWithColumns(createColumnsDto);
 	}
   
 	@Post('data')
+	@UseGuards(JwtAuthGuard)
 	async insertData(@Body() insertDataDto: InsertDataDto) {
 	  return this.productService.insertData(insertDataDto);
 	}
 
 	@Get('data-rows')
+	@UseGuards(JwtAuthGuard)
   async getAllDataRows() {
     try {
       return await this.productService.getAllDataRows();

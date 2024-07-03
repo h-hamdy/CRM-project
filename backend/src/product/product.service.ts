@@ -1,7 +1,7 @@
 import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateColumnsDto, InsertDataDto } from './dto/create-columns.dto';
-
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProductService {
@@ -52,7 +52,11 @@ export class ProductService {
   }
 
   async getAllDataRows() {
-    return this.prisma.rowData.findMany();
+	return this.prisma.rowData.findMany({
+	  orderBy: {
+		id: Prisma.SortOrder.desc, // Orders by 'id' in descending order
+	  },
+	});
   }
 
   async insertData(insertDataDto: InsertDataDto) {
