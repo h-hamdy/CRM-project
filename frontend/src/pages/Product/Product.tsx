@@ -22,23 +22,21 @@ const locale = {
 };
 
 export const Product = () => {
-	const [form] = Form.useForm();
+  const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [columns, setColumns] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any[]>([]);
-//   const [data, _setData] = useState<any[]>([]);
 
   const fetchColumnsData = async () => {
     try {
       const response = await axios.get('http://localhost:3333/product', { withCredentials: true });
-      console.log(response.data);
-      
+
       if (Array.isArray(response.data)) {
         const formattedColumns = response.data.map((col, index) => ({
           title: col,
           ...(col === "Bill" && {
-            render: () => <IconButton />,
+			render: (text: any, record: any) => <IconButton id={record.Bill} />,
             width: 50,
           }),
           dataIndex: col,
@@ -57,8 +55,8 @@ export const Product = () => {
   }, []);
 
 
-  const IconButton = ({ onClick }: any) => (
-    <Link to="/Product/Billing">
+  const IconButton = ({ onClick, id }: any) => (
+	  <Link to={`/Product/Billing/${id}`}>
       <div
         className="inline-block w-6 h-6 border border-gray-300 rounded text-center leading-6 cursor-pointer transition-colors duration-300 hover:bg-gray-200"
         onClick={onClick}
@@ -67,16 +65,18 @@ export const Product = () => {
       </div>
     </Link>
   );
+  
+  
   const handleOk = async () => {
-	try {
+	  try {
 	  const tableName = 'MyTable'; // Example table name or dynamically obtained
 	  const values = await form.validateFields(); // Assuming form is defined
-  
+	  
 	  // Assuming values.names is an array of strings representing column names
 	  const newColumns = values.names.map((title: string) => ({
 		name: title, // Ensure the structure matches { name: string }
 		...(title === 'Bill' && {
-		  render: () => <IconButton />,
+		  render: () => <IconButton id={values.Bill}/>,
 		  width: 50,
 		}),
 	  }));
@@ -139,26 +139,24 @@ export const Product = () => {
 		withCredentials: true,
 	  });
 
-	  console.log("daaaata", response.data)
-
 	  const formattedData = response.data.map((item : any, index: any) => ({
 		  ...item.data,
 		  Client: item.data.Client.toLowerCase(),
 		  key: `${index}`, // Use a unique identifier here based on your data structure
-		}));
-
+		  }));
+		
 		setTableData(formattedData);
-
+		
 		
 		} catch (error) {
-	  console.error('Error fetching data rows:', error);
-	}
-  };
-
-  useEffect(() => {
-    fetchDataRows();
-  }, []); 
-
+			console.error('Error fetching data rows:', error);
+			}
+			};
+			
+	useEffect(() => {
+		fetchDataRows();
+		}, []); 
+				
   console.log("tableData", tableData)
   const handleSubmit = async (values: any) => {
 	  try {
