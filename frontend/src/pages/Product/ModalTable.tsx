@@ -71,7 +71,7 @@ const ModalTable = ({
   return (
     <>
       <Modal
-        title="Create Table Title Column"
+        title="Add New Product"
         open={_isModalOpen}
         onOk={handleSubmit}
         onCancel={_handleCancel}
