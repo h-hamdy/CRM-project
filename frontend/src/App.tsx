@@ -9,6 +9,7 @@ import { Clients } from './pages/Clients/Clients';
 import { Management } from './pages/Management/Management';
 import { Administration } from './pages/Administration/Administration';
 import { ForOFor } from './pages/ForOFor';
+import { Billing } from './pages/Product/Billing';
 
 function App() {
 	return (
@@ -20,6 +21,7 @@ function App() {
 			<Route path='' element={<Dashboard />} />
 			<Route path='Calendar' element={<Calendar />} />
 			<Route path='Product' element={<Product />} />
+			<Route path='Product/Billing/:id' element={<Billing />} />
 			<Route path='Clients' element={<Clients />} />
 			<Route path='Management' element={<Management />} />
 			<Route path='Administration' element={<Administration />} />
