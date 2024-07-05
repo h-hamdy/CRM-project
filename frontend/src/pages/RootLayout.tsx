@@ -105,7 +105,7 @@ export const RootLayout = () => {
       <Layout className="min-h-screen pt-[70px]">
         <Sider
           theme="light"
-          className={`bg-red-500 ${
+          className={`bg-red-500  fixed ${
             collapsed ? "w-[80px]" : "w-[300px]"
           } transition-all duration-300`}
           collapsible
