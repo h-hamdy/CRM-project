@@ -1,21 +1,14 @@
+import React, { useState, useContext, useRef } from "react";
+import { Table, Input, InputNumber, Form, Button, InputRef, FormInstance } from "antd";
+import { PlusOutlined, DeleteOutlined, FilePdfOutlined, LeftOutlined } from "@ant-design/icons";
 import { Link, useParams } from "react-router-dom";
 import { useClients } from "../../context/ClientsContext";
 import { ForOFor } from "../ForOFor";
-import { Button, Form, Input, InputNumber, Table } from "antd";
-import {
-  FilePdfOutlined,
-  LeftOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
-import React, { useContext, useRef, useState } from "react";
-import type { GetRef, InputRef } from "antd";
-type FormInstance<T> = GetRef<typeof Form<T>>;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
 interface Item {
-  key: string;
+  key: React.Key;
   Title: string;
   Qte: string;
   Tarif: string;
@@ -55,23 +48,19 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   handleSave,
   ...restProps
 }) => {
-  // const [editing, setEditing] = useState(false);
   const inputRef = useRef<InputRef>(null);
   const form = useContext(EditableContext)!;
 
   const save = async () => {
     try {
       const values = await form.validateFields();
-      //   setT(values.Tarif + values.TarifN)
       handleSave({ ...record, ...values });
-      console.log("Form values:", values); // Log the form values here
     } catch (errInfo) {
       console.log("Save failed:", errInfo);
     }
   };
 
   let childNode = children;
-  // const inputRef = useRef<InputRef>(null);
 
   if (editable) {
     if (dataIndex === "Qte") {
@@ -125,7 +114,6 @@ export const Billing = () => {
   const { clients } = useClients();
 
   const client = clients.find((client) => client.id === Number(id));
-//   console.log(client)
 
   const [dataSource, setDataSource] = useState<DataType[]>([
     {
@@ -193,28 +181,45 @@ export const Billing = () => {
     },
   ];
 
+  const calculateSubtotal = () => {
+	return dataSource.reduce((acc, item) => {
+	  const totalValue = parseFloat(item.Total.replace("$", "")) || 0;
+	  return acc + totalValue;
+	}, 0).toFixed(2);
+  };
+
   const handleAdd = () => {
     const newData: DataType = {
       key: count,
-      Title: `Edward King ${count}`,
+      Title: "",
       Qte: "0",
-      Tarif: "32",
-      TarifN: "32",
-      Total: "$0.00",
+      Tarif: "",
+      TarifN: "",
+      Total: "0.00",
     };
     setDataSource([...dataSource, newData]);
     setCount(count + 1);
   };
 
+  const calculateTotal = (qte: string, tarif: string | undefined, tarifN: string | undefined) => {
+	const qteNum = parseFloat(qte) || 0;
+	const tarifNum = parseFloat(tarif || "0");
+	const tarifNNum = parseFloat(tarifN || "0");
+	const total = (qteNum * (tarifNum + tarifNNum)).toFixed(2);
+	return `$${total}`;
+  };
+  
   const handleSave = (row: DataType) => {
-    const newData = [...dataSource];
-    const index = newData.findIndex((item) => row.key === item.key);
-    const item = newData[index];
-    newData.splice(index, 1, {
-      ...item,
-      ...row,
-    });
-    setDataSource(newData);
+	const newData = [...dataSource];
+	const index = newData.findIndex((item) => row.key === item.key);
+	const item = newData[index];
+	newData.splice(index, 1, {
+	  ...item,
+	  ...row,
+	  Total: calculateTotal(row.Qte, row.Tarif, row.TarifN), // Update the total
+	});
+	setDataSource(newData);
+	console.log("Updated DataSource:", newData); // Log the updated dataSource array
   };
 
   const components = {
@@ -240,8 +245,6 @@ export const Billing = () => {
     };
   });
 
-  const currentDate = new Date().toLocaleDateString();
-
   return (
     <div className="flex items-center justify-center">
       {client ? (
@@ -261,28 +264,10 @@ export const Billing = () => {
             </div>
           </div>
           <div className="w-full border-t-[2px] border-gray-200"></div>
-          <div className="w-full bg-white drop-shadow-md rounded-xl h-[120px] mt-10">
-            <div className="flex justify-around items-center h-full">
-				<div className="flex items-center">
-					<img className="rounded-full w-[90px]" src="/src/assets/logo.webp"></img>
-              <div className=" font-bold text-2xl">Mapira</div>
-					</div>
-              <div>
-                <div className="">
-                  <div className="font-semibold text-[16px]">Prepared for:</div>
-                  <div>{client.firstName} {client.lastName}</div>
-                </div>
-                <div className="">
-                  <div className="font-semibold text-[16px]">Date:</div>
-                  <div>{currentDate}</div>
-                </div>
-              </div>
-            </div>
-          </div>
           <div className="flex flex-col justify-end">
             <div className="text-2xl font-light pt-10">Products / Services</div>
             <Table
-              className="pt-10 "
+              className="pt-10"
               components={components}
               rowClassName={() => "editable-row"}
               bordered
@@ -294,20 +279,20 @@ export const Billing = () => {
                 </Button>
               )}
             />
-            <div className="flex flex-col pt-10">
-              <div className="flex justify-start gap-10 pb-6">
-                <div className="text-[17px]">Subtotal:</div>
-                <div className="text-[15px] pl-[18px]">
-                  <span className="text-gray-600">$</span>0.00
-                </div>
-              </div>
+            <div className="flex flex-col">
+			<div className="flex justify-start gap-10 pb-6">
+  <div className="text-[17px]">Subtotal:</div>
+  <div className="text-[15px] pl-[18px]">
+    <span className="text-gray-600">$</span>{calculateSubtotal()}
+  </div>
+</div>
               <div className="flex justify-start gap-10">
                 <div className="text-[17px]">Sales Tax</div>
                 <Form.Item>
                   <InputNumber
                     className="w-[100px]"
                     addonAfter="%"
-                    defaultValue={0.0}
+                    defaultValue={20}
                   />
                 </Form.Item>
               </div>
