@@ -1,16 +1,15 @@
 import { Link, useParams } from "react-router-dom";
 import { useClients } from "../../context/ClientsContext";
 import { ForOFor } from "../ForOFor";
-import { Button, Form, Input, Table } from "antd";
+import { Button, Form, Input, InputNumber, Table } from "antd";
 import {
   FilePdfOutlined,
   LeftOutlined,
   PlusOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import type { GetRef, InputRef } from "antd";
-
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
@@ -48,69 +47,59 @@ interface EditableCellProps {
 }
 
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
-  title,
-  editable,
-  children,
-  dataIndex,
-  record,
-  handleSave,
-  ...restProps
-}) => {
-  const [editing, setEditing] = useState(false);
-  const inputRef = useRef<InputRef>(null);
-  const form = useContext(EditableContext)!;
+	title,
+	editable,
+	children,
+	dataIndex,
+	record,
+	handleSave,
+	...restProps
+  }) => {
+	// const [editing, setEditing] = useState(false);
+	const inputRef = useRef<InputRef>(null);
+	const form = useContext(EditableContext)!;
+  
+	const save = async () => {
+	  try {
+		const values = await form.validateFields();
+		handleSave({ ...record, ...values });
+	  } catch (errInfo) {
+		console.log("Save failed:", errInfo);
+	  }
+	};
+  
+	let childNode = children;
+	// const inputRef = useRef<InputRef>(null);
+  
+	if (editable) {
+		if (dataIndex === 'Qte') {
+		  childNode = (
+			<Form.Item style={{ margin: 0 }} name={dataIndex}>
+			 <InputNumber defaultValue={parseInt(record.Qte)} onPressEnter={save} onBlur={save} />
+			</Form.Item>
+		  );
+		  
+		} 
+		else if (dataIndex === "Tarif" || dataIndex === "TarifN") {
+			childNode = (
+				<Form.Item style={{ margin: 0 }} name={dataIndex}>
+			 <InputNumber addonAfter="$" defaultValue={0.00} />
 
-  useEffect(() => {
-    if (editing) {
-      inputRef.current?.focus();
-    }
-  }, [editing]);
-
-  const toggleEdit = () => {
-    setEditing(!editing);
-    form.setFieldsValue({ [dataIndex]: record[dataIndex] });
+				</Form.Item>
+			  );
+		}
+		else {
+		  childNode = (
+			<Form.Item style={{ margin: 0 }} name={dataIndex}>
+			  <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+			</Form.Item>
+		  );
+		}
+	  }
+  
+	return <td {...restProps}>{childNode}</td>;
   };
-
-  const save = async () => {
-    try {
-      const values = await form.validateFields();
-
-      toggleEdit();
-      handleSave({ ...record, ...values });
-    } catch (errInfo) {
-      console.log("Save failed:", errInfo);
-    }
-  };
-
-  let childNode = children;
-
-  if (editable) {
-    childNode = editing ? (
-      <Form.Item
-        style={{ margin: 0 }}
-        name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
-      >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-      </Form.Item>
-    ) : (
-      <div
-        className="editable-cell-value-wrap"
-        style={{ paddingRight: 24 }}
-        onClick={toggleEdit}
-      >
-        {children}
-      </div>
-    );
-  }
-
-  return <td {...restProps}>{childNode}</td>;
-};
+  
 
 type EditableTableProps = Parameters<typeof Table>[0];
 
@@ -134,20 +123,20 @@ export const Billing = () => {
   const [dataSource, setDataSource] = useState<DataType[]>([
     {
       key: "0",
-      Title: "Edward King 0",
-      Qte: "32",
-      Tarif: "London, Park Lane no. 0",
-      TarifN: "London, Park Lane no. 0",
-      Total: "Lon",
+      Title: "",
+      Qte: "0",
+      Tarif: "",
+      TarifN: "0",
+      Total: "0.00",
     },
-    {
-      key: "1",
-      Title: "Edward King 1",
-      Qte: "32",
-      Tarif: "London, Park Lane no. 1",
-      TarifN: "London, Park Lane no. 0",
-      Total: "Lon",
-    },
+    // {
+    //   key: "1",
+    //   Title: "Edward King 1",
+    //   Qte: "32",
+    //   Tarif: "London, Park Lane no. 1",
+    //   TarifN: "London, Park Lane no. 0",
+    //   Total: "Lon",
+    // },
   ]);
 
   const [count, setCount] = useState(2);
@@ -157,55 +146,59 @@ export const Billing = () => {
     setDataSource(newData);
   };
 
-  const defaultColumns: (ColumnTypes[number] & {
-    editable?: boolean;
-    dataIndex: string;
-  })[] = [
-    {
-      title: "Title",
-      dataIndex: "Title",
-      width: "30%",
-      editable: true,
-    },
-    {
-      title: "Qte",
-      dataIndex: "Qte",
-    },
-    {
-      title: "Tarif Taxable",
-      dataIndex: "Tarif",
-    },
-    {
-      title: "Tarif Non Taxable",
-      dataIndex: "TarifN",
-    },
-    {
-      title: "Total",
-      dataIndex: "Total",
-    },
-    {
-      title: "operation",
-      dataIndex: "operation",
-      render: (_, record) =>
-        dataSource.length >= 1 ? (
-          <a
-            onClick={() => handleDelete(record.key)}
-            className="flex items-center justify-center w-7 h-7 border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition-colors duration-300"
-          >
-            <DeleteOutlined className="text-lg" />
-          </a>
-        ) : null,
-    },
+  const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string; })[] = [
+	{
+	  title: "Title",
+	  dataIndex: "Title",
+	  width: "30%",
+	  editable: true,
+	},
+	{
+	  title: "Qte",
+	  dataIndex: "Qte",
+	  editable: true,
+	},
+	{
+	  title: "Tarif Taxable",
+	  dataIndex: "Tarif",
+	  editable: true,
+	},
+	{
+	  title: "Tarif Non Taxable",
+	  dataIndex: "TarifN",
+	  editable: true,
+	},
+	{
+	  title: "Total",
+	  dataIndex: "Total",
+	},
+	{
+	  title: "Action",
+	  dataIndex: "operation",
+	  width: 50,
+	  align: 'center',
+	  render: (_, record) =>
+		dataSource.length >= 1 ? (
+		  <div className="flex items-center justify-center w-full h-full">
+			<a
+			  onClick={() => handleDelete(record.key)}
+			  className="flex items-center justify-center w-7 h-7 border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition-colors duration-300"
+			>
+			  <DeleteOutlined className="text-lg" />
+			</a>
+		  </div>
+		) : null,
+	},
   ];
 
   const handleAdd = () => {
     const newData: DataType = {
       key: count,
       Title: `Edward King ${count}`,
-      Qte: "32",
+      Qte: "0",
       Tarif: "32",
       TarifN: "32",
-      Total: "32",
+      Total: "$32",
     };
     setDataSource([...dataSource, newData]);
     setCount(count + 1);
@@ -230,20 +223,21 @@ export const Billing = () => {
   };
 
   const columns = defaultColumns.map((col) => {
-    if (!col.editable) {
-      return col;
-    }
-    return {
-      ...col,
-      onCell: (record: DataType) => ({
-        record,
-        editable: col.editable,
-        dataIndex: col.dataIndex,
-        title: col.title,
-        handleSave,
-      }),
-    };
+	if (!col.editable) {
+	  return col;
+	}
+	return {
+	  ...col,
+	  onCell: (record: DataType) => ({
+		record,
+		editable: col.editable,
+		dataIndex: col.dataIndex,
+		title: col.title,
+		handleSave,
+	  }),
+	};
   });
+  
 
   return (
     <div className="flex items-center justify-center">
@@ -266,11 +260,11 @@ export const Billing = () => {
               </Button>
             </div>
           </div>
-          <div>
+          <div className="flex flex-col justify-end">
 			<div className="text-2xl font-light pt-10">Products / Services
 			</div>
             <Table
-              className="pt-10"
+              className="pt-10 "
               components={components}
               rowClassName={() => "editable-row"}
               bordered
@@ -282,7 +276,6 @@ export const Billing = () => {
                 </Button>
               )}
             />
-          </div>
           <div className="flex flex-col pt-10">
             <div className="flex justify-end gap-10">
               <div className="text-[17px]">Subtotal</div>
@@ -296,6 +289,7 @@ export const Billing = () => {
               <div className="text-[17px]">Total value</div>
               <div className="text-[15px]">$</div>
             </div>
+          </div>
           </div>
         </div>
       ) : (
