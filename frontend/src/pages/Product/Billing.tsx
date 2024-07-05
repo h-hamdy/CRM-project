@@ -17,9 +17,11 @@ const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
 interface Item {
   key: string;
-  name: string;
-  age: string;
-  address: string;
+  Title: string;
+  Qte: string;
+  Tarif: string;
+  TarifN: string;
+  Total: string;
 }
 
 interface EditableRowProps {
@@ -114,9 +116,11 @@ type EditableTableProps = Parameters<typeof Table>[0];
 
 interface DataType {
   key: React.Key;
-  name: string;
-  age: string;
-  address: string;
+  Title: string;
+  Qte: string;
+  Tarif: string;
+  TarifN: string;
+  Total: string;
 }
 
 type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
@@ -130,15 +134,19 @@ export const Billing = () => {
   const [dataSource, setDataSource] = useState<DataType[]>([
     {
       key: "0",
-      name: "Edward King 0",
-      age: "32",
-      address: "London, Park Lane no. 0",
+      Title: "Edward King 0",
+      Qte: "32",
+      Tarif: "London, Park Lane no. 0",
+      TarifN: "London, Park Lane no. 0",
+      Total: "Lon",
     },
     {
       key: "1",
-      name: "Edward King 1",
-      age: "32",
-      address: "London, Park Lane no. 1",
+      Title: "Edward King 1",
+      Qte: "32",
+      Tarif: "London, Park Lane no. 1",
+      TarifN: "London, Park Lane no. 0",
+      Total: "Lon",
     },
   ]);
 
@@ -154,18 +162,26 @@ export const Billing = () => {
     dataIndex: string;
   })[] = [
     {
-      title: "name",
-      dataIndex: "name",
+      title: "Title",
+      dataIndex: "Title",
       width: "30%",
       editable: true,
     },
     {
-      title: "age",
-      dataIndex: "age",
+      title: "Qte",
+      dataIndex: "Qte",
     },
     {
-      title: "address",
-      dataIndex: "address",
+      title: "Tarif Taxable",
+      dataIndex: "Tarif",
+    },
+    {
+      title: "Tarif Non Taxable",
+      dataIndex: "TarifN",
+    },
+    {
+      title: "Total",
+      dataIndex: "Total",
     },
     {
       title: "operation",
@@ -185,9 +201,11 @@ export const Billing = () => {
   const handleAdd = () => {
     const newData: DataType = {
       key: count,
-      name: `Edward King ${count}`,
-      age: "32",
-      address: `London, Park Lane no. ${count}`,
+      Title: `Edward King ${count}`,
+      Qte: "32",
+      Tarif: "32",
+      TarifN: "32",
+      Total: "32",
     };
     setDataSource([...dataSource, newData]);
     setCount(count + 1);
@@ -249,6 +267,8 @@ export const Billing = () => {
             </div>
           </div>
           <div>
+			<div className="text-2xl font-light pt-10">Products / Services
+			</div>
             <Table
               className="pt-10"
               components={components}
@@ -262,6 +282,20 @@ export const Billing = () => {
                 </Button>
               )}
             />
+          </div>
+          <div className="flex flex-col pt-10">
+            <div className="flex justify-end gap-10">
+              <div className="text-[17px]">Subtotal</div>
+              <div className="text-[15px]">$</div>
+            </div>
+            <div className="flex justify-end gap-10">
+              <div className="text-[17px]">Sales Tax</div>
+              <div className="text-[15px]">$</div>
+            </div>
+            <div className="flex justify-end gap-10">
+              <div className="text-[17px]">Total value</div>
+              <div className="text-[15px]">$</div>
+            </div>
           </div>
         </div>
       ) : (
