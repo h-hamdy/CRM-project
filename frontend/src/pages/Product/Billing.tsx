@@ -4,6 +4,8 @@ import { PlusOutlined, DeleteOutlined, FilePdfOutlined, LeftOutlined } from "@an
 import { Link, useParams } from "react-router-dom";
 import { useClients } from "../../context/ClientsContext";
 import { ForOFor } from "../ForOFor";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
@@ -245,6 +247,37 @@ export const Billing = () => {
     };
   });
 
+  const generatePDF = () => {
+	const doc = new jsPDF();
+  
+	// Add title
+	doc.setFontSize(18);
+	doc.text("Mapira", 14, 22);
+  
+	// Define table column titles and rows
+	const columns = ["Title", "Quantity", "Tarif", "TarifN", "Total"];
+	const rows = dataSource.map((item : any) => [
+	  item.Title,
+	  item.Qte,
+	  item.Tarif !== undefined ? item.Tarif : "-",
+	  item.TarifN !== undefined ? item.TarifN : "-",
+	  item.Total,
+	]);
+  
+	// Add table
+	doc.autoTable({
+	  head: [columns],
+	  body: rows,
+	  startY: 30,
+	});
+  
+	// Save the PDF
+	doc.save("Mapira-Devis.pdf");
+  };
+  
+
+  
+
   return (
     <div className="flex items-center justify-center">
       {client ? (
@@ -258,6 +291,7 @@ export const Billing = () => {
                 icon={<FilePdfOutlined />}
                 className="h-[40px] w-[160px] rounded-lg"
                 type="primary"
+				onClick={generatePDF}
               >
                 <div>Convert to PDF</div>
               </Button>
