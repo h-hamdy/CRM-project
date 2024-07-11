@@ -283,12 +283,66 @@ export const Billing = () => {
       }),
     };
   });
+
+  const generateFactureNumber = () => {
+	const currentDate = new Date();
+	const factureNumber = currentDate.getTime().toString().substr(-5); // Generate a 5-digit string based on current time
+	return factureNumber;
+  };
+  
+  // Function to get the current date in a formatted string
+  const getCurrentDate = () => {
+	const currentDate = new Date();
+	const options = { year: 'numeric', month: 'long', day: 'numeric' };
+	return currentDate.toLocaleDateString('en-US', options);
+  };
+
   const generatePDF = () => {
 	const doc = new jsPDF();
+  
+	doc.setFontSize(25);
+	doc.setFont('helvetica', 'bold');
+  
+	// Center the text horizontally
+	const textWidth = doc.getStringUnitWidth("Mapira") * 25 / doc.internal.scaleFactor;
+	const pageWidth = doc.internal.pageSize.width;
+	const xPosition = (pageWidth - textWidth) / 2;
+  
+	// Add the centered text
+	doc.text("Mapira", xPosition, 22);
+  
+	const startX = 23;
+let startY = 40; // Initial startY position
 
-doc.setFontSize(18);
-doc.setFont('helvetica', 'bold');
-doc.text("Mapira", 14, 22);
+doc.setFontSize(11);
+
+// Draw outer rectangle for the structured content
+doc.rect(startX, startY, 160, 20); // Outer rectangle
+
+// Vertical line in the center
+doc.line(startX + 80, startY, startX + 80, startY + 20);
+
+// Facture N and its value (left side)
+doc.setFont("helvetica", "bold");
+doc.text("Facture N :", startX + 5, startY + 8);
+doc.setFont("helvetica", "light"); // Set font to Helvetica Light
+doc.text(generateFactureNumber(), startX + 30, startY + 8); // Adjusted startX for value
+
+// Date and its value (left side)
+doc.setFont("helvetica", "bold"); // Set font back to Helvetica (normal)
+doc.text("Date :", startX + 5, startY + 15);
+doc.setFont("helvetica", "light"); // Set font to Helvetica Light
+doc.text(getCurrentDate(), startX + 30, startY + 15); // Adjusted startX for value
+
+// Client Name label (right side)
+doc.setFont("helvetica", "bold"); // Set font back to Helvetica (normal)
+doc.text("Client Name :", startX + 85, startY + 12);
+
+// Client Name value (right side)
+doc.setFont("helvetica", "light"); // Set font to Helvetica Light
+doc.text((client?.firstName ?? "") + " " + (client?.lastName ?? ""), startX + 115, startY + 12);
+	// Adjust startY for the main table (autoTable)
+	startY = startY + 40; // Add spacing after the initial structured content
   
 	// Define table column titles and rows
 	const columns = ["QTE", "DÉSIGNATION", "Tarif Taxable", "Tarif Non Taxable", "Total"];
@@ -299,37 +353,29 @@ doc.text("Mapira", 14, 22);
 	  item.TarifN !== undefined ? item.TarifN : "-",
 	  item.Total,
 	]);
-
-	var tarif_sum = 0;
+  
+	let tarif_sum = 0;
   
 	// Calculate subtotal
 	const Tarif_N_sum = dataSource.reduce((sum, item) => {
 	  const tarif = item.Tarif ? parseFloat(item.Tarif) : 0;
 	  const tarifN = item.TarifN ? parseFloat(item.TarifN) : 0;
 	  const qte = item.Qte ? parseFloat(item.Qte) : 1;
-	  tarif_sum += tarif * qte
+	  tarif_sum += tarif * qte;
 	  return sum + (tarifN) * qte;
-	  }, 0);
-
-	  console.log("Tarif tax", tarif_sum)
-	  console.log("Tarif_N_sum", Tarif_N_sum)
-	  console.log("Tva", salesTax)
+	}, 0);
+  
 	// Define tax and total
+	const salesTax = 10; // Example tax rate (adjust as needed)
 	const tax = (tarif_sum * salesTax) / 100;
-
-	console.log("Tax", tax)
-
 	const total = Tarif_N_sum + tarif_sum + tax;
 	const subtotal = Tarif_N_sum + tarif_sum;
-
-
-	console.log("Total", total)
   
-	// Add main table
+	// Add main table with spacing
 	doc.autoTable({
 	  head: [columns],
 	  body: rows,
-	  startY: 80,
+	  startY: startY, // Adjust startY to add spacing
 	});
   
 	// Get the final Y position after the main table
@@ -347,13 +393,12 @@ doc.text("Mapira", 14, 22);
 	doc.autoTable({
 	  head: [summaryColumns],
 	  body: summaryRows,
-	  startY: finalY,
+	  startY: finalY + 20, // Add additional spacing after the main table
 	  theme: 'plain',
 	  headStyles: { fontStyle: 'bold' },
 	  bodyStyles: { fontSize: 12 },
 	  styles: { halign: 'right' },
 	});
-
   
 	// Save the PDF
 	doc.save("Mapira-Devis.pdf");
