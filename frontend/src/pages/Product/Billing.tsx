@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import { Table, Input, InputNumber, Form, Button, InputRef, FormInstance } from "antd";
 import { PlusOutlined, DeleteOutlined, FilePdfOutlined, LeftOutlined } from "@ant-design/icons";
 import { Link, useParams } from "react-router-dom";
@@ -190,6 +190,43 @@ export const Billing = () => {
 	}, 0).toFixed(2);
   };
 
+  const [totalValue, setTotalValue] = useState("0.00");
+
+  const [salesTax, setSalesTax] = useState(20);
+  useEffect(() => {
+    const newTotalValue = calculateTotalValue();
+    setTotalValue(newTotalValue);
+  }, [dataSource, salesTax]);
+
+  const calculateTotalValue = () => {
+	const tarif_sum = dataSource.reduce((sum, item) => {
+	  const tarif = item.Tarif ? parseFloat(item.Tarif) : 0;
+	  const qte = item.Qte ? parseFloat(item.Qte) : 1;
+	  return sum + (tarif * qte);
+	}, 0);
+  
+	const totaltarifvalue = (tarif_sum * salesTax) / 100;
+	const subtotal = Number(calculateSubtotal());
+  
+	// Ensure the final value is a number before calling toFixed
+	const totalValue = Number(totaltarifvalue + subtotal);
+  
+	return totalValue.toFixed(2); // Ensure it returns a string with two decimal places
+  };
+  
+  
+//   const calculateTVA = () => {
+// 	return dataSource.reduce((acc, item) => {
+// 	  const TVA = parseFloat(item.Total.replace("$", "")) || 0;
+// 	  return acc + totalValue;
+// 	}, 0).toFixed(2);
+//   };
+
+
+  const handleSalesTaxChange = (value : any) => {
+	setSalesTax(value);
+  };
+
   const handleAdd = () => {
     const newData: DataType = {
       key: count,
@@ -246,38 +283,82 @@ export const Billing = () => {
       }),
     };
   });
-
   const generatePDF = () => {
 	const doc = new jsPDF();
-  
-	// Add title
-	doc.setFontSize(18);
-	doc.text("Mapira", 14, 22);
+
+doc.setFontSize(18);
+doc.setFont('helvetica', 'bold');
+doc.text("Mapira", 14, 22);
   
 	// Define table column titles and rows
-	const columns = ["Title", "Quantity", "Tarif", "TarifN", "Total"];
-	const rows = dataSource.map((item : any) => [
-	  item.Title,
+	const columns = ["QTE", "DÉSIGNATION", "Tarif Taxable", "Tarif Non Taxable", "Total"];
+	const rows = dataSource.map((item) => [
 	  item.Qte,
+	  item.Title,
 	  item.Tarif !== undefined ? item.Tarif : "-",
 	  item.TarifN !== undefined ? item.TarifN : "-",
 	  item.Total,
 	]);
+
+	var tarif_sum = 0;
   
-	// Add table
+	// Calculate subtotal
+	const Tarif_N_sum = dataSource.reduce((sum, item) => {
+	  const tarif = item.Tarif ? parseFloat(item.Tarif) : 0;
+	  const tarifN = item.TarifN ? parseFloat(item.TarifN) : 0;
+	  const qte = item.Qte ? parseFloat(item.Qte) : 1;
+	  tarif_sum += tarif * qte
+	  return sum + (tarifN) * qte;
+	  }, 0);
+
+	  console.log("Tarif tax", tarif_sum)
+	  console.log("Tarif_N_sum", Tarif_N_sum)
+	  console.log("Tva", salesTax)
+	// Define tax and total
+	const tax = (tarif_sum * salesTax) / 100;
+
+	console.log("Tax", tax)
+
+	const total = Tarif_N_sum + tarif_sum + tax;
+	const subtotal = Tarif_N_sum + tarif_sum;
+
+
+	console.log("Total", total)
+  
+	// Add main table
 	doc.autoTable({
 	  head: [columns],
 	  body: rows,
-	  startY: 30,
+	  startY: 80,
 	});
+  
+	// Get the final Y position after the main table
+	const finalY = (doc as any).lastAutoTable.finalY + 10;
+  
+	// Define summary table columns and rows
+	const summaryColumns = ["", "Amount"];
+	const summaryRows = [
+	  ["Subtotal:", `$${subtotal.toFixed(2)}`],
+	  ["TVA:", `$${tax.toFixed(2)}`],
+	  ["Total:", `$${total.toFixed(2)}`],
+	];
+  
+	// Add summary table
+	doc.autoTable({
+	  head: [summaryColumns],
+	  body: summaryRows,
+	  startY: finalY,
+	  theme: 'plain',
+	  headStyles: { fontStyle: 'bold' },
+	  bodyStyles: { fontSize: 12 },
+	  styles: { halign: 'right' },
+	});
+
   
 	// Save the PDF
 	doc.save("Mapira-Devis.pdf");
   };
   
-
-  
-
   return (
     <div className="flex items-center justify-center">
       {client ? (
@@ -326,14 +407,21 @@ export const Billing = () => {
                   <InputNumber
                     className="w-[100px]"
                     addonAfter="%"
-                    defaultValue={20}
+                    value={salesTax}
+					onChange={handleSalesTaxChange}
                   />
                 </Form.Item>
               </div>
+			  {/* <div className="flex justify-start pb-5 gap-10">
+                <div className="text-[17px]">TVA:</div>
+                <div className="text-[15px]">
+                  <span className="text-gray-600">$</span>{tva}
+                </div>
+              </div> */}
               <div className="flex justify-start gap-10">
                 <div className="text-[17px]">Total value:</div>
                 <div className="text-[15px]">
-                  <span className="text-gray-600">$</span>0.00
+                  <span className="text-gray-600">$</span>{totalValue}
                 </div>
               </div>
             </div>
