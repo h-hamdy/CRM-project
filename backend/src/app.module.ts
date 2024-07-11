@@ -6,9 +6,10 @@ import { ConfigModule } from '@nestjs/config';
 import { ClientsModule } from './clients/clients.module';
 import { ProductModule } from './product/product.module';
 import { PrismaService } from './prisma/prisma.service';
+import { BillsModule } from './bills/bills.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, PrismaModule, ConfigModule, ClientsModule, ProductModule],
+  imports: [AuthModule, UsersModule, PrismaModule, ConfigModule, ClientsModule, ProductModule, BillsModule],
 })
 export class AppModule implements OnModuleInit {
   constructor(private readonly prisma: PrismaService) {}

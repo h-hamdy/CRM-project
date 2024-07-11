@@ -9,28 +9,31 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppModule = void 0;
+exports.BillsService = void 0;
 const common_1 = require("@nestjs/common");
-const auth_module_1 = require("./auth/auth.module");
-const user_module_1 = require("./user/user.module");
-const prisma_module_1 = require("./prisma/prisma.module");
-const config_1 = require("@nestjs/config");
-const clients_module_1 = require("./clients/clients.module");
-const product_module_1 = require("./product/product.module");
-const prisma_service_1 = require("./prisma/prisma.service");
-const bills_module_1 = require("./bills/bills.module");
-let AppModule = class AppModule {
+const prisma_service_1 = require("../prisma/prisma.service");
+let BillsService = class BillsService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async onModuleInit() {
+    async create(createBillDto) {
+        const { factureNumber, items } = createBillDto;
+        return this.prisma.bill.create({
+            data: {
+                factureNumber,
+                items: {
+                    create: items,
+                },
+            },
+            include: {
+                items: true,
+            },
+        });
     }
 };
-exports.AppModule = AppModule;
-exports.AppModule = AppModule = __decorate([
-    (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule, user_module_1.UsersModule, prisma_module_1.PrismaModule, config_1.ConfigModule, clients_module_1.ClientsModule, product_module_1.ProductModule, bills_module_1.BillsModule],
-    }),
+exports.BillsService = BillsService;
+exports.BillsService = BillsService = __decorate([
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService])
-], AppModule);
-//# sourceMappingURL=app.module.js.map
+], BillsService);
+//# sourceMappingURL=bills.service.js.map

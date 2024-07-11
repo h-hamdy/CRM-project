@@ -67,3 +67,21 @@ model RowData {
   data      Json
   table     Table     @relation(fields: [tableId], references: [id])
 }
+
+model Bill {
+  id            Int     @id @default(autoincrement())
+  factureNumber Int
+  items         Item[]
+}
+
+model Item {
+  id       Int    @id @default(autoincrement())
+  Qte      Int
+  Tarif    Int?
+  TarifN   Int?
+  Title    String
+  Total    String
+  key      String
+  billId   Int
+  bill     Bill   @relation(fields: [billId], references: [id])
+}

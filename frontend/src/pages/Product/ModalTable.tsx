@@ -48,13 +48,17 @@ const ModalTable = ({
     setShowDrawer(false);
   };
 
+  const generateFactureNumber = () => {
+    const currentDate = new Date();
+    const factureNumber = currentDate.getTime().toString().substr(-5); // Generate a 5-digit string based on current time
+    return factureNumber;
+  };
+
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-	  const Bill = selectedClient.id;
 
-	  values.Bill = Bill;
-
+	  values.Bill = selectedClient.id + generateFactureNumber();
       if (values.client) {
       values.Client = values.client;
       delete values.client;
