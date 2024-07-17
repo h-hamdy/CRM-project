@@ -16,6 +16,25 @@ export declare class BillsService {
         }[];
     } & {
         id: number;
-        factureNumber: number;
+        factureNumber: string;
+    }>;
+    getBillByFactureNumber(factureNumber: string): Promise<{
+        id: number;
+        factureNumber: string;
+    }>;
+    findByFactureNumber(factureNumber: string): Promise<{
+        items: {
+            id: number;
+            Qte: number;
+            Tarif: number;
+            TarifN: number;
+            Title: string;
+            Total: string;
+            key: string;
+            billId: number;
+        }[];
+    } & {
+        id: number;
+        factureNumber: string;
     }>;
 }

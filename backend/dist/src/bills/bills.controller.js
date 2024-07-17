@@ -15,14 +15,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BillsController = void 0;
 const common_1 = require("@nestjs/common");
 const bills_service_1 = require("./bills.service");
-const create_bill_dto_1 = require("./dto/create-bill.dto");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
+const create_bill_dto_1 = require("./dto/create-bill.dto");
+const create_check_facture_dto_1 = require("./dto/create-check-facture.dto");
+const fetch_bill_dto_1 = require("./dto/fetch-bill.dto");
 let BillsController = class BillsController {
     constructor(billsService) {
         this.billsService = billsService;
     }
     create(createBillDto) {
         return this.billsService.create(createBillDto);
+    }
+    async checkFactureNumber(checkFactureDto) {
+        const { factureNumber } = checkFactureDto;
+        console.log(`Checking facture number: ${factureNumber}`);
+        const bill = await this.billsService.getBillByFactureNumber(factureNumber);
+        if (!bill) {
+            return { exists: false };
+        }
+        return { exists: true };
+    }
+    async fetchByFactureNumber(fetchBillDto) {
+        const { factureNumber } = fetchBillDto;
+        const bill = await this.billsService.findByFactureNumber(factureNumber);
+        if (!bill) {
+            throw new common_1.BadRequestException('Bill with provided factureNumber not found');
+        }
+        return bill;
     }
 };
 exports.BillsController = BillsController;
@@ -34,6 +53,20 @@ __decorate([
     __metadata("design:paramtypes", [create_bill_dto_1.CreateBillDto]),
     __metadata("design:returntype", void 0)
 ], BillsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Post)('exists'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_check_facture_dto_1.CheckFactureDto]),
+    __metadata("design:returntype", Promise)
+], BillsController.prototype, "checkFactureNumber", null);
+__decorate([
+    (0, common_1.Post)('fetch-by-facture-number'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [fetch_bill_dto_1.FetchBillDto]),
+    __metadata("design:returntype", Promise)
+], BillsController.prototype, "fetchByFactureNumber", null);
 exports.BillsController = BillsController = __decorate([
     (0, common_1.Controller)('bills'),
     __metadata("design:paramtypes", [bills_service_1.BillsService])

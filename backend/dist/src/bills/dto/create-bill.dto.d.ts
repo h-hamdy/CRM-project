@@ -7,7 +7,7 @@ declare class ItemDto {
     key: string;
 }
 export declare class CreateBillDto {
-    factureNumber: number;
+    factureNumber: string;
     items: ItemDto[];
 }
 export {};

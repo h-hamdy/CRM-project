@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://postgres:123@localhost:5434/mydb"
 }
 
 model User {
@@ -69,19 +69,19 @@ model RowData {
 }
 
 model Bill {
-  id            Int     @id @default(autoincrement())
-  factureNumber Int
+  id            Int      @id @default(autoincrement())
+  factureNumber String   @unique
   items         Item[]
 }
 
 model Item {
-  id       Int    @id @default(autoincrement())
-  Qte      Int
-  Tarif    Int?
-  TarifN   Int?
-  Title    String
-  Total    String
-  key      String
-  billId   Int
-  bill     Bill   @relation(fields: [billId], references: [id])
+  id     Int    @id @default(autoincrement())
+  Qte    Int
+  Tarif  Int?
+  TarifN Int?
+  Title  String
+  Total  String
+  key    String
+  billId Int
+  Bill   Bill   @relation(fields: [billId], references: [id])
 }

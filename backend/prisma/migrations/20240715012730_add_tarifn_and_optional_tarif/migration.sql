@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Item" ADD COLUMN     "TarifN" INTEGER,
+ALTER COLUMN "Tarif" DROP NOT NULL;

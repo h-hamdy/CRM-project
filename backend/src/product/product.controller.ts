@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Param, BadRequestException } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateColumnsDto, InsertDataDto } from './dto/create-columns.dto';

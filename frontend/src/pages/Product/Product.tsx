@@ -2,13 +2,11 @@ import { Button, notification, Modal, Form, Input, Table, Empty } from "antd";
 import {
   PlusOutlined,
   MinusCircleOutlined,
-  DiffOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-// import { useForm } from "antd/lib/form/Form";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import ModalTable from "./ModalTable";
+import { IconButton } from "./components/IconButton";
 
 const formItemLayoutWithOutLabel = {
   wrapperCol: {
@@ -54,17 +52,42 @@ export const Product = () => {
     fetchColumnsData();
   }, []);
 
+//   const checkBilling = async (id: any) => {
 
-  const IconButton = ({ onClick, id }: any) => (
-	  <Link to={`/Product/Billing/${id}`}>
-      <div
-        className="inline-block w-6 h-6 border border-gray-300 rounded text-center leading-6 cursor-pointer transition-colors duration-300 hover:bg-gray-200"
-        onClick={onClick}
-      >
-        <DiffOutlined />
-      </div>
-    </Link>
-  );
+// 	const factureNumber = {id};
+// 	try {
+// 		const response = await axios.post("http://localhost:3333/bills/exists", factureNumber, {withCredentials: true})
+// 		console.log(response)
+// 		return response.data.exists;
+// 	}
+// 	catch (error) {
+// 		console.error('Error checking Bill:', error);
+// 		return false;
+// 	}
+//   }
+
+
+//   const IconButton = ({ id }: any) => {
+// 	const history = useHistory();
+  
+// 	const handleClick = async () => {
+// 	  const exists = await checkBilling(id);
+// 	  if (exists) {
+// 		history.push(`/Product/Billing/${id}`);
+// 	  } else {
+// 		alert('Bill does not exist');
+// 	  }
+// 	};
+  
+// 	return (
+// 	  <div
+// 		className="inline-block w-6 h-6 border border-gray-300 rounded text-center leading-6 cursor-pointer transition-colors duration-300 hover:bg-gray-200"
+// 		onClick={handleClick}
+// 	  >
+// 		<DiffOutlined />
+// 	  </div>
+// 	);
+//   };
   
   
   const handleOk = async () => {
@@ -76,11 +99,11 @@ export const Product = () => {
 	  const newColumns = values.names.map((title: string) => ({
 		name: title, // Ensure the structure matches { name: string }
 		...(title === 'Bill' && {
-		  render: () => <IconButton id={values.Bill}/>,
-		  width: 50,
-		}),
-	  }));
-  
+			render: () => <IconButton id={values.Bill}/>,
+			width: 50,
+			}),
+			}));
+			
 	  console.log('Table Name:', tableName);
 	  console.log('Columns:', newColumns);
   
@@ -174,18 +197,26 @@ export const Product = () => {
 		await axios.post('http://localhost:3333/product/data', payload, {
 		  withCredentials: true,
 		}).then(() => fetchDataRows())
+
+		notification.success({
+			message: "Success",
+			description: "Product created successfully.",
+		  });
   
 		console.log('Data posted successfully.');
 	  }
 	} catch (error) {
-	  console.error('Failed to post data:', error);
+		notification.error({
+			message: "Error",
+			description: "There was an error creating the Product. Please try again.",
+		  });
 	}
   };
 
   return (
     <>
       {contextHolder}
-      <div className="flex">
+      <div className="flex justify-between">
         <Button
           icon={<PlusOutlined />}
           className="h-[40px] w-[190px] rounded-lg"
@@ -198,6 +229,7 @@ export const Product = () => {
             <div> Add New Product</div>
           )}
         </Button>
+		{/* <SearchClient/> */}
       </div>
       <Modal
         title="Create Table Title Column"

@@ -25,8 +25,8 @@ class ItemDto {
 }
 
 export class CreateBillDto {
-  @IsNumber()
-  factureNumber: number;
+  @IsString()
+  factureNumber: string;
 
   @IsArray()
   @ValidateNested({ each: true })

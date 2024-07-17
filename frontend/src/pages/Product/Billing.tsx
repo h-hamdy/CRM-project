@@ -19,6 +19,7 @@ import { useClients } from "../../context/ClientsContext";
 import { ForOFor } from "../ForOFor";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import axios from "axios";
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
@@ -114,13 +115,13 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 type EditableTableProps = Parameters<typeof Table>[0];
 
 interface DataType {
-  key: React.Key;
-  Title: string;
-  Qte: string;
-  Tarif: string;
-  TarifN: string;
-  Total: string;
-}
+	key: React.Key;
+	Title: string;
+	Qte: string;
+	Tarif: string;
+	TarifN: string;
+	Total: string;
+  }
 
 type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
 
@@ -193,7 +194,7 @@ export const Billing = () => {
               onClick={() => handleDelete(record.key)}
               className="flex items-center justify-center w-7 h-7 border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition-colors duration-300"
             >
-              <DeleteOutlined className="text-lg" />
+              <DeleteOutlined className="text-lg"/>
             </a>
           </div>
         ) : null,
@@ -424,6 +425,22 @@ export const Billing = () => {
     doc.save("Mapira-Devis.pdf");
   };
 
+  const saveTable = async () => {
+    const factureNumber = facture;
+
+    try {
+      const response = await axios.post('http://localhost:3333/bills', {
+        factureNumber,
+        items: dataSource,
+      }, {withCredentials: true});
+
+      console.log('Response:', response.data);
+    } catch (error) {
+      console.error('Error saving table:', error);
+    }
+  };
+  
+
   return (
     <div className="flex items-center justify-center">
       {client ? (
@@ -433,7 +450,6 @@ export const Billing = () => {
               <Button icon={<LeftOutlined />}>Products</Button>
             </Link>
             <div className="flex justify-end">
-				<Link to="/Product">
               <Button
                 icon={<FilePdfOutlined />}
                 className="h-[40px] w-[160px] rounded-lg"
@@ -442,15 +458,16 @@ export const Billing = () => {
 				>
                 <div>Convert to PDF</div>
               </Button>
-				  </Link>
             </div>
           </div>
           <div className="w-full border-t-[2px] border-gray-200"></div>
           <div className="flex flex-col justify-end">
-			<div className="flex justify-between">
-            <div className="text-2xl font-light pt-10">Products / Services</div>
-            <div className="text-2xl font-light pt-10">Products / Services</div>
+			<div className="flex justify-between pt-10">
+            <div className="text-2xl font-light">Products / Services</div>
+			<Link to="/Product">
 
+            <Button onClick={saveTable}>Save Table</Button>
+			</Link>
 			</div>
             <Table
               className="pt-10"

@@ -1,4 +1,4 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateColumnsDto, InsertDataDto } from './dto/create-columns.dto';
 import { Prisma } from '@prisma/client';
