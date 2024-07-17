@@ -29,13 +29,13 @@ const Columns = [
 ];
 
 interface BillInfo {
-	client: string;
-	factureNumber: string;
-	Date: string;
-	Subtotal: string;
-	SalesTax: string;
-	TotalValue: string;
-  }
+  client: string;
+  factureNumber: string;
+  Date: string;
+  Subtotal: string;
+  SalesTax: string;
+  TotalValue: string;
+}
 
 export const BillTable = () => {
   const [dataSource, setDataSource] = useState([]);
@@ -50,7 +50,7 @@ export const BillTable = () => {
           {
             factureNumber: facture,
           },
-		  {withCredentials: true}
+          { withCredentials: true }
         );
 
         // Assuming response.data contains the fetched data structure you provided
@@ -73,12 +73,10 @@ export const BillTable = () => {
       }
     };
 
-    // Call the fetchData function when component mounts
     fetchData();
   }, []);
 
   const [billInfo, setBillInfo] = useState<BillInfo | null>(null);
-
 
   useEffect(() => {
     // Function to fetch data from API
@@ -89,19 +87,16 @@ export const BillTable = () => {
           {
             factureNumber: facture,
           },
-		  {withCredentials: true}
+          { withCredentials: true }
         );
 
-        // Assuming response.data contains the fetched data structure you provided
         setBillInfo(response.data);
-		console.log(response.data)
+        // console.log(response.data)
       } catch (error) {
         console.error("Error fetching data:", error);
-        // Handle error fetching data
       }
     };
 
-    // Call the fetchData function when component mounts
     fetchData();
   }, []);
 
@@ -124,10 +119,17 @@ export const BillTable = () => {
       </div>
       <div className="w-full border-t-[2px] border-gray-200 pb-10"></div>
 
-      <div className="h-[80px] flex items-center justify-between rounded-2xl shadow-sm bg-white p-5">
-        <div className="font-bold">Client : <span className="font-normal">{billInfo?.client}</span></div>
-        <div className="font-bold">Facture N: <span className="font-normal">{billInfo?.factureNumber}</span></div>
-        <div className="font-bold">Date : <span className="font-normal">{billInfo?.Date}</span></div>
+      <div className="h-[80px] flex items-center justify-between rounded-2xl shadow-sm bg-white p-5 px-16">
+        <div className="font-bold">
+          Client : <span className="font-normal">{billInfo?.client}</span>
+        </div>
+        <div className="font-bold">
+          Facture N:{" "}
+          <span className="font-normal">{billInfo?.factureNumber}</span>
+        </div>
+        <div className="font-bold">
+          Date : <span className="font-normal">{billInfo?.Date}</span>
+        </div>
       </div>
       <div className="text-2xl font-light pt-10">Products / Services</div>
 

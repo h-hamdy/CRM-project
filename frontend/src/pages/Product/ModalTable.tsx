@@ -19,19 +19,19 @@ const ModalTable = ({
   const handleSearch = (value: string) => {
     const filteredOptions = clients
 
-	.filter((client) => {
-		const fullName = `${client.firstName.toLowerCase()} ${client.lastName.toLowerCase()}`;
+      .filter((client) => {
+        const fullName = `${client.firstName.toLowerCase()} ${client.lastName.toLowerCase()}`;
         return fullName.includes(value.toLowerCase());
       })
       .map((client) => ({
         value: `${client.firstName} ${client.lastName}`,
         id: client.id,
       }));
-	  setOptions(filteredOptions);
+    setOptions(filteredOptions);
   };
 
   const onSelect = (value: string, option: { value: string; id: number }) => {
-	console.log(value)
+    console.log(value);
     const client = clients.find((client) => client.id === option.id);
     if (client) {
       setSelectedClient(client);
@@ -58,11 +58,11 @@ const ModalTable = ({
     try {
       const values = await form.validateFields();
 
-	  values.Bill = selectedClient.id + generateFactureNumber();
+      values.Bill = selectedClient.id + generateFactureNumber();
       if (values.client) {
-      values.Client = values.client;
-      delete values.client;
-    }
+        values.Client = values.client;
+        delete values.client;
+      }
 
       _handleOk(values);
       form.resetFields();

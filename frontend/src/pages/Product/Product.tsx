@@ -1,8 +1,5 @@
 import { Button, notification, Modal, Form, Input, Table, Empty } from "antd";
-import {
-  PlusOutlined,
-  MinusCircleOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ModalTable from "./ModalTable";
@@ -28,13 +25,17 @@ export const Product = () => {
 
   const fetchColumnsData = async () => {
     try {
-      const response = await axios.get('http://localhost:3333/product', { withCredentials: true });
+      const response = await axios.get("http://localhost:3333/product", {
+        withCredentials: true,
+      });
 
       if (Array.isArray(response.data)) {
-        const formattedColumns = response.data.map((col, index) => ({
+        const formattedColumns = response.data.map((col, _index) => ({
           title: col,
           ...(col === "Bill" && {
-			render: (text: any, record: any) => <IconButton id={record.Bill} />,
+            render: (_text: any, record: any) => (
+              <IconButton id={record.Bill} />
+            ),
             width: 50,
           }),
           dataIndex: col,
@@ -43,7 +44,7 @@ export const Product = () => {
         setColumns(formattedColumns);
       }
     } catch (error) {
-      console.error('Error fetching columns:', error);
+      console.error("Error fetching columns:", error);
     }
   };
 
@@ -52,76 +53,73 @@ export const Product = () => {
     fetchColumnsData();
   }, []);
 
-//   const checkBilling = async (id: any) => {
+  //   const checkBilling = async (id: any) => {
 
-// 	const factureNumber = {id};
-// 	try {
-// 		const response = await axios.post("http://localhost:3333/bills/exists", factureNumber, {withCredentials: true})
-// 		console.log(response)
-// 		return response.data.exists;
-// 	}
-// 	catch (error) {
-// 		console.error('Error checking Bill:', error);
-// 		return false;
-// 	}
-//   }
+  // 	const factureNumber = {id};
+  // 	try {
+  // 		const response = await axios.post("http://localhost:3333/bills/exists", factureNumber, {withCredentials: true})
+  // 		console.log(response)
+  // 		return response.data.exists;
+  // 	}
+  // 	catch (error) {
+  // 		console.error('Error checking Bill:', error);
+  // 		return false;
+  // 	}
+  //   }
 
+  //   const IconButton = ({ id }: any) => {
+  // 	const history = useHistory();
 
-//   const IconButton = ({ id }: any) => {
-// 	const history = useHistory();
-  
-// 	const handleClick = async () => {
-// 	  const exists = await checkBilling(id);
-// 	  if (exists) {
-// 		history.push(`/Product/Billing/${id}`);
-// 	  } else {
-// 		alert('Bill does not exist');
-// 	  }
-// 	};
-  
-// 	return (
-// 	  <div
-// 		className="inline-block w-6 h-6 border border-gray-300 rounded text-center leading-6 cursor-pointer transition-colors duration-300 hover:bg-gray-200"
-// 		onClick={handleClick}
-// 	  >
-// 		<DiffOutlined />
-// 	  </div>
-// 	);
-//   };
-  
-  
+  // 	const handleClick = async () => {
+  // 	  const exists = await checkBilling(id);
+  // 	  if (exists) {
+  // 		history.push(`/Product/Billing/${id}`);
+  // 	  } else {
+  // 		alert('Bill does not exist');
+  // 	  }
+  // 	};
+
+  // 	return (
+  // 	  <div
+  // 		className="inline-block w-6 h-6 border border-gray-300 rounded text-center leading-6 cursor-pointer transition-colors duration-300 hover:bg-gray-200"
+  // 		onClick={handleClick}
+  // 	  >
+  // 		<DiffOutlined />
+  // 	  </div>
+  // 	);
+  //   };
+
   const handleOk = async () => {
-	  try {
-	  const tableName = 'MyTable'; // Example table name or dynamically obtained
-	  const values = await form.validateFields(); // Assuming form is defined
-	  
-	  // Assuming values.names is an array of strings representing column names
-	  const newColumns = values.names.map((title: string) => ({
-		name: title, // Ensure the structure matches { name: string }
-		...(title === 'Bill' && {
-			render: () => <IconButton id={values.Bill}/>,
-			width: 50,
-			}),
-			}));
-			
-	  console.log('Table Name:', tableName);
-	  console.log('Columns:', newColumns);
-  
-	  const response = await axios.post(
-		'http://localhost:3333/product/columns',
-		{ tableName, columns: newColumns },
-		{ withCredentials: true }
-	  );
-  
-	  console.log('Success:', response.data);
-	  fetchColumnsData();
-	  setIsModalOpen(false);
-  
-	} catch (error) {
-	  console.error('Error:', error);
-	} finally {
-	  _setIsModalOpen(false);
-	}
+    try {
+      const tableName = "MyTable"; // Example table name or dynamically obtained
+      const values = await form.validateFields(); // Assuming form is defined
+
+      // Assuming values.names is an array of strings representing column names
+      const newColumns = values.names.map((title: string) => ({
+        name: title, // Ensure the structure matches { name: string }
+        ...(title === "Bill" && {
+          render: () => <IconButton id={values.Bill} />,
+          width: 50,
+        }),
+      }));
+
+      //   console.log('Table Name:', tableName);
+      //   console.log('Columns:', newColumns);
+
+      const response = await axios.post(
+        "http://localhost:3333/product/columns",
+        { tableName, columns: newColumns },
+        { withCredentials: true }
+      );
+
+      //   console.log('Success:', response.data);
+      fetchColumnsData();
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      _setIsModalOpen(false);
+    }
   };
 
   const handleCancel = () => {
@@ -155,62 +153,65 @@ export const Product = () => {
     else showModal();
   };
 
-
   const fetchDataRows = async () => {
-	try {
-	  const response = await axios.get('http://localhost:3333/product/data-rows', {
-		withCredentials: true,
-	  });
+    try {
+      const response = await axios.get(
+        "http://localhost:3333/product/data-rows",
+        {
+          withCredentials: true,
+        }
+      );
 
-	  const formattedData = response.data.map((item : any, index: any) => ({
-		  ...item.data,
-		  Client: item.data.Client.toLowerCase(),
-		  key: `${index}`, // Use a unique identifier here based on your data structure
-		  }));
-		
-		setTableData(formattedData);
-		
-		
-		} catch (error) {
-			console.error('Error fetching data rows:', error);
-			}
-			};
-			
-	useEffect(() => {
-		fetchDataRows();
-		}, []); 
-				
-  console.log("tableData", tableData)
+      const formattedData = response.data.map((item: any, index: any) => ({
+        ...item.data,
+        Client: item.data.Client.toLowerCase(),
+        key: `${index}`, // Use a unique identifier here based on your data structure
+      }));
+
+      setTableData(formattedData);
+    } catch (error) {
+      console.error("Error fetching data rows:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDataRows();
+  }, []);
+
+  //   console.log("tableData", tableData)
   const handleSubmit = async (values: any) => {
-	  try {
-	  if (values) {
-		console.log("values", values)
-		_setIsModalOpen(false);
+    try {
+      if (values) {
+        // console.log("values", values)
+        _setIsModalOpen(false);
 
-		const payload = {
-			tableId: 1,
-			data: values,
-		  };
-  
-		// form.resetFields();
-  
-		await axios.post('http://localhost:3333/product/data', payload, {
-		  withCredentials: true,
-		}).then(() => fetchDataRows())
+        const payload = {
+          tableId: 1,
+          data: values,
+        };
 
-		notification.success({
-			message: "Success",
-			description: "Product created successfully.",
-		  });
-  
-		console.log('Data posted successfully.');
-	  }
-	} catch (error) {
-		notification.error({
-			message: "Error",
-			description: "There was an error creating the Product. Please try again.",
-		  });
-	}
+        // form.resetFields();
+
+        await axios
+          .post("http://localhost:3333/product/data", payload, {
+            withCredentials: true,
+          })
+          .then(() => fetchDataRows());
+
+        notification.success({
+          message: "Success",
+          description: "Product created successfully.",
+        });
+
+        // console.log('Data posted successfully.');
+      }
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description:
+          "There was an error creating the Product. Please try again.",
+      });
+    }
   };
 
   return (
@@ -229,7 +230,7 @@ export const Product = () => {
             <div> Add New Product</div>
           )}
         </Button>
-		{/* <SearchClient/> */}
+        {/* <SearchClient/> */}
       </div>
       <Modal
         title="Create Table Title Column"

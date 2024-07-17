@@ -72,7 +72,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
       const values = await form.validateFields();
       handleSave({ ...record, ...values });
     } catch (errInfo) {
-      console.log("Save failed:", errInfo);
+      //   console.log("Save failed:", errInfo);
     }
   };
 
@@ -115,25 +115,23 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 type EditableTableProps = Parameters<typeof Table>[0];
 
 interface DataType {
-	key: React.Key;
-	Title: string;
-	Qte: string;
-	Tarif: string;
-	TarifN: string;
-	Total: string;
-  }
+  key: React.Key;
+  Title: string;
+  Qte: string;
+  Tarif: string;
+  TarifN: string;
+  Total: string;
+}
 
 type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
 
 export const Billing = () => {
-	const { facture } = useParams<{ facture: string }>();
-	const { clients } = useClients();
-	
-	const id = facture ? facture[0] : '';
-	
+  const { facture } = useParams<{ facture: string }>();
+  const { clients } = useClients();
 
-	const client = clients.find((client) => client.id === Number(id));
-	
+  const id = facture ? facture[0] : "";
+
+  const client = clients.find((client) => client.id === Number(id));
 
   const [dataSource, setDataSource] = useState<DataType[]>([
     {
@@ -194,7 +192,7 @@ export const Billing = () => {
               onClick={() => handleDelete(record.key)}
               className="flex items-center justify-center w-7 h-7 border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition-colors duration-300"
             >
-              <DeleteOutlined className="text-lg"/>
+              <DeleteOutlined className="text-lg" />
             </a>
           </div>
         ) : null,
@@ -273,7 +271,7 @@ export const Billing = () => {
       Total: calculateTotal(row.Qte, row.Tarif, row.TarifN), // Update the total
     });
     setDataSource(newData);
-    console.log("Updated DataSource:", newData); // Log the updated dataSource array
+    // console.log("Updated DataSource:", newData); // Log the updated dataSource array
   };
 
   const components = {
@@ -299,18 +297,17 @@ export const Billing = () => {
     };
   });
 
-//   const [date, Setdate] = useState("")
-
+  //   const [date, Setdate] = useState("")
 
   // Function to get the current date in a formatted string
   const getCurrentDate = () => {
-	const currentDate = new Date();
-	const options: Intl.DateTimeFormatOptions = { 
-	  year: "numeric", 
-	  month: "long", 
-	  day: "numeric" 
-	};
-	return currentDate.toLocaleDateString("en-US", options);
+    const currentDate = new Date();
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return currentDate.toLocaleDateString("en-US", options);
   };
 
   const generatePDF = () => {
@@ -426,45 +423,51 @@ export const Billing = () => {
     doc.save("Mapira-Devis.pdf");
   };
 
-
   const saveBillInfo = async () => {
-	// const _date = getCurrentDate();
+    // const _date = getCurrentDate();
 
-	//   Setdate(_date)
-	//   console.log(date)
-	try {
-	  const billInfo = {
-		client: client?.firstName + " " + client?.lastName,
-		factureNumber: facture,
-		Date: getCurrentDate(), 
-		Subtotal: calculateSubtotal(),
-		SalesTax: String(salesTax),
-		TotalValue: totalValue,
-	  };
-  
-	  const response = await axios.post('http://localhost:3333/bills/create-bill-info', billInfo, { withCredentials: true });
-	  console.log('Response from create-bill-info:', response.data);
-	} catch (error) {
-	  console.error('Error saving bill info:', error);
-	}
+    //   Setdate(_date)
+    //   console.log(date)
+    try {
+      const billInfo = {
+        client: client?.firstName + " " + client?.lastName,
+        factureNumber: facture,
+        Date: getCurrentDate(),
+        Subtotal: calculateSubtotal(),
+        SalesTax: String(salesTax),
+        TotalValue: totalValue,
+      };
+
+      await axios.post(
+        "http://localhost:3333/bills/create-bill-info",
+        billInfo,
+        { withCredentials: true }
+      );
+      //   console.log('Response from create-bill-info:', response.data);
+    } catch (error) {
+      console.error("Error saving bill info:", error);
+    }
   };
 
   const saveTable = async () => {
     const factureNumber = facture;
 
     try {
-      const response = await axios.post('http://localhost:3333/bills', {
-        factureNumber,
-        items: dataSource,
-      }, {withCredentials: true});
+      await axios.post(
+        "http://localhost:3333/bills",
+        {
+          factureNumber,
+          items: dataSource,
+        },
+        { withCredentials: true }
+      );
 
-      console.log('Response:', response.data);
-	  await saveBillInfo();
+      //   console.log('Response:', response.data);
+      await saveBillInfo();
     } catch (error) {
-      console.error('Error saving table:', error);
+      console.error("Error saving table:", error);
     }
   };
-  
 
   return (
     <div className="flex items-center justify-center">
@@ -480,20 +483,19 @@ export const Billing = () => {
                 className="h-[40px] w-[160px] rounded-lg"
                 type="primary"
                 onClick={generatePDF}
-				>
+              >
                 <div>Convert to PDF</div>
               </Button>
             </div>
           </div>
           <div className="w-full border-t-[2px] border-gray-200"></div>
           <div className="flex flex-col justify-end">
-			<div className="flex justify-between pt-10">
-            <div className="text-2xl font-light">Products / Services</div>
-			<Link to="/Product">
-
-            <Button onClick={saveTable}>Save Table</Button>
-			</Link>
-			</div>
+            <div className="flex justify-between pt-10">
+              <div className="text-2xl font-light">Products / Services</div>
+              <Link to="/Product">
+                <Button onClick={saveTable}>Save Table</Button>
+              </Link>
+            </div>
             <Table
               className="pt-10"
               components={components}
