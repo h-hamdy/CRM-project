@@ -304,10 +304,13 @@ export const Billing = () => {
 
   // Function to get the current date in a formatted string
   const getCurrentDate = () => {
-    const currentDate = new Date();
-    const options = { year: "numeric", month: "long", day: "numeric" };
-	// Setdate(currentDate.toLocaleDateString("en-US", options))
-    return currentDate.toLocaleDateString("en-US", options);
+	const currentDate = new Date();
+	const options: Intl.DateTimeFormatOptions = { 
+	  year: "numeric", 
+	  month: "long", 
+	  day: "numeric" 
+	};
+	return currentDate.toLocaleDateString("en-US", options);
   };
 
   const generatePDF = () => {
