@@ -240,7 +240,7 @@ export const Billing = () => {
 
   const handleAdd = () => {
     const newData: DataType = {
-      key: count,
+      key: String(count),
       Title: "",
       Qte: "0",
       Tarif: "",
@@ -299,11 +299,6 @@ export const Billing = () => {
     };
   });
 
-//   const generateFactureNumber = () => {
-//     const currentDate = new Date();
-//     const factureNumber = currentDate.getTime().toString().substr(-5); // Generate a 5-digit string based on current time
-//     return factureNumber;
-//   };
 
   // Function to get the current date in a formatted string
   const getCurrentDate = () => {
