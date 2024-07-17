@@ -299,11 +299,14 @@ export const Billing = () => {
     };
   });
 
+//   const [date, Setdate] = useState("")
+
 
   // Function to get the current date in a formatted string
   const getCurrentDate = () => {
     const currentDate = new Date();
     const options = { year: "numeric", month: "long", day: "numeric" };
+	// Setdate(currentDate.toLocaleDateString("en-US", options))
     return currentDate.toLocaleDateString("en-US", options);
   };
 
@@ -420,6 +423,29 @@ export const Billing = () => {
     doc.save("Mapira-Devis.pdf");
   };
 
+
+  const saveBillInfo = async () => {
+	// const _date = getCurrentDate();
+
+	//   Setdate(_date)
+	//   console.log(date)
+	try {
+	  const billInfo = {
+		client: client?.firstName + " " + client?.lastName,
+		factureNumber: facture,
+		Date: getCurrentDate(), 
+		Subtotal: calculateSubtotal(),
+		SalesTax: String(salesTax),
+		TotalValue: totalValue,
+	  };
+  
+	  const response = await axios.post('http://localhost:3333/bills/create-bill-info', billInfo, { withCredentials: true });
+	  console.log('Response from create-bill-info:', response.data);
+	} catch (error) {
+	  console.error('Error saving bill info:', error);
+	}
+  };
+
   const saveTable = async () => {
     const factureNumber = facture;
 
@@ -430,6 +456,7 @@ export const Billing = () => {
       }, {withCredentials: true});
 
       console.log('Response:', response.data);
+	  await saveBillInfo();
     } catch (error) {
       console.error('Error saving table:', error);
     }

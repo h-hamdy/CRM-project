@@ -1,5 +1,5 @@
 import { BillsService } from './bills.service';
-import { CreateBillDto } from './dto/create-bill.dto';
+import { BillInfo, CreateBillDto } from './dto/create-bill.dto';
 import { CheckFactureDto } from './dto/create-check-facture.dto';
 import { FetchBillDto } from './dto/fetch-bill.dto';
 export declare class BillsController {
@@ -19,6 +19,26 @@ export declare class BillsController {
     } & {
         id: number;
         factureNumber: string;
+    }>;
+    getBillInfoByFactureNumber(body: {
+        factureNumber: string;
+    }): Promise<{
+        id: number;
+        client: string;
+        factureNumber: string;
+        Date: string;
+        Subtotal: string;
+        SalesTax: string;
+        TotalValue: string;
+    }>;
+    createBillInfo(billInfoDto: BillInfo): Promise<{
+        id: number;
+        client: string;
+        factureNumber: string;
+        Date: string;
+        Subtotal: string;
+        SalesTax: string;
+        TotalValue: string;
     }>;
     checkFactureNumber(checkFactureDto: CheckFactureDto): Promise<{
         exists: boolean;

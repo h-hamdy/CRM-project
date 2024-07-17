@@ -85,3 +85,13 @@ model Item {
   billId Int
   Bill   Bill   @relation(fields: [billId], references: [id])
 }
+
+model BillInfo {
+	id	Int @id @default(autoincrement())
+	client	String
+	factureNumber	String @unique
+	Date	String
+	Subtotal	String
+	SalesTax	String
+	TotalValue	String
+}

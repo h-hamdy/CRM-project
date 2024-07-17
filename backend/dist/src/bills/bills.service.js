@@ -36,6 +36,14 @@ let BillsService = class BillsService {
             },
         });
     }
+    async findFactureNumber(factureNumber) {
+        const billInfo = await this.prisma.billInfo.findUnique({
+            where: {
+                factureNumber,
+            },
+        });
+        return billInfo;
+    }
     async getBillByFactureNumber(factureNumber) {
         return await this.prisma.bill.findUnique({
             where: { factureNumber },
@@ -49,6 +57,25 @@ let BillsService = class BillsService {
             },
         });
         return bill;
+    }
+    async createBillInfo(billInfoDto) {
+        const { client, factureNumber, Date, Subtotal, SalesTax, TotalValue } = billInfoDto;
+        const existingBill = await this.prisma.billInfo.findUnique({
+            where: { factureNumber: factureNumber },
+        });
+        if (existingBill) {
+            throw new common_1.BadRequestException('Facture number already exists');
+        }
+        return this.prisma.billInfo.create({
+            data: {
+                client,
+                factureNumber,
+                Date,
+                Subtotal,
+                SalesTax,
+                TotalValue,
+            },
+        });
     }
 };
 exports.BillsService = BillsService;

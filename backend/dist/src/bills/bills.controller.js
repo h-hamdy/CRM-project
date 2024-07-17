@@ -26,6 +26,17 @@ let BillsController = class BillsController {
     create(createBillDto) {
         return this.billsService.create(createBillDto);
     }
+    async getBillInfoByFactureNumber(body) {
+        const { factureNumber } = body;
+        const billInfo = await this.billsService.findFactureNumber(factureNumber);
+        if (!billInfo) {
+            throw new common_1.NotFoundException('BillInfo not found');
+        }
+        return billInfo;
+    }
+    async createBillInfo(billInfoDto) {
+        return this.billsService.createBillInfo(billInfoDto);
+    }
     async checkFactureNumber(checkFactureDto) {
         const { factureNumber } = checkFactureDto;
         console.log(`Checking facture number: ${factureNumber}`);
@@ -54,7 +65,24 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], BillsController.prototype, "create", null);
 __decorate([
+    (0, common_1.Post)('get-by-facture-number'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], BillsController.prototype, "getBillInfoByFactureNumber", null);
+__decorate([
+    (0, common_1.Post)('create-bill-info'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_bill_dto_1.BillInfo]),
+    __metadata("design:returntype", Promise)
+], BillsController.prototype, "createBillInfo", null);
+__decorate([
     (0, common_1.Post)('exists'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_check_facture_dto_1.CheckFactureDto]),
@@ -62,6 +90,7 @@ __decorate([
 ], BillsController.prototype, "checkFactureNumber", null);
 __decorate([
     (0, common_1.Post)('fetch-by-facture-number'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [fetch_bill_dto_1.FetchBillDto]),

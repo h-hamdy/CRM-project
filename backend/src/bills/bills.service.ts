@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateBillDto } from './dto/create-bill.dto';
-import { Prisma } from '@prisma/client';
+import { BillInfo, CreateBillDto } from './dto/create-bill.dto';
 
 @Injectable()
 export class BillsService {
@@ -31,6 +30,17 @@ export class BillsService {
 	  });
 	}
 
+	async findFactureNumber(factureNumber: string){
+		const billInfo = await this.prisma.billInfo.findUnique({
+		  where: {
+			factureNumber,
+		  },
+		});
+	
+		return billInfo;
+	  }
+
+
 	async getBillByFactureNumber(factureNumber: string) {
 		return await this.prisma.bill.findUnique({
 		  where: { factureNumber },
@@ -46,5 +56,28 @@ export class BillsService {
 		});
 	
 		return bill;
+	  }
+
+	  async createBillInfo(billInfoDto: BillInfo) {
+		const { client, factureNumber, Date, Subtotal, SalesTax, TotalValue } = billInfoDto;
+	
+		const existingBill = await this.prisma.billInfo.findUnique({
+			where: { factureNumber: factureNumber },
+		  });		  
+	
+		if (existingBill) {
+		  throw new BadRequestException('Facture number already exists');
+		}
+	
+		return this.prisma.billInfo.create({
+		  data: {
+			client,
+			factureNumber,
+			Date,
+			Subtotal,
+			SalesTax,
+			TotalValue,
+		  },
+		});
 	  }
 }

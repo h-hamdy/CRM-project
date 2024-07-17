@@ -28,6 +28,15 @@ const Columns = [
   },
 ];
 
+interface BillInfo {
+	client: string;
+	factureNumber: string;
+	Date: string;
+	Subtotal: string;
+	SalesTax: string;
+	TotalValue: string;
+  }
+
 export const BillTable = () => {
   const [dataSource, setDataSource] = useState([]);
   const { facture } = useParams();
@@ -40,7 +49,8 @@ export const BillTable = () => {
           "http://localhost:3333/bills/fetch-by-facture-number",
           {
             factureNumber: facture,
-          }
+          },
+		  {withCredentials: true}
         );
 
         // Assuming response.data contains the fetched data structure you provided
@@ -57,6 +67,34 @@ export const BillTable = () => {
         }));
 
         setDataSource(formattedDataSource);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle error fetching data
+      }
+    };
+
+    // Call the fetchData function when component mounts
+    fetchData();
+  }, []);
+
+  const [billInfo, setBillInfo] = useState<BillInfo | null>(null);
+
+
+  useEffect(() => {
+    // Function to fetch data from API
+    const fetchData = async () => {
+      try {
+        const response = await axios.post(
+          "http://localhost:3333/bills/get-by-facture-number",
+          {
+            factureNumber: facture,
+          },
+		  {withCredentials: true}
+        );
+
+        // Assuming response.data contains the fetched data structure you provided
+        setBillInfo(response.data);
+		console.log(response.data)
       } catch (error) {
         console.error("Error fetching data:", error);
         // Handle error fetching data
@@ -87,11 +125,11 @@ export const BillTable = () => {
       <div className="w-full border-t-[2px] border-gray-200 pb-10"></div>
 
       <div className="h-[80px] flex items-center justify-between rounded-2xl shadow-sm bg-white p-5">
-        <div className="font-bold">Client :</div>
-        <div className="font-bold">Facture N:</div>
-        <div className="font-bold">Date :</div>
+        <div className="font-bold">Client : <span className="font-normal">{billInfo?.client}</span></div>
+        <div className="font-bold">Facture N: <span className="font-normal">{billInfo?.factureNumber}</span></div>
+        <div className="font-bold">Date : <span className="font-normal">{billInfo?.Date}</span></div>
       </div>
-      <div className="text-2xl font-light pt-5">Products / Services</div>
+      <div className="text-2xl font-light pt-10">Products / Services</div>
 
       <Table
         className="pt-10"
@@ -105,26 +143,18 @@ export const BillTable = () => {
           <div className="text-[15px]">Subtotal:</div>
           <div className="text-[15px] pl-[18px]">
             <span className="text-gray-600">$</span>
-            {/* {calculateSubtotal()} */}
+            {billInfo?.Subtotal}
           </div>
         </div>
         <div className="flex justify-start gap-10">
           <div className="text-[15px]">Sales Tax:</div>
-          <div>asdf</div>
-          {/* <Form.Item>
-                  <InputNumber
-                    className="w-[100px]"
-                    addonAfter="%"
-                    value={salesTax}
-                    onChange={handleSalesTaxChange}
-                  />
-                </Form.Item> */}
+          <div className="pl-2">{billInfo?.SalesTax}%</div>
         </div>
         <div className="flex justify-start gap-10">
           <div className="text-[15px]">Total value:</div>
           <div className="text-[15px]">
             <span className="text-gray-600">$</span>
-            {/* {totalValue} */}
+            {billInfo?.TotalValue}
           </div>
         </div>
       </div>
