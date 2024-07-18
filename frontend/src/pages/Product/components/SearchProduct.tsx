@@ -5,7 +5,7 @@ import axios from 'axios';
 const { Search } = Input;
 
 
-export const SearchProduct = () => {
+export const SearchProduct = ({setTableData, fetchDataRows}: any) => {
 	const [searchValue, setSearchValue] = useState("");
 	const onSearch = (value: string) => search(value);
 
@@ -15,12 +15,18 @@ export const SearchProduct = () => {
 		}
 		try {
 			console.log(value)
-		//   const response = await axios.post(
-		// 	"http://localhost:3333/clients/search",
-		// 	{ username: value },
-		// 	{ withCredentials: true }
-		//   );
-		//   setClients(response.data);
+		  const response = await axios.post(
+			"http://localhost:3333/product/data-rows-by-client",
+			{ client: value },
+			{ withCredentials: true }
+		  );
+
+		  const formattedData = response.data.map((item: any, index: any) => ({
+			...item.data,
+			Client: item.data.Client.toLowerCase(),
+			key: `${index}`, // Use a unique identifier here based on your data structure
+		  }));
+		  setTableData(formattedData);
 		} catch (error) {
 		  console.error("Error searching clients:", error);
 		}
@@ -33,7 +39,7 @@ export const SearchProduct = () => {
 		setSearchValue(value);
 	
 		if (!value.trim()) {
-		//   fetchClients();
+		  fetchDataRows();
 		}
 	  };
 	return (

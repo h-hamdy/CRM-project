@@ -232,7 +232,7 @@ export const Product = () => {
           )}
         </Button>
         <div>
-      <SearchProduct/>
+      <SearchProduct setTableData={setTableData} fetchDataRows={fetchDataRows}/>
     </div>
       </div>
       <Modal
