@@ -74,6 +74,19 @@ let ProductService = class ProductService {
             throw new Error('Failed to insert data.');
         }
     }
+    async getDataRowsByClient(client) {
+        return this.prisma.rowData.findMany({
+            where: {
+                data: {
+                    path: ['Client'],
+                    string_contains: client,
+                },
+            },
+            orderBy: {
+                id: 'desc',
+            },
+        });
+    }
 };
 exports.ProductService = ProductService;
 exports.ProductService = ProductService = __decorate([

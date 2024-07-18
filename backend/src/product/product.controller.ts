@@ -42,4 +42,15 @@ export class ProductController {
       return { message: 'Failed to fetch data rows' };
     }
   }
+
+  @Post('data-rows-by-client')
+  @UseGuards(JwtAuthGuard)
+  async getDataRowsByClient(@Body('client') client: string) {
+    try {
+      return await this.productService.getDataRowsByClient(client);
+    } catch (error) {
+      // Handle the error, for example:
+      return { message: 'Failed to fetch data rows' };
+    }
+  }
 }

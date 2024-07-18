@@ -84,4 +84,18 @@ export class ProductService {
     }
   }
 
+  async getDataRowsByClient(client: string) {
+    return this.prisma.rowData.findMany({
+      where: {
+        data: {
+          path: ['Client'],
+          string_contains: client,
+        },
+      },
+      orderBy: {
+        id: 'desc', // Orders by 'id' in descending order
+      },
+    });
+  }
+
 }
