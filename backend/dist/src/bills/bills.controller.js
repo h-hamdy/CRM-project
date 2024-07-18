@@ -39,7 +39,6 @@ let BillsController = class BillsController {
     }
     async checkFactureNumber(checkFactureDto) {
         const { factureNumber } = checkFactureDto;
-        console.log(`Checking facture number: ${factureNumber}`);
         const bill = await this.billsService.getBillByFactureNumber(factureNumber);
         if (!bill) {
             return { exists: false };

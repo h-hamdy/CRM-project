@@ -1,4 +1,4 @@
-import { Form, Input, Checkbox, Button } from "antd";
+import { Form, Input, Checkbox, Button, notification } from "antd";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -16,8 +16,15 @@ export const Login = () => {
         withCredentials: true,
       });
       navigate("/");
+      notification.success({
+        message: "You have successfully signed in.",
+        placement: "topRight",
+      });
     } catch (error) {
-      console.error("Failed:", error);
+      notification.error({
+        message: "Sign in failed. Please check your credentials and try again.",
+        placement: "topRight",
+      });
     }
   };
 

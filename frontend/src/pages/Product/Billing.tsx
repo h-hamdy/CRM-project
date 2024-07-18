@@ -7,7 +7,6 @@ import {
   Button,
   InputRef,
   FormInstance,
-  notification,
 } from "antd";
 import {
   PlusOutlined,
@@ -18,9 +17,9 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { useClients } from "../../context/ClientsContext";
 import { ForOFor } from "../ForOFor";
-import jsPDF from "jspdf";
 import "jspdf-autotable";
-import axios from "axios";
+import { generatePDF } from "./utils/generatePDF";
+import { saveTable } from "./utils/saveTable";
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
@@ -263,7 +262,6 @@ export const Billing = () => {
       Total: calculateTotal(row.Qte, row.Tarif, row.TarifN), // Update the total
     });
     setDataSource(newData);
-    // console.log("Updated DataSource:", newData); // Log the updated dataSource array
   };
 
   const components = {
@@ -289,180 +287,6 @@ export const Billing = () => {
     };
   });
 
-  //   const [date, Setdate] = useState("")
-
-  // Function to get the current date in a formatted string
-  const getCurrentDate = () => {
-    const currentDate = new Date();
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    return currentDate.toLocaleDateString("en-US", options);
-  };
-
-  const generatePDF = () => {
-    const doc = new jsPDF();
-
-    doc.setFontSize(25);
-    doc.setFont("helvetica", "bold");
-
-    // Center the text horizontally
-    const textWidth =
-      (doc.getStringUnitWidth("Mapira") * 25) / doc.internal.scaleFactor;
-    const pageWidth = doc.internal.pageSize.width;
-    const xPosition = (pageWidth - textWidth) / 2;
-
-    // Add the centered text
-    doc.text("Mapira", xPosition, 22);
-
-    const startX = 23;
-    let startY = 40; // Initial startY position
-
-    doc.setFontSize(11);
-
-    doc.rect(startX, startY, 160, 20); // Outer rectangle
-
-    doc.line(startX + 80, startY, startX + 80, startY + 20);
-
-    // Facture N and its value (left side)
-    doc.setFont("helvetica", "bold");
-    doc.text("Facture N :", startX + 5, startY + 8);
-    doc.setFont("helvetica", "normal"); // Set font to Helvetica Light
-    doc.text(facture ?? "", startX + 30, startY + 8); // Adjusted startX for value
-
-    doc.setFont("helvetica", "bold"); // Set font back to Helvetica (normal)
-    doc.text("Date :", startX + 5, startY + 15);
-    doc.setFont("helvetica", "normal"); // Set font to Helvetica Light
-    doc.text(getCurrentDate(), startX + 30, startY + 15); // Adjusted startX for value
-
-    doc.setFont("helvetica", "bold"); // Set font back to Helvetica (normal)
-    doc.text("Client Name :", startX + 85, startY + 12);
-
-    doc.setFont("helvetica", "normal"); // Set font to Helvetica Light
-    doc.text(
-      (client?.firstName ?? "") + " " + (client?.lastName ?? ""),
-      startX + 115,
-      startY + 12
-    );
-    // Adjust startY for the main table (autoTable)
-    startY = startY + 40; // Add spacing after the initial structured content
-
-    // Define table column titles and rows
-    const columns = [
-      "QTE",
-      "DÉSIGNATION",
-      "Tarif Taxable",
-      "Tarif Non Taxable",
-      "Total",
-    ];
-    const rows = dataSource.map((item) => [
-      item.Qte,
-      item.Title,
-      item.Tarif !== undefined ? item.Tarif : "-",
-      item.TarifN !== undefined ? item.TarifN : "-",
-      item.Total,
-    ]);
-
-    let tarif_sum = 0;
-
-    // Calculate subtotal
-    const Tarif_N_sum = dataSource.reduce((sum, item) => {
-      const tarif = item.Tarif ? parseFloat(item.Tarif) : 0;
-      const tarifN = item.TarifN ? parseFloat(item.TarifN) : 0;
-      const qte = item.Qte ? parseFloat(item.Qte) : 1;
-      tarif_sum += tarif * qte;
-      return sum + tarifN * qte;
-    }, 0);
-
-    // Define tax and total
-    const _salesTax = salesTax; // Example tax rate (adjust as needed)
-    const tax = (tarif_sum * _salesTax) / 100;
-    const total = Tarif_N_sum + tarif_sum + tax;
-    const subtotal = Tarif_N_sum + tarif_sum;
-
-    // Add main table with spacing
-    doc.autoTable({
-      head: [columns],
-      body: rows,
-      startY: startY, // Adjust startY to add spacing
-    });
-
-    // Get the final Y position after the main table
-    const finalY = (doc as any).lastAutoTable.finalY + 10;
-
-    // Define summary table columns and rows
-    const summaryColumns = ["", "Amount"];
-    const summaryRows = [
-      ["Subtotal:", `$${subtotal.toFixed(2)}`],
-      ["TVA:", `$${tax.toFixed(2)}`],
-      ["Total:", `$${total.toFixed(2)}`],
-    ];
-
-    // Add summary table
-    doc.autoTable({
-      head: [summaryColumns],
-      body: summaryRows,
-      startY: finalY + 20, // Add additional spacing after the main table
-      theme: "plain",
-      headStyles: { fontStyle: "bold" },
-      bodyStyles: { fontSize: 12 },
-      styles: { halign: "right" },
-    });
-
-    // Save the PDF
-    doc.save("Mapira-Devis.pdf");
-  };
-
-  const saveBillInfo = async () => {
-    try {
-      const billInfo = {
-        client: client?.firstName + " " + client?.lastName,
-        factureNumber: facture,
-        Date: getCurrentDate(),
-        Subtotal: calculateSubtotal(),
-        SalesTax: String(salesTax),
-        TotalValue: totalValue,
-      };
-
-      await axios.post(
-        "http://localhost:3333/bills/create-bill-info",
-        billInfo,
-        { withCredentials: true }
-      );
-    } catch (error) {
-      console.error("Error saving bill info:", error);
-    }
-  };
-
-  const saveTable = async () => {
-    const factureNumber = facture;
-
-    try {
-      await axios.post(
-        "http://localhost:3333/bills",
-        {
-          factureNumber,
-          items: dataSource,
-        },
-        { withCredentials: true }
-      );
-
-      await saveBillInfo();
-	  notification.success({
-		message: "Success",
-		description: "Table saved successfully.",
-	  });
-    } catch (error) {
-		notification.error({
-			message: "Error",
-			description:
-			  "There was an error creating the Product. Please try again.",
-		  });
-    }
-  };
-
   return (
     <div className="flex items-center justify-center">
       {client ? (
@@ -476,7 +300,9 @@ export const Billing = () => {
                 icon={<FilePdfOutlined />}
                 className="h-[40px] w-[160px] rounded-lg"
                 type="primary"
-                onClick={generatePDF}
+                onClick={() =>
+                  generatePDF(facture, client, dataSource, salesTax)
+                }
               >
                 <div>Convert to PDF</div>
               </Button>
@@ -487,7 +313,13 @@ export const Billing = () => {
             <div className="flex justify-between pt-10">
               <div className="text-2xl font-light">Products / Services</div>
               <Link to="/Product">
-                <Button onClick={saveTable}>Save Table</Button>
+                <Button
+                  onClick={() =>
+                    saveTable(dataSource, client, facture, salesTax, totalValue)
+                  }
+                >
+                  Save Table
+                </Button>
               </Link>
             </div>
             <Table

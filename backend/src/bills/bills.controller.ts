@@ -38,7 +38,6 @@ export class BillsController {
   @UseGuards(JwtAuthGuard)
   async checkFactureNumber(@Body() checkFactureDto: CheckFactureDto) {
     const { factureNumber } = checkFactureDto;
-    console.log(`Checking facture number: ${factureNumber}`);
     const bill = await this.billsService.getBillByFactureNumber(factureNumber);
     if (!bill) {
 		return { exists: false };

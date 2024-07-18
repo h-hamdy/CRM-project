@@ -49,53 +49,15 @@ export const Product = () => {
     }
   };
 
-  // useEffect to fetch columns data on component mount
   useEffect(() => {
     fetchColumnsData();
   }, []);
-
-  //   const checkBilling = async (id: any) => {
-
-  // 	const factureNumber = {id};
-  // 	try {
-  // 		const response = await axios.post("http://localhost:3333/bills/exists", factureNumber, {withCredentials: true})
-  // 		console.log(response)
-  // 		return response.data.exists;
-  // 	}
-  // 	catch (error) {
-  // 		console.error('Error checking Bill:', error);
-  // 		return false;
-  // 	}
-  //   }
-
-  //   const IconButton = ({ id }: any) => {
-  // 	const history = useHistory();
-
-  // 	const handleClick = async () => {
-  // 	  const exists = await checkBilling(id);
-  // 	  if (exists) {
-  // 		history.push(`/Product/Billing/${id}`);
-  // 	  } else {
-  // 		alert('Bill does not exist');
-  // 	  }
-  // 	};
-
-  // 	return (
-  // 	  <div
-  // 		className="inline-block w-6 h-6 border border-gray-300 rounded text-center leading-6 cursor-pointer transition-colors duration-300 hover:bg-gray-200"
-  // 		onClick={handleClick}
-  // 	  >
-  // 		<DiffOutlined />
-  // 	  </div>
-  // 	);
-  //   };
 
   const handleOk = async () => {
     try {
       const tableName = "MyTable"; // Example table name or dynamically obtained
       const values = await form.validateFields(); // Assuming form is defined
 
-      // Assuming values.names is an array of strings representing column names
       const newColumns = values.names.map((title: string) => ({
         name: title, // Ensure the structure matches { name: string }
         ...(title === "Bill" && {
@@ -232,8 +194,11 @@ export const Product = () => {
           )}
         </Button>
         <div>
-      <SearchProduct setTableData={setTableData} fetchDataRows={fetchDataRows}/>
-    </div>
+          <SearchProduct
+            setTableData={setTableData}
+            fetchDataRows={fetchDataRows}
+          />
+        </div>
       </div>
       <Modal
         title="Create Table Title Column"
