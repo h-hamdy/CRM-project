@@ -7,6 +7,7 @@ import {
   Button,
   InputRef,
   FormInstance,
+  notification,
 } from "antd";
 import {
   PlusOutlined,
@@ -328,18 +329,18 @@ export const Billing = () => {
     // Facture N and its value (left side)
     doc.setFont("helvetica", "bold");
     doc.text("Facture N :", startX + 5, startY + 8);
-    doc.setFont("helvetica", "light"); // Set font to Helvetica Light
+    doc.setFont("helvetica", "normal"); // Set font to Helvetica Light
     doc.text(facture ?? "", startX + 30, startY + 8); // Adjusted startX for value
 
     doc.setFont("helvetica", "bold"); // Set font back to Helvetica (normal)
     doc.text("Date :", startX + 5, startY + 15);
-    doc.setFont("helvetica", "light"); // Set font to Helvetica Light
+    doc.setFont("helvetica", "normal"); // Set font to Helvetica Light
     doc.text(getCurrentDate(), startX + 30, startY + 15); // Adjusted startX for value
 
     doc.setFont("helvetica", "bold"); // Set font back to Helvetica (normal)
     doc.text("Client Name :", startX + 85, startY + 12);
 
-    doc.setFont("helvetica", "light"); // Set font to Helvetica Light
+    doc.setFont("helvetica", "normal"); // Set font to Helvetica Light
     doc.text(
       (client?.firstName ?? "") + " " + (client?.lastName ?? ""),
       startX + 115,
@@ -430,7 +431,6 @@ export const Billing = () => {
         billInfo,
         { withCredentials: true }
       );
-      //   console.log('Response from create-bill-info:', response.data);
     } catch (error) {
       console.error("Error saving bill info:", error);
     }
@@ -449,10 +449,17 @@ export const Billing = () => {
         { withCredentials: true }
       );
 
-      //   console.log('Response:', response.data);
       await saveBillInfo();
+	  notification.success({
+		message: "Success",
+		description: "Table saved successfully.",
+	  });
     } catch (error) {
-      console.error("Error saving table:", error);
+		notification.error({
+			message: "Error",
+			description:
+			  "There was an error creating the Product. Please try again.",
+		  });
     }
   };
 

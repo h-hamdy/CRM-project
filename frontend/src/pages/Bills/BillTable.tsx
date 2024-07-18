@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { LeftOutlined, FilePdfOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { generatePDF } from "./GeneratePDF";
 
 const Columns = [
   {
@@ -100,6 +101,7 @@ export const BillTable = () => {
     fetchData();
   }, []);
 
+
   return (
     <div>
       <div className="flex justify-between items-center pb-10">
@@ -111,7 +113,7 @@ export const BillTable = () => {
             icon={<FilePdfOutlined />}
             className="h-[40px] w-[160px] rounded-lg"
             type="primary"
-            // onClick={generatePDF}
+            onClick={() => generatePDF(billInfo, dataSource)}
           >
             <div>Convert to PDF</div>
           </Button>

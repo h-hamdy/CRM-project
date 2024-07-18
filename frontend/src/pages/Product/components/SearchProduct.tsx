@@ -14,7 +14,6 @@ export const SearchProduct = ({setTableData, fetchDataRows}: any) => {
 		  return;
 		}
 		try {
-			console.log(value)
 		  const response = await axios.post(
 			"http://localhost:3333/product/data-rows-by-client",
 			{ client: value },
