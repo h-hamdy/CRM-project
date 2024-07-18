@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ModalTable from "./ModalTable";
 import { IconButton } from "./components/IconButton";
+import { SearchProduct } from "./components/SearchProduct";
 
 const formItemLayoutWithOutLabel = {
   wrapperCol: {
@@ -230,7 +231,9 @@ export const Product = () => {
             <div> Add New Product</div>
           )}
         </Button>
-        {/* <SearchClient/> */}
+        <div>
+      <SearchProduct/>
+    </div>
       </div>
       <Modal
         title="Create Table Title Column"
