@@ -82,22 +82,13 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     if (dataIndex === "Qte") {
       childNode = (
         <Form.Item style={{ margin: 0 }} name={dataIndex}>
-          <InputNumber
-            defaultValue={parseInt(record.Qte)}
-            onPressEnter={save}
-            onBlur={save}
-          />
+          <InputNumber onPressEnter={save} onBlur={save} />
         </Form.Item>
       );
     } else if (dataIndex === "Tarif" || dataIndex === "TarifN") {
       childNode = (
         <Form.Item style={{ margin: 0 }} name={dataIndex}>
-          <InputNumber
-            addonAfter="$"
-            defaultValue={0.0}
-            onPressEnter={save}
-            onBlur={save}
-          />
+          <InputNumber addonAfter="$" onPressEnter={save} onBlur={save} />
         </Form.Item>
       );
     } else {
