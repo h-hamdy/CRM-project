@@ -385,8 +385,8 @@ export const Billing = () => {
     }, 0);
 
     // Define tax and total
-    const salesTax = 10; // Example tax rate (adjust as needed)
-    const tax = (tarif_sum * salesTax) / 100;
+    const _salesTax = salesTax; // Example tax rate (adjust as needed)
+    const tax = (tarif_sum * _salesTax) / 100;
     const total = Tarif_N_sum + tarif_sum + tax;
     const subtotal = Tarif_N_sum + tarif_sum;
 
@@ -424,10 +424,6 @@ export const Billing = () => {
   };
 
   const saveBillInfo = async () => {
-    // const _date = getCurrentDate();
-
-    //   Setdate(_date)
-    //   console.log(date)
     try {
       const billInfo = {
         client: client?.firstName + " " + client?.lastName,

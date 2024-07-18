@@ -118,8 +118,10 @@ export const BillTable = () => {
         </div>
       </div>
       <div className="w-full border-t-[2px] border-gray-200 pb-10"></div>
+	  <div className="flex items-center justify-center">
 
-      <div className="h-[80px] flex items-center justify-between rounded-2xl shadow-sm bg-white p-5 px-16">
+
+      <div className="h-[80px] w-full flex items-center justify-between rounded-2xl shadow-sm bg-white p-5 px-16">
         <div className="font-bold">
           Client : <span className="font-normal">{billInfo?.client}</span>
         </div>
@@ -131,6 +133,7 @@ export const BillTable = () => {
           Date : <span className="font-normal">{billInfo?.Date}</span>
         </div>
       </div>
+	  </div>
       <div className="text-2xl font-light pt-10">Products / Services</div>
 
       <Table

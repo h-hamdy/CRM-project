@@ -106,7 +106,7 @@ export const Product = () => {
       //   console.log('Table Name:', tableName);
       //   console.log('Columns:', newColumns);
 
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:3333/product/columns",
         { tableName, columns: newColumns },
         { withCredentials: true }
