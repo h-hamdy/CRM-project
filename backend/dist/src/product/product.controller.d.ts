@@ -29,4 +29,11 @@ export declare class ProductController {
     }[] | {
         message: string;
     }>;
+    getDataRowsByFacture(facture: string): Promise<{
+        id: number;
+        tableId: number;
+        data: import(".prisma/client").Prisma.JsonValue;
+    }[] | {
+        message: string;
+    }>;
 }

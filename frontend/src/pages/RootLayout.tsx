@@ -33,7 +33,7 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-//   getItem("Dashboard", "", <PieChartOutlined />),
+  //   getItem("Dashboard", "", <PieChartOutlined />),
   //   getItem("Calendar", "Calendar", <CalendarOutlined />),
   getItem("Product", "Product", <ToolOutlined />),
   getItem("Clients", "Clients", <TeamOutlined />),
@@ -55,7 +55,7 @@ export const RootLayout = () => {
           { withCredentials: true }
         );
         if (response.status === 200) {
-			console.log("seecc")
+          console.log("seecc");
           if (!response.data.logged_in) navigate("/sign-in");
         }
       } catch (error) {
@@ -93,20 +93,20 @@ export const RootLayout = () => {
   return (
     <>
       <div className="flex fixed z-50 w-full items-center justify-between px-10 pl-3 text-lg font-semibold traking-wider bg-white h-[70px]">
-		<Link to="/">
-        <div className="flex items-center justify-center">
-          <button>
-            <img className="w-[60px]" src="/src/assets/logo.webp"></img>
-          </button>
-          <div className="text-lg font-semibold traking-wider">Mapira</div>
-        </div>
-		</Link>
-		<Link to="/Administration">
-        <img
-          className="rounded-full h-[40px] w-[40px] object-cover"
-          src="/src/assets/profile.jpeg"
-		  ></img>
-		  </Link>
+        <Link to="/">
+          <div className="flex items-center justify-center">
+            <button>
+              <img className="w-[110px]" src="/src/assets/CRMlogo.png"></img>
+            </button>
+            {/* <div className="text-lg font-semibold traking-wider">Mapira</div> */}
+          </div>
+        </Link>
+        <Link to="/Administration">
+          <img
+            className="rounded-full h-[40px] w-[40px] object-cover"
+            src="/src/assets/profile.jpeg"
+          ></img>
+        </Link>
       </div>
       <Layout className="min-h-screen pt-[70px]">
         <Sider

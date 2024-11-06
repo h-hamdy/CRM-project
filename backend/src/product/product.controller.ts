@@ -53,4 +53,15 @@ export class ProductController {
       return { message: 'Failed to fetch data rows' };
     }
   }
+
+  @Post('data-rows-by-facture')
+  @UseGuards(JwtAuthGuard)
+  async getDataRowsByFacture(@Body('facture') facture: string) {
+    try {
+      return await this.productService.getDataRowsByFacture(facture);
+    } catch (error) {
+      // Handle the error, for example:
+      return { message: 'Failed to fetch data rows' };
+    }
+  }
 }

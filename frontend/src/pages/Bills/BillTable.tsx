@@ -38,10 +38,56 @@ interface BillInfo {
   TotalValue: string;
 }
 
+interface CompanyInfo {
+  address: string;
+  email: string;
+  phone: string;
+  website: string;
+}
+
 export const BillTable = () => {
   const [dataSource, setDataSource] = useState([]);
   const { facture } = useParams();
+  const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
+  const [data, setData] = useState<any>(null);
 
+  const fetchCompanyInfo = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3333/users/CompanyInfo",
+        { withCredentials: true }
+      );
+      setCompanyInfo(response.data);
+    } catch (error) {
+      console.error("Error fetching company info:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCompanyInfo();
+  }, []);
+
+  const fetchdata = async () => {
+    try {
+		console.log(facture)
+      const response = await axios.post(
+        "http://localhost:3333/product/data-rows-by-facture",
+        { facture: facture },
+        { withCredentials: true }
+      );
+      setData(response.data);
+	  
+      //   console.log(response.data)
+	  } catch (error) {
+		  console.error("Error fetching data:", error);
+		  }
+		  };
+		  
+		  useEffect(() => {
+			  fetchdata();
+			  }, []);
+			  
+			  console.log("data = "+ data)
   useEffect(() => {
     // Function to fetch data from API
     const fetchData = async () => {
@@ -101,7 +147,6 @@ export const BillTable = () => {
     fetchData();
   }, []);
 
-
   return (
     <div>
       <div className="flex justify-between items-center pb-10">
@@ -113,29 +158,27 @@ export const BillTable = () => {
             icon={<FilePdfOutlined />}
             className="h-[40px] w-[160px] rounded-lg"
             type="primary"
-            onClick={() => generatePDF(billInfo, dataSource)}
+            onClick={() => generatePDF(billInfo, dataSource, companyInfo, data)}
           >
             <div>Convert to PDF</div>
           </Button>
         </div>
       </div>
       <div className="w-full border-t-[2px] border-gray-200 pb-10"></div>
-	  <div className="flex items-center justify-center">
-
-
-      <div className="h-[80px] w-full flex items-center justify-between rounded-2xl shadow-sm bg-white p-5 px-16">
-        <div className="font-bold">
-          Client : <span className="font-normal">{billInfo?.client}</span>
-        </div>
-        <div className="font-bold">
-          Facture N:{" "}
-          <span className="font-normal">{billInfo?.factureNumber}</span>
-        </div>
-        <div className="font-bold">
-          Date : <span className="font-normal">{billInfo?.Date}</span>
+      <div className="flex items-center justify-center">
+        <div className="h-[80px] w-full flex items-center justify-between rounded-2xl shadow-sm bg-white p-5 px-16">
+          <div className="font-bold">
+            Client : <span className="font-normal">{billInfo?.client}</span>
+          </div>
+          <div className="font-bold">
+            Facture N:{" "}
+            <span className="font-normal">{billInfo?.factureNumber}</span>
+          </div>
+          <div className="font-bold">
+            Date : <span className="font-normal">{billInfo?.Date}</span>
+          </div>
         </div>
       </div>
-	  </div>
       <div className="text-2xl font-light pt-10">Products / Services</div>
 
       <Table

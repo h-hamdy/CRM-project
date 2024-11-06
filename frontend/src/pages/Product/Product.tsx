@@ -1,4 +1,4 @@
-import { Button, notification, Modal, Form, Input, Table, Empty } from "antd";
+import { Button, notification, Modal, Form, Input, Table, Empty, Drawer } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -93,7 +93,7 @@ export const Product = () => {
     api.info({
       message: "Notification Title",
       description:
-        "Please create a product table column to proceed. Using the following Modal",
+        "Please create a product table column to proceed. Using the following Drawer",
       showProgress: true,
       pauseOnHover,
       onClose: () => {
@@ -200,25 +200,29 @@ export const Product = () => {
           />
         </div>
       </div>
-      <Modal
+      <Drawer
+		width={600}
         title="Create Table Title Column"
         open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        // onOk={handleOk}
+        onClose={handleCancel}
         footer={[
+			<div className="w-full gap-x-3 py-2 flex justify-end">
+
           <Button key="back" onClick={handleCancel}>
             Cancel
           </Button>,
           <Button key="submit" type="primary" onClick={handleOk}>
             Create
           </Button>,
+			</div>
         ]}
       >
         <Form
           form={form}
           {...formItemLayoutWithOutLabel}
           onFinish={() => {}}
-          className="w-full p-5 pt-5"
+          className="w-full pt-3"
         >
           <Form.List name="names" initialValue={["Bill", "Client"]}>
             {(fields, { add, remove }, { errors }) => (
@@ -280,7 +284,7 @@ export const Product = () => {
             )}
           </Form.List>
         </Form>
-      </Modal>
+      </Drawer>
       <ModalTable
         _isModalOpen={_isModalOpen}
         _handleCancel={_handleCancel}

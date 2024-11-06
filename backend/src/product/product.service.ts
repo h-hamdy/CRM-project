@@ -98,4 +98,15 @@ export class ProductService {
     });
   }
 
+  async getDataRowsByFacture(facture: string) {
+    return this.prisma.rowData.findMany({
+      where: {
+        data: {
+          path: ['Bill'],
+          equals: facture,
+        },
+      },
+    });
+  }
+
 }

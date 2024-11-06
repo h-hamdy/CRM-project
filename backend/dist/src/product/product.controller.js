@@ -53,6 +53,14 @@ let ProductController = class ProductController {
             return { message: 'Failed to fetch data rows' };
         }
     }
+    async getDataRowsByFacture(facture) {
+        try {
+            return await this.productService.getDataRowsByFacture(facture);
+        }
+        catch (error) {
+            return { message: 'Failed to fetch data rows' };
+        }
+    }
 };
 exports.ProductController = ProductController;
 __decorate([
@@ -94,6 +102,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "getDataRowsByClient", null);
+__decorate([
+    (0, common_1.Post)('data-rows-by-facture'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Body)('facture')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ProductController.prototype, "getDataRowsByFacture", null);
 exports.ProductController = ProductController = __decorate([
     (0, common_1.Controller)('product'),
     __metadata("design:paramtypes", [product_service_1.ProductService])

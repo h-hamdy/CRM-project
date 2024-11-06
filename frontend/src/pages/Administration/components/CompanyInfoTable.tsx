@@ -60,7 +60,7 @@ export const CompanyInfoTable = () => {
       icon: <PhoneOutlined />,
     },
     {
-      key: "Website",
+      key: "Identification",
       label: companyInfo?.website,
       icon: <GlobalOutlined />,
     },

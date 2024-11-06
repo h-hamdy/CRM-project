@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal, Form, Input, AutoComplete, Button } from "antd";
+import { Form, Input, AutoComplete, Button, Drawer } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { useClients } from "../../context/ClientsContext";
 import { CreateUserDrawer } from "../Clients/components/CreateUserDrawer";
@@ -74,23 +74,28 @@ const ModalTable = ({
 
   return (
     <>
-      <Modal
+      <Drawer
+        width={600}
         title="Add New Product"
         open={_isModalOpen}
-        onOk={handleSubmit}
-        onCancel={_handleCancel}
+        // onOk={handleSubmit}
+        onClose={_handleCancel}
         footer={[
-          <Button key="back" onClick={_handleCancel}>
-            Cancel
-          </Button>,
-          <Button key="submit" type="primary" onClick={handleSubmit}>
-            Create
-          </Button>,
+          <div className="w-full flex justify-end py-2">
+            <Button key="back" onClick={_handleCancel}>
+              Cancel
+            </Button>
+            ,
+            <Button key="submit" type="primary" onClick={handleSubmit}>
+              Create
+            </Button>
+            ,
+          </div>,
         ]}
       >
         <Form
           form={form}
-          className="p-5"
+          //   className=""
           layout="vertical"
           initialValues={{ remember: true }}
           autoComplete="off"
@@ -152,7 +157,7 @@ const ModalTable = ({
             )
           )}
         </Form>
-      </Modal>
+      </Drawer>
     </>
   );
 };

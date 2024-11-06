@@ -87,6 +87,16 @@ let ProductService = class ProductService {
             },
         });
     }
+    async getDataRowsByFacture(facture) {
+        return this.prisma.rowData.findMany({
+            where: {
+                data: {
+                    path: ['Bill'],
+                    equals: facture,
+                },
+            },
+        });
+    }
 };
 exports.ProductService = ProductService;
 exports.ProductService = ProductService = __decorate([

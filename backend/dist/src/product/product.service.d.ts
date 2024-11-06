@@ -28,4 +28,9 @@ export declare class ProductService {
         tableId: number;
         data: Prisma.JsonValue;
     }[]>;
+    getDataRowsByFacture(facture: string): Promise<{
+        id: number;
+        tableId: number;
+        data: Prisma.JsonValue;
+    }[]>;
 }
