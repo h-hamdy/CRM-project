@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Outlet, useNavigate } from "react-router";
+import { CalendarOutlined } from "@ant-design/icons";
 
 import {
-  PieChartOutlined,
   TeamOutlined,
   //   CalendarOutlined,
   CrownOutlined,
@@ -35,8 +35,9 @@ function getItem(
 const items: MenuItem[] = [
   //   getItem("Dashboard", "", <PieChartOutlined />),
   //   getItem("Calendar", "Calendar", <CalendarOutlined />),
-  getItem("Product", "Product", <ToolOutlined />),
   getItem("Clients", "Clients", <TeamOutlined />),
+  getItem("Product", "Product", <ToolOutlined />),
+  getItem("Calendar", "Calendar", <CalendarOutlined />),
   //   getItem("Management", "sub1", <ProjectOutlined />, [
   //     getItem("Project Kanban", "Management"),
   //   ]),

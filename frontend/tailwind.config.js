@@ -8,7 +8,8 @@ export default {
 		colors: {
 			'primary': '#1677ff',
 			'whiteBackground': '#f0f2f5',
-			'white': '#ffffff'
+			'white': '#ffffff',
+			'calendarRed': '#F5222D',
 		  },
 	  extend: {},
 	},

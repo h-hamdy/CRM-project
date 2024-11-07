@@ -1,4 +1,4 @@
-import { Button, notification, Modal, Form, Input, Table, Empty, Drawer } from "antd";
+import { Button, notification, Form, Input, Table, Empty, Drawer } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
